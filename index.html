@@ -1075,7 +1075,68 @@ function clean(value){
   return String(value ?? "")
     .trim()
     .toLowerCase()
+    .replace(/[ـ\u200e\u200f]/g,"")
+    .replace(/[_\-–—/\\]+/g," ")
     .replace(/\s+/g," ");
+}
+
+function cleanId(value){
+  return String(value ?? "")
+    .trim()
+    .replace(/\.0+$/,"")
+    .replace(/[^0-9a-zA-Z_-]/g,"")
+    .toLowerCase();
+}
+
+function deepValuesByKey(object,keyPattern){
+  const output = [];
+  const visited = new Set();
+
+  function walk(value,keyName=""){
+    if(value === null || value === undefined) return;
+
+    if(typeof value === "object"){
+      if(visited.has(value)) return;
+      visited.add(value);
+
+      if(Array.isArray(value)){
+        value.forEach(item=>walk(item,keyName));
+        return;
+      }
+
+      Object.entries(value).forEach(([key,item])=>{
+        if(keyPattern.test(String(key))){
+          output.push(item);
+        }
+        walk(item,key);
+      });
+      return;
+    }
+
+    if(keyPattern.test(String(keyName))){
+      output.push(value);
+    }
+  }
+
+  walk(object);
+  return output;
+}
+
+function flattenPrimitiveValues(value,output=[]){
+  if(value === null || value === undefined) return output;
+
+  if(Array.isArray(value)){
+    value.forEach(item=>flattenPrimitiveValues(item,output));
+    return output;
+  }
+
+  if(typeof value === "object"){
+    Object.values(value).forEach(item=>flattenPrimitiveValues(item,output));
+    return output;
+  }
+
+  output.push(String(value));
+  return output;
 }
 
 function first(object,fields,fallback=""){
@@ -1100,6 +1161,8 @@ function isOpenStatus(value){
   return [
     "open",
     "opened",
+    "open to students",
+    "available",
     "active",
     "نشط",
     "نشطة",
@@ -1199,18 +1262,36 @@ function toast(message){
 
 
 function getStudentIqama(student){
-  return String(
-    first(student,[
-      "iqama",
-      "Iqama",
-      "studentIqama",
-      "studentID",
-      "studentId",
-      "idNumber",
-      "identity",
-      "nationalId"
-    ],"")
-  ).trim();
+
+  const direct = first(student,[
+    "iqama",
+    "Iqama",
+    "IQAMA",
+    "studentIqama",
+    "StudentIqama",
+    "studentID",
+    "studentId",
+    "StudentID",
+    "idNumber",
+    "identity",
+    "nationalId",
+    "NationalID",
+    "ID",
+    "id"
+  ],"");
+
+  if(direct !== ""){
+    return String(direct).trim();
+  }
+
+  const possible = deepValuesByKey(
+    student,
+    /(iqama|identity|national.?id|student.?id|id.?number)/i
+  );
+
+  return possible.length
+    ? String(possible[0] ?? "").trim()
+    : "";
 }
 
 function getStudentName(student){
@@ -1228,90 +1309,77 @@ function collectStudentCourseLinks(student){
   const ids = new Set();
   const names = new Set();
 
-  [
-    "courseId",
-    "CourseId",
-    "courseID",
-    "selectedCourseId",
-    "trainingCourseId"
-  ].forEach(field=>{
-    if(student?.[field]){
-      ids.add(
-        String(student[field]).trim()
-      );
-    }
-  });
+  const addCourseValue = value=>{
 
-  [
-    "courseName",
-    "TrainingCourse",
-    "CourseName",
-    "course",
-    "Course"
-  ].forEach(field=>{
-    if(student?.[field]){
-      names.add(
-        clean(student[field])
-      );
-    }
-  });
-
-  [
-    "courseIds",
-    "courses",
-    "enrolledCourses",
-    "registeredCourses"
-  ].forEach(field=>{
-
-    const value =
-      student?.[field];
-
-    if(!Array.isArray(value)){
+    if(value === null || value === undefined){
       return;
     }
 
-    value.forEach(item=>{
+    if(Array.isArray(value)){
+      value.forEach(addCourseValue);
+      return;
+    }
 
-      if(
-        item &&
-        typeof item === "object"
-      ){
+    if(typeof value === "object"){
 
-        const id =
-          item.id ||
-          item.courseId ||
-          item.CourseId ||
-          "";
+      const possibleId = first(value,[
+        "id",
+        "courseId",
+        "CourseId",
+        "CourseID",
+        "courseID",
+        "course_id",
+        "trainingCourseId",
+        "classId"
+      ],"");
 
-        const name =
-          item.courseName ||
-          item.TrainingCourse ||
-          item.name ||
-          "";
+      const possibleName = first(value,[
+        "courseName",
+        "CourseName",
+        "TrainingCourse",
+        "trainingCourse",
+        "course",
+        "name",
+        "title",
+        "className"
+      ],"");
 
-        if(id){
-          ids.add(
-            String(id).trim()
-          );
-        }
+      if(possibleId !== "") ids.add(cleanId(possibleId));
+      if(possibleName !== "") names.add(clean(possibleName));
 
-        if(name){
-          names.add(
-            clean(name)
-          );
-        }
+      Object.values(value).forEach(addCourseValue);
+      return;
+    }
 
-      }else if(item){
+    const text = String(value).trim();
+    if(!text) return;
 
-        ids.add(
-          String(item).trim()
-        );
+    // Store as both because some systems save the course document ID
+    // while others save only the displayed course name.
+    ids.add(cleanId(text));
+    names.add(clean(text));
+  };
 
-      }
-
-    });
-
+  [
+    "courseId","CourseId","CourseID","courseID","course_id",
+    "selectedCourseId","trainingCourseId","classId",
+    "courseName","CourseName","TrainingCourse","trainingCourse",
+    "course","Course","className",
+    "courseIds","CourseIds","courses","Courses",
+    "enrolledCourses","registeredCourses","studentCourses",
+    "classes","registeredClass"
+  ].forEach(field=>{
+    if(student?.[field] !== undefined){
+      addCourseValue(student[field]);
+    }
   });
+
+  // Read nested fields too, for example registration.courseId
+  // or enrollment.TrainingCourse.
+  deepValuesByKey(
+    student,
+    /(course|training|class)/i
+  ).forEach(addCourseValue);
 
   return {
     ids:[...ids].filter(Boolean),
@@ -1324,43 +1392,95 @@ function courseContainsStudent(
   studentIqama
 ){
 
+  const target = cleanId(studentIqama);
+
+  if(!target){
+    return false;
+  }
+
   const directArrays = [
     course?.studentIds,
     course?.students,
     course?.studentIqamas,
     course?.iqamas,
-    course?.enrolledStudents
+    course?.enrolledStudents,
+    course?.Students,
+    course?.studentList,
+    course?.members,
+    course?.participants
   ];
 
-  return directArrays.some(value=>{
+  const directMatch = directArrays.some(value=>{
 
-    if(Array.isArray(value)){
-
-      return value.some(item=>{
-
-        if(
-          item &&
-          typeof item === "object"
-        ){
-          return (
-            getStudentIqama(item) ===
-            studentIqama
-          );
-        }
-
-        return (
-          String(item || "").trim() ===
-          studentIqama
-        );
-
-      });
-
+    if(!Array.isArray(value)){
+      return false;
     }
 
-    return false;
+    return value.some(item=>{
 
+      if(item && typeof item === "object"){
+        return cleanId(getStudentIqama(item)) === target;
+      }
+
+      return cleanId(item) === target;
+    });
   });
 
+  if(directMatch){
+    return true;
+  }
+
+  // Also detect the Iqama when it is saved inside a nested map/object.
+  const possibleStudentValues = deepValuesByKey(
+    course,
+    /(student|iqama|identity|national.?id|participant|member)/i
+  );
+
+  return possibleStudentValues.some(value=>
+    flattenPrimitiveValues(value)
+      .some(item=>cleanId(item) === target)
+  );
+}
+
+function courseMatchesStudentLinks(course){
+
+  const possibleCourseIds = [
+    course?.id,
+    course?.courseId,
+    course?.CourseId,
+    course?.CourseID,
+    course?.courseID,
+    course?.course_id,
+    course?.trainingCourseId
+  ]
+  .map(cleanId)
+  .filter(Boolean);
+
+  const possibleCourseNames = [
+    getCourseName(course),
+    course?.TrainingCourse,
+    course?.trainingCourse,
+    course?.courseName,
+    course?.CourseName,
+    course?.course,
+    course?.title,
+    course?.name
+  ]
+  .map(clean)
+  .filter(Boolean);
+
+  return (
+    possibleCourseIds.some(id=>
+      CURRENT_STUDENT_COURSE_IDS.includes(id)
+    ) ||
+    possibleCourseNames.some(name=>
+      CURRENT_STUDENT_COURSE_NAMES.includes(name)
+    ) ||
+    courseContainsStudent(
+      course,
+      CURRENT_STUDENT_IQAMA
+    )
+  );
 }
 
 function getCoursesForCurrentStudent(){
@@ -1372,31 +1492,9 @@ function getCoursesForCurrentStudent(){
     return [];
   }
 
-  return OPEN_COURSES_CACHE.filter(course=>{
-
-    const courseId =
-      String(course.id || "");
-
-    const name =
-      clean(
-        getCourseName(course)
-      );
-
-    return (
-      CURRENT_STUDENT_COURSE_IDS.includes(
-        courseId
-      ) ||
-      CURRENT_STUDENT_COURSE_NAMES.includes(
-        name
-      ) ||
-      courseContainsStudent(
-        course,
-        CURRENT_STUDENT_IQAMA
-      )
-    );
-
-  });
-
+  return OPEN_COURSES_CACHE.filter(
+    course=>courseMatchesStudentLinks(course)
+  );
 }
 
 async function loginActivityStudent(){
@@ -1448,8 +1546,8 @@ async function loginActivityStudent(){
           ...doc.data()
         }))
         .find(item=>
-          getStudentIqama(item) === iqama ||
-          String(item.id) === iqama
+          cleanId(getStudentIqama(item)) === cleanId(iqama) ||
+          cleanId(item.id) === cleanId(iqama)
         );
 
     if(!student){
@@ -2052,6 +2150,7 @@ async function updateActivityUsage(
 }
 
 async function loadOpenCourses(){
+
   const snap = await db
     .collection(COURSES_COLLECTION)
     .get();
@@ -2062,13 +2161,19 @@ async function loadOpenCourses(){
       ...doc.data()
     }))
     .filter(course=>{
+
       const status = first(course,[
         "status",
         "Status",
-        "courseStatus"
+        "courseStatus",
+        "CourseStatus",
+        "state",
+        "State"
       ],"");
 
-      return isOpenStatus(status);
+      // Some older course records do not have a status field.
+      // Keep them so the student-course link is not lost.
+      return !String(status).trim() || isOpenStatus(status);
     });
 }
 
@@ -2168,10 +2273,9 @@ async function loadStudentActivities(){
         .filter(activity=>{
 
           const status =
-            clean(
-              activity.status ||
-              "open"
-            );
+            activity.status ||
+            activity.Status ||
+            "open";
 
           const questions =
             Array.isArray(
@@ -2181,10 +2285,12 @@ async function loadStudentActivities(){
               : [];
 
           const activityCourseId =
-            String(
+            cleanId(
               activity.courseId ||
               activity.CourseId ||
+              activity.CourseID ||
               activity.courseID ||
+              activity.linkedCourseId ||
               ""
             );
 
@@ -2196,12 +2302,12 @@ async function loadStudentActivities(){
             );
 
           return (
-            status === "open" &&
+            isOpenStatus(status) &&
             questions.length > 0 &&
             (
-              studentCourseIds.has(
-                activityCourseId
-              ) ||
+              [...studentCourseIds]
+                .map(cleanId)
+                .includes(activityCourseId) ||
               (
                 activityCourseName &&
                 studentCourseNames.has(
@@ -2227,7 +2333,11 @@ async function loadStudentActivities(){
       box.innerHTML = `
         <i class="fa-solid fa-triangle-exclamation" style="font-size:35px;color:var(--gold)"></i>
         <h3>No active course was found for this student.</h3>
-        <p>Check that the student is linked to the course in the Students or Courses collection.</p>
+        <p>Check that the student record contains the course ID/name, or that the course record contains this Iqama.</p>
+        <div style="margin-top:10px;font-size:12px;text-align:left;background:#f7fafc;padding:10px;border-radius:10px">
+          Detected course IDs: ${esc(CURRENT_STUDENT_COURSE_IDS.join(" | ") || "None")}<br>
+          Detected course names: ${esc(CURRENT_STUDENT_COURSE_NAMES.join(" | ") || "None")}
+        </div>
       `;
 
       return;
@@ -2261,11 +2371,13 @@ async function loadStudentActivities(){
 
         const course =
           studentCourses.find(item=>
-            String(item.id) ===
-            String(
+            cleanId(item.id) ===
+            cleanId(
               activity.courseId ||
               activity.CourseId ||
+              activity.CourseID ||
               activity.courseID ||
+              activity.linkedCourseId ||
               ""
             )
           ) ||
@@ -2871,7 +2983,7 @@ function startActivity(
 
   CURRENT_COURSE =
     studentCourses.find(
-      item=>item.id === courseId
+      item=>cleanId(item.id) === cleanId(courseId)
     ) || null;
 
   if(!CURRENT_ACTIVITY){
