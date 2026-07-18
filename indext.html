@@ -1,0 +1,4509 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Prudle Fun Activities — Practice Mode Final</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore-compat.js"></script>
+
+<style>
+:root{
+  --blue:#164478;
+  --blue2:#2467a5;
+  --gold:#f4b942;
+  --green:#17a673;
+  --red:#e74c3c;
+  --bg:#f3f7fb;
+  --card:#fff;
+  --text:#18324b;
+  --muted:#6b7b8d;
+  --border:#dce6ef;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  font-family:"Poppins",sans-serif;
+  background:
+    radial-gradient(circle at 10% 5%,rgba(36,103,165,.14),transparent 24%),
+    radial-gradient(circle at 90% 95%,rgba(244,185,66,.15),transparent 25%),
+    var(--bg);
+  color:var(--text);
+}
+
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+
+.topbar{
+  min-height:72px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:12px 22px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 6px 18px rgba(22,68,120,.22);
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+
+.logo{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  background:#fff;
+  display:grid;
+  place-items:center;
+  color:var(--blue);
+  font-weight:900;
+  font-size:20px;
+  box-shadow:0 5px 14px rgba(0,0,0,.18);
+}
+
+.brand h1{font-size:20px;margin:0}
+.brand small{opacity:.82}
+
+.container{
+  width:min(1100px,94%);
+  margin:24px auto 50px;
+}
+
+.panel{
+  background:rgba(255,255,255,.97);
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:0 12px 35px rgba(31,70,102,.09);
+  padding:22px;
+  margin-bottom:20px;
+}
+
+.btn{
+  border:none;
+  border-radius:13px;
+  padding:11px 17px;
+  font-weight:900;
+  font-size:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;
+}
+
+.btn-light{background:#edf4fa;color:var(--blue)}
+.btn-gold{background:var(--gold);color:#493500}
+
+.start-intro{text-align:center;margin-bottom:22px}
+
+.hero-icon{
+  width:100px;
+  height:100px;
+  border-radius:30px;
+  margin:0 auto 15px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#ffdf73,#f4a62a);
+  font-size:48px;
+  box-shadow:0 12px 30px rgba(244,166,42,.28);
+}
+
+.start-intro h2{font-size:30px;margin:8px 0}
+
+.open-activity-list{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:15px;
+}
+
+.open-activity-card{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:17px;
+  background:#fff;
+  transition:.2s;
+  position:relative;
+  overflow:hidden;
+}
+
+.open-activity-card:before{
+  content:"";
+  position:absolute;
+  right:0;
+  top:0;
+  width:7px;
+  height:100%;
+  background:linear-gradient(var(--gold),var(--green));
+}
+
+.open-activity-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 22px rgba(30,70,105,.11);
+}
+
+.open-activity-card h3{margin:0 0 8px;padding-left:4px}
+
+.activity-meta{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+
+.mini{
+  background:#f1f6fa;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.open-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#e8faf2;
+  color:var(--green);
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:12px;
+  font-weight:900;
+}
+
+.empty{text-align:center;color:var(--muted);padding:35px 10px}
+
+.play-shell{max-width:930px;margin:auto}
+
+.play-summary{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:13px 16px;
+  margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.play-summary-title{font-weight:900;color:var(--blue)}
+.play-summary-info{color:var(--muted);font-size:13px;font-weight:700}
+
+.play-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.progress-wrap{
+  height:13px;
+  background:#e5edf4;
+  border-radius:999px;
+  overflow:hidden;
+  flex:1;
+}
+
+.progress-bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--gold),var(--green));
+  transition:.3s;
+}
+
+.score-pill{
+  background:var(--blue);
+  color:#fff;
+  padding:9px 14px;
+  border-radius:999px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.game-card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:25px;
+  padding:25px;
+  box-shadow:0 15px 38px rgba(22,68,120,.12);
+}
+
+.question-number{text-align:center;color:var(--blue);font-weight:900}
+
+.game-question{
+  text-align:center;
+  font-size:26px;
+  margin:12px auto 22px;
+  line-height:1.6;
+}
+
+.question-image{
+  max-width:500px;
+  width:100%;
+  max-height:270px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 20px;
+  border-radius:18px;
+  background:#f5f8fa;
+}
+
+.student-answers{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:15px;
+}
+
+.student-answer{
+  border:2px solid var(--border);
+  border-radius:18px;
+  background:#fff;
+  padding:12px;
+  min-height:110px;
+  font-weight:900;
+  font-size:18px;
+  color:var(--text);
+  transition:.18s;
+  position:relative;
+}
+
+.student-answer:hover{
+  transform:translateY(-3px);
+  border-color:var(--blue2);
+  box-shadow:0 9px 20px rgba(36,103,165,.13);
+}
+
+.student-answer img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:8px;
+  background:#eef3f7;
+}
+
+.student-answer.correct{border-color:var(--green);background:#eafaf4}
+.student-answer.wrong{border-color:var(--red);background:#fff0ee}
+
+.feedback{
+  min-height:42px;
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+  margin:17px 0 0;
+}
+
+.feedback.good{color:var(--green)}
+.feedback.bad{color:var(--red)}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.match-game{display:grid;gap:12px}
+
+.match-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:#fbfdff;
+}
+
+.match-left{font-weight:900;color:var(--blue)}
+
+.match-row select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px;
+  background:#fff;
+  font-family:inherit;
+  font-weight:700;
+}
+
+.order-game{display:grid;gap:10px}
+
+.order-item{
+  width:100%;
+  border:2px solid var(--border);
+  border-radius:15px;
+  background:#fff;
+  padding:13px;
+  font-size:16px;
+  font-weight:900;
+  text-align:left;
+}
+
+.order-item.selected{
+  border-color:var(--blue2);
+  background:#eef6fd;
+}
+
+.order-sequence{
+  min-height:58px;
+  border:1px dashed #9fb7cc;
+  border-radius:15px;
+  padding:12px;
+  margin-top:14px;
+  background:#fbfdff;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.order-chip{
+  background:var(--blue);
+  color:#fff;
+  border-radius:999px;
+  padding:7px 11px;
+  font-weight:800;
+}
+
+.type-result-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.result-card{text-align:center;max-width:660px;margin:30px auto}
+.trophy{font-size:90px;filter:drop-shadow(0 12px 12px rgba(244,185,66,.35))}
+.final-score{font-size:48px;color:var(--blue);font-weight:900;margin:5px}
+.stars{font-size:30px;color:var(--gold);letter-spacing:4px}
+
+.result-course{
+  margin:12px auto;
+  padding:11px;
+  border-radius:13px;
+  background:#f4f8fb;
+  font-weight:800;
+}
+
+.confetti{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:100;
+}
+
+.confetti i{
+  position:absolute;
+  top:-20px;
+  width:10px;
+  height:18px;
+  border-radius:3px;
+  animation:fall 2.8s linear forwards;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(720deg)}
+}
+
+.toast{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  background:#18324b;
+  color:#fff;
+  padding:12px 17px;
+  border-radius:13px;
+  font-weight:800;
+  z-index:200;
+  opacity:0;
+  transform:translateY(20px);
+  pointer-events:none;
+  transition:.25s;
+}
+
+.toast.show{opacity:1;transform:none}
+
+
+
+.team-setup{
+  max-width:850px;
+  margin:0 auto;
+}
+
+.team-setup-head{
+  text-align:center;
+  margin-bottom:18px;
+}
+
+.team-setup-head .icon{
+  font-size:58px;
+  margin-bottom:7px;
+}
+
+.team-count-row{
+  display:grid;
+  grid-template-columns:minmax(180px,280px) 1fr;
+  gap:14px;
+  align-items:end;
+}
+
+.team-count-row label,
+.team-name-field label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:900;
+}
+
+.team-count-row select,
+.team-name-field input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  background:#fff;
+  font-family:inherit;
+  outline:none;
+}
+
+.team-names-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-top:16px;
+}
+
+.current-team-banner{
+  margin:0 0 15px;
+  padding:13px 15px;
+  border-radius:16px;
+  border:2px solid var(--gold);
+  background:linear-gradient(135deg,#fff8de,#fff);
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+  color:#765500;
+}
+
+.live-team-board{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
+  gap:9px;
+  margin-bottom:14px;
+}
+
+.live-team-item{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  text-align:center;
+  background:#fff;
+}
+
+.live-team-item.active{
+  border:2px solid var(--gold);
+  background:#fff9e8;
+  transform:translateY(-1px);
+}
+
+.live-team-item strong{
+  display:block;
+  color:var(--blue);
+  overflow-wrap:anywhere;
+}
+
+.live-team-item span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+.team-results{
+  margin:18px 0 8px;
+}
+
+.team-results h3{
+  color:var(--blue);
+  margin:0 0 12px;
+}
+
+.team-ranking{
+  display:grid;
+  gap:10px;
+}
+
+.team-rank-row{
+  display:grid;
+  grid-template-columns:55px 1fr auto auto;
+  gap:10px;
+  align-items:center;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:#fff;
+  text-align:left;
+}
+
+.team-rank-row.winner{
+  border:2px solid var(--gold);
+  background:linear-gradient(135deg,#fff8d9,#fff);
+}
+
+.team-rank-number{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#edf4fa;
+  color:var(--blue);
+  font-weight:900;
+}
+
+.team-rank-row.winner .team-rank-number{
+  background:var(--gold);
+  color:#493500;
+}
+
+.team-rank-name{
+  font-weight:900;
+  color:var(--blue);
+  overflow-wrap:anywhere;
+}
+
+.team-rank-score{
+  font-weight:900;
+  color:var(--green);
+}
+
+.team-rank-accuracy{
+  color:var(--muted);
+  font-weight:800;
+  font-size:13px;
+}
+
+@media(max-width:750px){
+  .team-count-row{grid-template-columns:1fr}
+  .team-names-grid{grid-template-columns:1fr}
+  .team-rank-row{grid-template-columns:45px 1fr}
+  .team-rank-score,.team-rank-accuracy{
+    grid-column:2;
+  }
+}
+
+.actor-panel{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:linear-gradient(135deg,#f7fbff,#fffaf0);
+}
+
+.actor-info{
+  font-weight:900;
+  color:var(--blue);
+}
+
+.actor-info small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.actor-course{
+  min-width:min(420px,100%);
+}
+
+.actor-course label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:900;
+}
+
+.actor-course select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  background:#fff;
+  font-family:inherit;
+  outline:none;
+}
+
+@media(max-width:750px){
+  .topbar{align-items:flex-start;flex-direction:column}
+  .student-answers,.match-row{grid-template-columns:1fr}
+  .container{width:95%;margin-top:14px}
+  .panel,.game-card{padding:16px;border-radius:18px}
+  .game-question{font-size:21px}
+  .student-answer img{height:190px}
+  .play-top{flex-wrap:wrap}
+  .progress-wrap{flex-basis:100%;order:3}
+}
+
+.student-login{
+  max-width:620px;
+  margin:35px auto;
+  text-align:center;
+}
+.student-login .login-icon{
+  width:95px;
+  height:95px;
+  border-radius:28px;
+  margin:0 auto 14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#ffdf73,#f4a62a);
+  font-size:45px;
+}
+.student-login-field{
+  margin-top:18px;
+  text-align:left;
+}
+.student-login-field label{
+  display:block;
+  margin-bottom:7px;
+  font-weight:900;
+}
+.student-login-field input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:13px 14px;
+  font:inherit;
+  font-size:17px;
+  outline:none;
+}
+.student-login-field input:focus{
+  border-color:var(--blue2);
+  box-shadow:0 0 0 3px rgba(36,103,165,.12);
+}
+.student-login-message{
+  min-height:25px;
+  margin-top:12px;
+  color:var(--red);
+  font-weight:800;
+}
+.student-identity-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:14px 16px;
+  margin-bottom:16px;
+  border:1px solid var(--border);
+  border-radius:17px;
+  background:linear-gradient(135deg,#f7fbff,#fffaf0);
+}
+.student-identity-card strong{
+  color:var(--blue);
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">P</div>
+    <div>
+      <h1>Prudle Fun Activities</h1>
+      <small>Trainer and Student Activity Player</small>
+    </div>
+  </div>
+
+  <button class="btn btn-light" type="button" onclick="loadStudentActivities()">
+    <i class="fa-solid fa-rotate-right"></i>
+    Refresh
+  </button>
+</header>
+
+<main class="container">
+
+  <section id="studentLoginArea" class="panel student-login">
+    <div class="login-icon">🎓</div>
+
+    <h2 style="margin:0">
+      Student Login
+    </h2>
+
+    <p style="color:var(--muted)">
+      Enter the student Iqama / ID number.
+      Only activities linked to the student's active course will be displayed.
+    </p>
+
+    <div class="student-login-field">
+      <label>
+        <i class="fa-solid fa-id-card"></i>
+        Iqama / Student ID
+      </label>
+
+      <input
+        id="studentIqamaInput"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="Enter Iqama or student ID"
+        onkeydown="if(event.key==='Enter') loginActivityStudent()">
+    </div>
+
+    <div class="actions" style="justify-content:center">
+      <button
+        id="studentLoginButton"
+        class="btn btn-primary"
+        type="button"
+        onclick="loginActivityStudent()">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        Login
+      </button>
+    </div>
+
+    <div id="studentLoginMessage" class="student-login-message"></div>
+  </section>
+
+  <section id="studentStart" class="hidden">
+
+    <div id="studentIdentityCard" class="student-identity-card">
+      <div>
+        <strong id="loggedStudentName">Student</strong>
+        <div id="loggedStudentDetails" style="color:var(--muted);font-size:13px;font-weight:700"></div>
+      </div>
+
+      <button
+        class="btn btn-light"
+        type="button"
+        onclick="logoutActivityStudent()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Change Student
+      </button>
+    </div>
+    <div class="start-intro">
+      <div class="hero-icon">🎮</div>
+      <h2>Choose an Activity and Start Playing</h2>
+      <p style="color:var(--muted)">
+        Open activities linked to open courses are displayed.
+        This page can be used by a trainer or a student.
+      </p>
+    </div>
+
+    <div id="actorPanel" class="actor-panel hidden">
+      <div id="actorInfo" class="actor-info"></div>
+
+      <div id="trainerCourseBox" class="actor-course hidden">
+        <label>
+          <i class="fa-solid fa-book-open"></i>
+          Select the trainer course that will use this activity
+        </label>
+
+        <select id="trainerTargetCourse" onchange="loadStudentActivities()">
+          <option value="">Select Course</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="openActivitiesBox" class="empty">
+        Loading activities and open courses...
+      </div>
+    </div>
+  </section>
+
+
+  <section id="teamSetupArea" class="panel team-setup hidden">
+
+    <div class="team-setup-head">
+      <div class="icon">👥</div>
+      <h2 style="margin:0">Choose Teams / Groups</h2>
+      <p style="color:var(--muted);margin:7px 0 0">
+        Questions are distributed automatically in order:
+        Team A, Team B, Team C, then back to Team A.
+      </p>
+    </div>
+
+    <div class="team-count-row">
+
+      <div>
+        <label>Number of Teams / Groups</label>
+
+        <select id="teamCountSelect" onchange="renderTeamNameInputs()">
+          <option value="1">1 Team</option>
+          <option value="2">2 Teams</option>
+          <option value="3">3 Teams</option>
+          <option value="4">4 Teams</option>
+          <option value="5">5 Teams</option>
+          <option value="6">6 Teams</option>
+        </select>
+      </div>
+
+      <div style="
+        padding:11px 13px;
+        border:1px solid var(--border);
+        border-radius:12px;
+        background:#f7fafc;
+        color:var(--muted);
+        font-size:13px;
+        font-weight:700;
+      ">
+        You may keep the automatic names Team A, Team B, Team C,
+        or write your own group names.
+      </div>
+
+    </div>
+
+    <div id="teamNamesGrid" class="team-names-grid"></div>
+
+    <div class="actions" style="justify-content:center;margin-top:20px">
+
+      <button class="btn btn-primary" type="button" onclick="confirmTeamSetup()">
+        <i class="fa-solid fa-play"></i>
+        Start Team Activity
+      </button>
+
+      <button class="btn btn-light" type="button" onclick="cancelTeamSetup()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back
+      </button>
+
+    </div>
+
+  </section>
+
+  <section id="playArea" class="play-shell hidden">
+
+    <div class="play-summary">
+      <div>
+        <div id="playingActivityTitle" class="play-summary-title"></div>
+        <div id="playingCourseInfo" class="play-summary-info"></div>
+      </div>
+
+      <button class="btn btn-light" type="button" onclick="backToActivities()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Activities
+      </button>
+    </div>
+
+    <div class="play-top">
+      <div class="progress-wrap">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <div id="activityTimerDisplay" class="score-pill" style="background:#d35400">
+        ⏱ Open Time
+      </div>
+
+      <div id="scorePill" class="score-pill">
+        ⭐ 0
+      </div>
+    </div>
+
+    <div id="currentTeamBanner" class="current-team-banner">
+      Team A's Question
+    </div>
+
+    <div id="liveTeamBoard" class="live-team-board"></div>
+
+    <div class="game-card">
+      <div id="questionNumber" class="question-number"></div>
+      <h2 id="gameQuestion" class="game-question"></h2>
+
+      <img id="gameQuestionImage" class="question-image hidden" alt="Question image">
+      <video id="gameQuestionVideo" class="question-image hidden" controls playsinline></video>
+      <audio id="gameQuestionAudio" class="hidden" controls style="width:100%;margin:0 auto 20px"></audio>
+
+      <div id="studentAnswers" class="student-answers"></div>
+      <div id="feedback" class="feedback"></div>
+
+      <div id="nextQuestionArea" class="actions hidden" style="justify-content:center;margin-top:15px">
+        <button
+          id="nextQuestionBtn"
+          class="btn btn-primary"
+          type="button"
+          onclick="nextQuestionManually()">
+          <i class="fa-solid fa-arrow-right"></i>
+          Next Question
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="resultArea" class="panel result-card hidden">
+    <div class="trophy">🏆</div>
+    <h2>Well Done! Activity Completed</h2>
+    <div id="resultCourse" class="result-course"></div>
+    <div id="finalScore" class="final-score">0 / 0</div>
+    <div id="finalPercent" style="font-size:22px;font-weight:900"></div>
+    <div id="finalStars" class="stars"></div>
+    <p id="resultMessage" style="color:var(--muted);font-size:18px"></p>
+
+    <div id="teamResultsBox" class="team-results hidden">
+      <h3>
+        <i class="fa-solid fa-ranking-star"></i>
+        Team Ranking
+      </h3>
+
+      <div id="teamRanking" class="team-ranking"></div>
+    </div>
+
+    <div class="actions" style="justify-content:center">
+      <button class="btn btn-gold" type="button" onclick="restartGame()">
+        <i class="fa-solid fa-rotate-right"></i>
+        Play Again
+      </button>
+
+      <button class="btn btn-primary" type="button" onclick="backToActivities()">
+        <i class="fa-solid fa-list"></i>
+        Another Activity
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<div id="confetti" class="confetti"></div>
+<div id="toast" class="toast"></div>
+
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyCCFBvZosI8dwShZjxvZzI-SU5igEbcOKk",
+  authDomain:"prudle-system.firebaseapp.com",
+  projectId:"prudle-system"
+});
+
+const db = firebase.firestore();
+
+const ACTIVITIES_COLLECTION = "FunActivities";
+const COURSES_COLLECTION = "Courses";
+const RESULTS_COLLECTION = "FunActivityResults";
+const USAGE_COLLECTION = "FunActivityUsage";
+const STUDENTS_COLLECTION = "Students";
+
+let ACTIVITIES_CACHE = [];
+let OPEN_COURSES_CACHE = [];
+
+let CURRENT_ACTIVITY = null;
+let CURRENT_COURSE = null;
+let CURRENT_QUESTION_INDEX = 0;
+let CURRENT_SCORE = 0;
+let ANSWER_LOCKED = false;
+let CURRENT_ORDER_SELECTION = [];
+
+let ACTIVITY_TIMER_INTERVAL = null;
+let ACTIVITY_TIME_LEFT = 0;
+let ACTIVITY_FINISHED = false;
+
+let TEAM_COUNT = 1;
+let TEAMS = [];
+let CURRENT_TEAM_INDEX = 0;
+
+
+let CURRENT_USAGE_ID = "";
+
+let CURRENT_STUDENT = null;
+let CURRENT_STUDENT_IQAMA = "";
+let CURRENT_STUDENT_COURSE_IDS = [];
+let CURRENT_STUDENT_COURSE_NAMES = [];
+
+function getLoginUsername(){
+  return String(
+    localStorage.getItem("username") ||
+    localStorage.getItem("trainerName") ||
+    localStorage.getItem("userName") ||
+    ""
+  ).trim();
+}
+
+function getLoginRole(){
+  return String(
+    localStorage.getItem("role") ||
+    ""
+  )
+  .trim()
+  .toLowerCase();
+}
+
+function getLoginStudentId(){
+  return String(
+    CURRENT_STUDENT_IQAMA ||
+    localStorage.getItem("studentActivityIqama") ||
+    localStorage.getItem("studentID") ||
+    localStorage.getItem("student_iqama") ||
+    ""
+  ).trim();
+}
+
+
+function esc(value){
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function clean(value){
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g," ");
+}
+
+function first(object,fields,fallback=""){
+  for(const field of fields){
+    const value = object?.[field];
+
+    if(
+      value !== undefined &&
+      value !== null &&
+      String(value).trim() !== ""
+    ){
+      return value;
+    }
+  }
+
+  return fallback;
+}
+
+function isOpenStatus(value){
+  const status = clean(value);
+
+  return [
+    "open",
+    "opened",
+    "active",
+    "نشط",
+    "نشطة",
+    "جارية",
+    "running"
+  ].includes(status);
+}
+
+function getCourseName(course){
+  return first(course,[
+    "TrainingCourse",
+    "courseName",
+    "CourseName",
+    "title",
+    "name",
+    "course"
+  ],"Unspecified Course");
+}
+
+function getTrainer(course,activity={}){
+  return first(course,[
+    "trainer",
+    "Trainer",
+    "trainerName",
+    "TrainerName",
+    "courseTrainer",
+    "CourseTrainer",
+    "instructor",
+    "Instructor",
+    "teacher",
+    "Teacher"
+  ],first(activity,[
+    "trainerName",
+    "TrainerName",
+    "trainer",
+    "Trainer"
+  ],"Not Specified"));
+}
+
+function getBranch(course,activity={}){
+  return first(course,[
+    "branch",
+    "Branch",
+    "courseBranch"
+  ],first(activity,[
+    "branch",
+    "Branch"
+  ],"Not Specified"));
+}
+
+function getSection(course,activity={}){
+  return first(course,[
+    "section",
+    "Section",
+    "department",
+    "Department"
+  ],first(activity,[
+    "section",
+    "department"
+  ],"Not Specified"));
+}
+
+function getPeriod(course,activity={}){
+  return first(course,[
+    "period",
+    "Period",
+    "coursePeriod",
+    "time",
+    "Time"
+  ],first(activity,[
+    "period"
+  ],"Not Specified"));
+}
+
+function getCourseType(course,activity={}){
+  return first(course,[
+    "courseType",
+    "CourseType",
+    "type",
+    "Type"
+  ],first(activity,[
+    "courseType"
+  ],"Not Specified"));
+}
+
+function toast(message){
+  const el = document.getElementById("toast");
+
+  el.textContent = message;
+  el.classList.add("show");
+
+  setTimeout(()=>{
+    el.classList.remove("show");
+  },2600);
+}
+
+
+
+function getStudentIqama(student){
+  return String(
+    first(student,[
+      "iqama",
+      "Iqama",
+      "studentIqama",
+      "studentID",
+      "studentId",
+      "idNumber",
+      "identity",
+      "nationalId"
+    ],"")
+  ).trim();
+}
+
+function getStudentName(student){
+  return first(student,[
+    "studentName",
+    "StudentName",
+    "name",
+    "Name",
+    "fullName"
+  ],"Student");
+}
+
+function collectStudentCourseLinks(student){
+
+  const ids = new Set();
+  const names = new Set();
+
+  [
+    "courseId",
+    "CourseId",
+    "courseID",
+    "selectedCourseId",
+    "trainingCourseId"
+  ].forEach(field=>{
+    if(student?.[field]){
+      ids.add(
+        String(student[field]).trim()
+      );
+    }
+  });
+
+  [
+    "courseName",
+    "TrainingCourse",
+    "CourseName",
+    "course",
+    "Course"
+  ].forEach(field=>{
+    if(student?.[field]){
+      names.add(
+        clean(student[field])
+      );
+    }
+  });
+
+  [
+    "courseIds",
+    "courses",
+    "enrolledCourses",
+    "registeredCourses"
+  ].forEach(field=>{
+
+    const value =
+      student?.[field];
+
+    if(!Array.isArray(value)){
+      return;
+    }
+
+    value.forEach(item=>{
+
+      if(
+        item &&
+        typeof item === "object"
+      ){
+
+        const id =
+          item.id ||
+          item.courseId ||
+          item.CourseId ||
+          "";
+
+        const name =
+          item.courseName ||
+          item.TrainingCourse ||
+          item.name ||
+          "";
+
+        if(id){
+          ids.add(
+            String(id).trim()
+          );
+        }
+
+        if(name){
+          names.add(
+            clean(name)
+          );
+        }
+
+      }else if(item){
+
+        ids.add(
+          String(item).trim()
+        );
+
+      }
+
+    });
+
+  });
+
+  return {
+    ids:[...ids].filter(Boolean),
+    names:[...names].filter(Boolean)
+  };
+}
+
+function courseContainsStudent(
+  course,
+  studentIqama
+){
+
+  const directArrays = [
+    course?.studentIds,
+    course?.students,
+    course?.studentIqamas,
+    course?.iqamas,
+    course?.enrolledStudents
+  ];
+
+  return directArrays.some(value=>{
+
+    if(Array.isArray(value)){
+
+      return value.some(item=>{
+
+        if(
+          item &&
+          typeof item === "object"
+        ){
+          return (
+            getStudentIqama(item) ===
+            studentIqama
+          );
+        }
+
+        return (
+          String(item || "").trim() ===
+          studentIqama
+        );
+
+      });
+
+    }
+
+    return false;
+
+  });
+
+}
+
+function getCoursesForCurrentStudent(){
+
+  if(
+    !CURRENT_STUDENT ||
+    !CURRENT_STUDENT_IQAMA
+  ){
+    return [];
+  }
+
+  return OPEN_COURSES_CACHE.filter(course=>{
+
+    const courseId =
+      String(course.id || "");
+
+    const name =
+      clean(
+        getCourseName(course)
+      );
+
+    return (
+      CURRENT_STUDENT_COURSE_IDS.includes(
+        courseId
+      ) ||
+      CURRENT_STUDENT_COURSE_NAMES.includes(
+        name
+      ) ||
+      courseContainsStudent(
+        course,
+        CURRENT_STUDENT_IQAMA
+      )
+    );
+
+  });
+
+}
+
+async function loginActivityStudent(){
+
+  const input =
+    document.getElementById(
+      "studentIqamaInput"
+    );
+
+  const message =
+    document.getElementById(
+      "studentLoginMessage"
+    );
+
+  const button =
+    document.getElementById(
+      "studentLoginButton"
+    );
+
+  const iqama =
+    String(input?.value || "")
+      .trim();
+
+  message.textContent = "";
+
+  if(!iqama){
+    message.textContent =
+      "Enter the student Iqama / ID number.";
+    return;
+  }
+
+  button.disabled = true;
+  button.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+
+  try{
+
+    const snapshot =
+      await db
+        .collection(
+          STUDENTS_COLLECTION
+        )
+        .get();
+
+    const student =
+      snapshot.docs
+        .map(doc=>({
+          id:doc.id,
+          ...doc.data()
+        }))
+        .find(item=>
+          getStudentIqama(item) === iqama ||
+          String(item.id) === iqama
+        );
+
+    if(!student){
+      throw new Error(
+        "Student data was not found for this Iqama / ID."
+      );
+    }
+
+    CURRENT_STUDENT =
+      student;
+
+    CURRENT_STUDENT_IQAMA =
+      iqama;
+
+    const links =
+      collectStudentCourseLinks(
+        student
+      );
+
+    CURRENT_STUDENT_COURSE_IDS =
+      links.ids;
+
+    CURRENT_STUDENT_COURSE_NAMES =
+      links.names;
+
+    localStorage.setItem(
+      "studentActivityIqama",
+      iqama
+    );
+
+    localStorage.setItem(
+      "studentID",
+      iqama
+    );
+
+    localStorage.setItem(
+      "student_iqama",
+      iqama
+    );
+
+    document
+      .getElementById(
+        "loggedStudentName"
+      )
+      .textContent =
+        getStudentName(student);
+
+    document
+      .getElementById(
+        "loggedStudentDetails"
+      )
+      .textContent =
+        "Iqama / ID: " +
+        iqama;
+
+    document
+      .getElementById(
+        "studentLoginArea"
+      )
+      .classList
+      .add("hidden");
+
+    document
+      .getElementById(
+        "studentStart"
+      )
+      .classList
+      .remove("hidden");
+
+    await loadStudentActivities();
+
+  }catch(error){
+
+    console.error(error);
+
+    message.textContent =
+      error.message ||
+      "Unable to log in.";
+
+  }finally{
+
+    button.disabled = false;
+
+    button.innerHTML =
+      '<i class="fa-solid fa-right-to-bracket"></i> Login';
+
+  }
+
+}
+
+function logoutActivityStudent(){
+
+  stopActivityTimer();
+
+  CURRENT_STUDENT = null;
+  CURRENT_STUDENT_IQAMA = "";
+  CURRENT_STUDENT_COURSE_IDS = [];
+  CURRENT_STUDENT_COURSE_NAMES = [];
+
+  localStorage.removeItem(
+    "studentActivityIqama"
+  );
+
+  localStorage.removeItem(
+    "studentID"
+  );
+
+  localStorage.removeItem(
+    "student_iqama"
+  );
+
+  document
+    .getElementById(
+      "studentStart"
+    )
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById(
+      "teamSetupArea"
+    )
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById(
+      "playArea"
+    )
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById(
+      "resultArea"
+    )
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById(
+      "studentLoginArea"
+    )
+    .classList
+    .remove("hidden");
+
+  document
+    .getElementById(
+      "studentIqamaInput"
+    )
+    .value = "";
+
+  document
+    .getElementById(
+      "studentLoginMessage"
+    )
+    .textContent = "";
+
+}
+
+function getActorData(){
+
+  if(
+    CURRENT_STUDENT &&
+    CURRENT_STUDENT_IQAMA
+  ){
+    return {
+      role:"student",
+      username:"",
+      id:
+        CURRENT_STUDENT?.id ||
+        CURRENT_STUDENT_IQAMA,
+      iqama:
+        CURRENT_STUDENT_IQAMA,
+      name:
+        getStudentName(
+          CURRENT_STUDENT
+        )
+    };
+  }
+
+  const role =
+    getLoginRole();
+
+  const username =
+    getLoginUsername();
+
+  if(role === "trainer"){
+    return {
+      role:"trainer",
+      username:username || "Trainer",
+      id:username || "",
+      iqama:"",
+      name:username || "Trainer"
+    };
+  }
+
+  if(role === "admin"){
+    return {
+      role:"admin",
+      username:username || "Admin",
+      id:username || "",
+      iqama:"",
+      name:username || "Admin"
+    };
+  }
+
+  return {
+    role:"guest",
+    username:"",
+    id:"",
+    iqama:"",
+    name:"Guest"
+  };
+}
+
+function getTrainerCourses(){
+
+  const role =
+    getLoginRole();
+
+  /*
+    Admin:
+    Can link any open course.
+  */
+
+  if(role === "admin"){
+    return [...OPEN_COURSES_CACHE];
+  }
+
+  /*
+    Trainer:
+    Only courses assigned to the logged-in username.
+  */
+
+  if(role !== "trainer"){
+    return [];
+  }
+
+  const username =
+    clean(
+      getLoginUsername()
+    );
+
+  if(!username){
+    return [];
+  }
+
+  return OPEN_COURSES_CACHE.filter(course=>{
+
+    const possibleTrainerValues = [
+      getTrainer(course),
+      course.trainer,
+      course.Trainer,
+      course.trainerName,
+      course.TrainerName,
+      course.courseTrainer,
+      course.CourseTrainer,
+      course.instructor,
+      course.Instructor,
+      course.teacher,
+      course.Teacher,
+      course.username,
+      course.userName,
+      course.trainerUsername,
+      course.TrainerUsername,
+      course.trainerEmail,
+      course.TrainerEmail
+    ]
+    .map(value=>clean(value))
+    .filter(Boolean);
+
+    return possibleTrainerValues.includes(
+      username
+    );
+  });
+}
+
+function setupActorPanel(){
+
+  const panel =
+    document.getElementById("actorPanel");
+
+  const info =
+    document.getElementById("actorInfo");
+
+  const courseBox =
+    document.getElementById("trainerCourseBox");
+
+  const select =
+    document.getElementById("trainerTargetCourse");
+
+  const actor = getActorData();
+
+  panel.classList.remove("hidden");
+
+  if(actor.role === "trainer"){
+
+    info.innerHTML =
+      `<i class="fa-solid fa-user-tie"></i> ` +
+      `Trainer: ${esc(actor.name)}` +
+      `<small>You may use any open activity. The result will be recorded under your selected course.</small>`;
+
+    courseBox.classList.remove("hidden");
+
+    const courses = getTrainerCourses();
+    const previous = select.value;
+
+    if(!courses.length){
+
+      select.innerHTML =
+        `<option value="">No open courses assigned to ${esc(actor.name)}</option>`;
+
+      select.disabled = true;
+
+      info.innerHTML =
+        `<i class="fa-solid fa-user-tie"></i> ` +
+        `Trainer: <b>${esc(actor.name)}</b>` +
+        `<small>No open courses are currently assigned to this trainer.</small>`;
+
+      return;
+    }
+
+    select.disabled = false;
+
+    select.innerHTML =
+      `<option value="">Select Your Open Course</option>` +
+      courses.map(course=>`
+        <option value="${esc(course.id)}">
+          ${esc(getCourseName(course))}
+          — ${esc(getBranch(course))}
+          — ${esc(getSection(course))}
+          — ${esc(getPeriod(course))}
+        </option>
+      `).join("");
+
+    if(
+      previous &&
+      courses.some(course=>course.id === previous)
+    ){
+      select.value = previous;
+    }else if(courses.length === 1){
+      select.value = courses[0].id;
+    }
+
+    return;
+  }
+
+  if(actor.role === "admin"){
+
+    info.innerHTML =
+      `<i class="fa-solid fa-user-shield"></i> ` +
+      `Admin: ${esc(actor.name)}` +
+      `<small>Admin can use any open activity with any open course.</small>`;
+
+    courseBox.classList.remove("hidden");
+
+    const previous = select.value;
+
+    select.disabled = false;
+
+    select.innerHTML =
+      `<option value="">Select Any Open Course</option>` +
+      OPEN_COURSES_CACHE.map(course=>`
+        <option value="${esc(course.id)}">
+          ${esc(getCourseName(course))}
+          — ${esc(getTrainer(course))}
+          — ${esc(getBranch(course))}
+        </option>
+      `).join("");
+
+    if(
+      previous &&
+      OPEN_COURSES_CACHE.some(course=>course.id === previous)
+    ){
+      select.value = previous;
+    }
+
+    return;
+  }
+
+  courseBox.classList.add("hidden");
+
+  if(actor.role === "student"){
+
+    info.innerHTML =
+      `<i class="fa-solid fa-user-graduate"></i> ` +
+      `Student: ${esc(actor.id)}` +
+      `<small>The result will record this student ID and the activity course.</small>`;
+
+  }else{
+
+    info.innerHTML =
+      `<i class="fa-solid fa-user"></i> Guest` +
+      `<small>The result will be recorded as a guest attempt.</small>`;
+  }
+}
+
+function getSelectedTargetCourse(activity){
+
+  if(
+    getLoginRole() === "trainer" ||
+    getLoginRole() === "admin"
+  ){
+
+    const selectedId =
+      document
+        .getElementById("trainerTargetCourse")
+        ?.value ||
+      "";
+
+    return OPEN_COURSES_CACHE.find(
+      course=>course.id === selectedId
+    ) || null;
+  }
+
+  return findCourseForActivity(activity);
+}
+
+function getSourceCourseForActivity(activity){
+
+  if(!activity){
+    return null;
+  }
+
+  const sourceId =
+    activity.courseId ||
+    activity.CourseId ||
+    activity.courseID ||
+    "";
+
+  return OPEN_COURSES_CACHE.find(
+    course=>course.id === sourceId
+  ) || null;
+}
+
+async function recordActivityUsageStart(){
+
+  /* لا تنشئ سجل استخدام عند عدم اختيار دورة */
+  if(!CURRENT_COURSE || !CURRENT_COURSE.id){
+    CURRENT_USAGE_ID = "";
+    return;
+  }
+
+  const actor = getActorData();
+  const sourceCourse =
+    getSourceCourseForActivity(
+      CURRENT_ACTIVITY
+    );
+
+  const usage = {
+    activityId:
+      CURRENT_ACTIVITY?.id || "",
+
+    activityTitle:
+      CURRENT_ACTIVITY?.title || "",
+
+    sourceCourseId:
+      sourceCourse?.id ||
+      CURRENT_ACTIVITY?.courseId ||
+      "",
+
+    sourceCourseName:
+      sourceCourse
+        ? getCourseName(sourceCourse)
+        : (
+            CURRENT_ACTIVITY?.courseName ||
+            ""
+          ),
+
+    sourceTrainerName:
+      sourceCourse
+        ? getTrainer(
+            sourceCourse,
+            CURRENT_ACTIVITY
+          )
+        : (
+            CURRENT_ACTIVITY?.trainerName ||
+            ""
+          ),
+
+    targetCourseId:
+      CURRENT_COURSE?.id || "",
+
+    targetCourseName:
+      getCourseName(
+        CURRENT_COURSE
+      ),
+
+    targetTrainerName:
+      getTrainer(
+        CURRENT_COURSE
+      ),
+
+    targetBranch:
+      getBranch(
+        CURRENT_COURSE
+      ),
+
+    targetSection:
+      getSection(
+        CURRENT_COURSE
+      ),
+
+    targetPeriod:
+      getPeriod(
+        CURRENT_COURSE
+      ),
+
+    actorRole:
+      actor.role,
+
+    actorUsername:
+      actor.username,
+
+    actorId:
+      actor.id,
+
+    actorName:
+      actor.name,
+
+    participantDepartment:
+      getSection(
+        CURRENT_COURSE
+      ),
+
+    participantBranch:
+      getBranch(
+        CURRENT_COURSE
+      ),
+
+    participantCourseId:
+      CURRENT_COURSE?.id || "",
+
+    participantCourseName:
+      getCourseName(
+        CURRENT_COURSE
+      ),
+
+    status:"started",
+
+    startedAt:
+      firebase
+        .firestore
+        .FieldValue
+        .serverTimestamp()
+  };
+
+  try{
+
+    const ref =
+      await db
+        .collection(USAGE_COLLECTION)
+        .add(usage);
+
+    CURRENT_USAGE_ID = ref.id;
+
+  }catch(error){
+
+    CURRENT_USAGE_ID = "";
+
+    console.warn(
+      "Unable to record activity start:",
+      error
+    );
+  }
+}
+
+async function updateActivityUsage(
+  status,
+  extra={}
+){
+
+  if(!CURRENT_USAGE_ID){
+    return;
+  }
+
+  try{
+
+    await db
+      .collection(USAGE_COLLECTION)
+      .doc(CURRENT_USAGE_ID)
+      .update({
+        status,
+        ...extra,
+        updatedAt:
+          firebase
+            .firestore
+            .FieldValue
+            .serverTimestamp()
+      });
+
+  }catch(error){
+
+    console.warn(
+      "Unable to update activity usage:",
+      error
+    );
+  }
+}
+
+async function loadOpenCourses(){
+  const snap = await db
+    .collection(COURSES_COLLECTION)
+    .get();
+
+  OPEN_COURSES_CACHE = snap.docs
+    .map(doc=>({
+      id:doc.id,
+      ...doc.data()
+    }))
+    .filter(course=>{
+      const status = first(course,[
+        "status",
+        "Status",
+        "courseStatus"
+      ],"");
+
+      return isOpenStatus(status);
+    });
+}
+
+async function loadActivitiesData(){
+  const snap = await db
+    .collection(ACTIVITIES_COLLECTION)
+    .get();
+
+  ACTIVITIES_CACHE = snap.docs.map(doc=>({
+    id:doc.id,
+    ...doc.data()
+  }));
+}
+
+function findCourseForActivity(activity){
+  if(!activity){
+    return null;
+  }
+
+  const courseId =
+    activity.courseId ||
+    activity.CourseId ||
+    activity.courseID ||
+    "";
+
+  if(courseId){
+    const exact = OPEN_COURSES_CACHE.find(
+      course=>course.id === courseId
+    );
+
+    if(exact){
+      return exact;
+    }
+  }
+
+  const savedCourseName = clean(
+    activity.courseName ||
+    activity.TrainingCourse ||
+    ""
+  );
+
+  if(savedCourseName){
+    return OPEN_COURSES_CACHE.find(
+      course=>clean(getCourseName(course)) === savedCourseName
+    ) || null;
+  }
+
+  return null;
+}
+
+async function loadStudentActivities(){
+
+  const box =
+    document.getElementById(
+      "openActivitiesBox"
+    );
+
+  if(
+    !CURRENT_STUDENT ||
+    !CURRENT_STUDENT_IQAMA
+  ){
+    return;
+  }
+
+  box.className = "empty";
+  box.textContent =
+    "Loading activities linked to the student's course...";
+
+  try{
+
+    await Promise.all([
+      loadOpenCourses(),
+      loadActivitiesData()
+    ]);
+
+    const studentCourses =
+      getCoursesForCurrentStudent();
+
+    const studentCourseIds =
+      new Set(
+        studentCourses.map(
+          course=>String(course.id)
+        )
+      );
+
+    const studentCourseNames =
+      new Set(
+        studentCourses.map(
+          course=>clean(
+            getCourseName(course)
+          )
+        )
+      );
+
+    const available =
+      ACTIVITIES_CACHE
+        .filter(activity=>{
+
+          const status =
+            clean(
+              activity.status ||
+              "open"
+            );
+
+          const questions =
+            Array.isArray(
+              activity.questions
+            )
+              ? activity.questions
+              : [];
+
+          const activityCourseId =
+            String(
+              activity.courseId ||
+              activity.CourseId ||
+              activity.courseID ||
+              ""
+            );
+
+          const activityCourseName =
+            clean(
+              activity.courseName ||
+              activity.TrainingCourse ||
+              ""
+            );
+
+          return (
+            status === "open" &&
+            questions.length > 0 &&
+            (
+              studentCourseIds.has(
+                activityCourseId
+              ) ||
+              (
+                activityCourseName &&
+                studentCourseNames.has(
+                  activityCourseName
+                )
+              )
+            )
+          );
+
+        });
+
+    document
+      .getElementById(
+        "actorPanel"
+      )
+      ?.classList
+      .add("hidden");
+
+    if(!studentCourses.length){
+
+      box.className = "empty";
+
+      box.innerHTML = `
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:35px;color:var(--gold)"></i>
+        <h3>No active course was found for this student.</h3>
+        <p>Check that the student is linked to the course in the Students or Courses collection.</p>
+      `;
+
+      return;
+
+    }
+
+    if(!available.length){
+
+      box.className = "empty";
+
+      box.innerHTML = `
+        <i class="fa-solid fa-circle-info" style="font-size:35px;color:var(--blue)"></i>
+        <h3>No open activities are linked to the student's course.</h3>
+        <p>
+          Student:
+          <b>${esc(getStudentName(CURRENT_STUDENT))}</b>
+          — Course:
+          <b>${esc(studentCourses.map(getCourseName).join(" / "))}</b>
+        </p>
+      `;
+
+      return;
+
+    }
+
+    box.className =
+      "open-activity-list";
+
+    box.innerHTML =
+      available.map(activity=>{
+
+        const course =
+          studentCourses.find(item=>
+            String(item.id) ===
+            String(
+              activity.courseId ||
+              activity.CourseId ||
+              activity.courseID ||
+              ""
+            )
+          ) ||
+          studentCourses.find(item=>
+            clean(getCourseName(item)) ===
+            clean(
+              activity.courseName ||
+              activity.TrainingCourse ||
+              ""
+            )
+          );
+
+        const questionCount =
+          activity.questions?.length ||
+          0;
+
+        const timerText =
+          activity.timerType === "limited"
+            ? formatConfiguredTime(
+                Number(
+                  activity.timerTotalSeconds ||
+                  0
+                )
+              )
+            : "Open Time";
+
+        return `
+          <article class="open-activity-card">
+
+            <div class="open-badge">
+              <i class="fa-solid fa-circle-play"></i>
+              Open
+            </div>
+
+            <h3>
+              ${esc(
+                activity.title ||
+                "Interactive Activity"
+              )}
+            </h3>
+
+            <p style="color:var(--muted);min-height:44px">
+              ${esc(
+                activity.description ||
+                "Educational activity"
+              )}
+            </p>
+
+            <div class="activity-meta">
+
+              <span class="mini">
+                <i class="fa-solid fa-book"></i>
+                ${esc(getCourseName(course))}
+              </span>
+
+              <span class="mini">
+                <i class="fa-solid fa-user-tie"></i>
+                ${esc(
+                  getTrainer(
+                    course,
+                    activity
+                  )
+                )}
+              </span>
+
+              <span class="mini">
+                <i class="fa-solid fa-location-dot"></i>
+                ${esc(
+                  getBranch(
+                    course,
+                    activity
+                  )
+                )}
+              </span>
+
+              <span class="mini">
+                <i class="fa-solid fa-users"></i>
+                ${esc(
+                  getSection(
+                    course,
+                    activity
+                  )
+                )}
+              </span>
+
+              <span class="mini">
+                <i class="fa-solid fa-circle-question"></i>
+                ${questionCount} Questions
+              </span>
+
+              <span class="mini">
+                <i class="fa-solid fa-clock"></i>
+                ${esc(timerText)}
+              </span>
+
+            </div>
+
+            <button
+              class="btn btn-primary"
+              type="button"
+              onclick="startActivity(
+                '${esc(activity.id)}',
+                '${esc(course?.id || "")}'
+              )">
+              <i class="fa-solid fa-play"></i>
+              Start Activity
+            </button>
+
+          </article>
+        `;
+
+      }).join("");
+
+  }catch(error){
+
+    console.error(error);
+
+    box.className = "empty";
+
+    box.textContent =
+      "Unable to load the student's activities. Check Firebase permissions.";
+
+  }
+
+}
+
+function formatConfiguredTime(totalSeconds){
+  const safe =
+    Math.max(0,Number(totalSeconds || 0));
+
+  const minutes =
+    Math.floor(safe / 60);
+
+  const seconds =
+    safe % 60;
+
+  return (
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0")
+  );
+}
+
+
+function getDefaultTeamName(index){
+  return "Team " +
+    String.fromCharCode(
+      65 + index
+    );
+}
+
+function prepareTeamSetup(){
+
+  stopActivityTimer();
+
+  TEAM_COUNT = 1;
+  TEAMS = [];
+  CURRENT_TEAM_INDEX = 0;
+
+  const select =
+    document.getElementById(
+      "teamCountSelect"
+    );
+
+  select.value = "1";
+
+  renderTeamNameInputs();
+
+  document
+    .getElementById("studentStart")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("playArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("resultArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("teamSetupArea")
+    .classList
+    .remove("hidden");
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function renderTeamNameInputs(){
+
+  const count =
+    Math.max(
+      1,
+      Math.min(
+        6,
+        Number(
+          document
+            .getElementById(
+              "teamCountSelect"
+            )
+            .value ||
+          1
+        )
+      )
+    );
+
+  const grid =
+    document.getElementById(
+      "teamNamesGrid"
+    );
+
+  const oldValues = [
+    ...grid.querySelectorAll(
+      ".team-name-input"
+    )
+  ].map(input=>input.value.trim());
+
+  grid.innerHTML =
+    Array.from(
+      {length:count},
+      (_,index)=>`
+        <div class="team-name-field">
+          <label>
+            Group ${String.fromCharCode(65 + index)}
+          </label>
+
+          <input
+            class="team-name-input"
+            maxlength="40"
+            value="${esc(
+              oldValues[index] ||
+              getDefaultTeamName(index)
+            )}"
+            placeholder="${esc(
+              getDefaultTeamName(index)
+            )}">
+        </div>
+      `
+    ).join("");
+}
+
+function confirmTeamSetup(){
+
+  /*
+    اختيار الدورة غير إلزامي.
+    يكفي وجود النشاط حتى يبدأ اللعب في Practice Mode.
+  */
+  if(!CURRENT_ACTIVITY){
+    alert("The activity is unavailable.");
+    return;
+  }
+
+  TEAM_COUNT =
+    Math.max(
+      1,
+      Math.min(
+        6,
+        Number(
+          document
+            .getElementById(
+              "teamCountSelect"
+            )
+            .value ||
+          1
+        )
+      )
+    );
+
+  const inputs = [
+    ...document.querySelectorAll(
+      ".team-name-input"
+    )
+  ];
+
+  const names =
+    inputs.map(
+      (input,index)=>
+        input.value.trim() ||
+        getDefaultTeamName(index)
+    );
+
+  const normalized =
+    names.map(name=>clean(name));
+
+  if(
+    new Set(normalized).size !==
+    normalized.length
+  ){
+    alert(
+      "Each team must have a different name."
+    );
+    return;
+  }
+
+  TEAMS = names.map(
+    (name,index)=>({
+      id:
+        "team_" +
+        String.fromCharCode(65 + index),
+
+      letter:
+        String.fromCharCode(65 + index),
+
+      name,
+      correct:0,
+      answered:0,
+      assigned:0
+    })
+  );
+
+  /*
+    Calculate how many questions are assigned
+    to every team using round-robin distribution.
+  */
+
+  CURRENT_ACTIVITY.questions.forEach(
+    (_,questionIndex)=>{
+
+      const teamIndex =
+        questionIndex %
+        TEAM_COUNT;
+
+      TEAMS[teamIndex].assigned++;
+    }
+  );
+
+  CURRENT_QUESTION_INDEX = 0;
+  CURRENT_SCORE = 0;
+  CURRENT_TEAM_INDEX = 0;
+  ANSWER_LOCKED = false;
+  ACTIVITY_FINISHED = false;
+  ACTIVITY_TIME_LEFT = 0;
+  CURRENT_ORDER_SELECTION = [];
+  CURRENT_USAGE_ID = "";
+
+  document
+    .getElementById("teamSetupArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("resultArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("playArea")
+    .classList
+    .remove("hidden");
+
+  document
+    .getElementById("playingActivityTitle")
+    .textContent =
+      CURRENT_ACTIVITY.title ||
+      "Interactive Activity";
+
+  document
+    .getElementById("playingCourseInfo")
+    .textContent = [
+      getCourseName(CURRENT_COURSE),
+      getBranch(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      ),
+      getSection(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      ),
+      getTrainer(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      ),
+      TEAM_COUNT +
+        (
+          TEAM_COUNT === 1
+            ? " Team"
+            : " Teams"
+        )
+    ]
+    .filter(Boolean)
+    .join(" • ");
+
+  recordActivityUsageStart();
+
+  startActivityTimer();
+  renderStudentQuestion();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function cancelTeamSetup(){
+  backToActivities();
+}
+
+function getCurrentTeam(){
+
+  if(!TEAMS.length){
+    return null;
+  }
+
+  CURRENT_TEAM_INDEX =
+    CURRENT_QUESTION_INDEX %
+    TEAMS.length;
+
+  return TEAMS[CURRENT_TEAM_INDEX];
+}
+
+function recordCurrentTeamAnswer(
+  isCorrect
+){
+
+  const team =
+    getCurrentTeam();
+
+  if(!team){
+    return;
+  }
+
+  team.answered++;
+
+  if(isCorrect){
+    team.correct++;
+  }
+
+  renderLiveTeamBoard();
+}
+
+function renderCurrentTeam(){
+
+  const team =
+    getCurrentTeam();
+
+  const banner =
+    document.getElementById(
+      "currentTeamBanner"
+    );
+
+  if(!team){
+    banner.textContent =
+      "Current Team";
+    return;
+  }
+
+  banner.textContent =
+    `🎯 ${team.name}'s Question`;
+}
+
+function renderLiveTeamBoard(){
+
+  const box =
+    document.getElementById(
+      "liveTeamBoard"
+    );
+
+  if(!TEAMS.length){
+    box.innerHTML = "";
+    return;
+  }
+
+  const activeIndex =
+    CURRENT_QUESTION_INDEX %
+    TEAMS.length;
+
+  box.innerHTML =
+    TEAMS.map((team,index)=>`
+      <div class="
+        live-team-item
+        ${index === activeIndex ? "active" : ""}
+      ">
+        <strong>
+          ${esc(team.name)}
+        </strong>
+
+        <span>
+          ✅ ${team.correct}
+          &nbsp; | &nbsp;
+          Answered ${team.answered}/${team.assigned}
+        </span>
+      </div>
+    `).join("");
+}
+
+function getRankedTeams(){
+
+  return [...TEAMS]
+    .map(team=>({
+      ...team,
+
+      accuracy:team.answered
+        ? Math.round(
+            (
+              team.correct /
+              team.answered
+            ) * 100
+          )
+        : 0
+    }))
+    .sort((a,b)=>
+      b.correct -
+      a.correct ||
+
+      b.accuracy -
+      a.accuracy ||
+
+      b.answered -
+      a.answered ||
+
+      a.name.localeCompare(b.name)
+    );
+}
+
+function renderTeamResults(){
+
+  const box =
+    document.getElementById(
+      "teamResultsBox"
+    );
+
+  const ranking =
+    document.getElementById(
+      "teamRanking"
+    );
+
+  if(!TEAMS.length){
+    box.classList.add("hidden");
+    ranking.innerHTML = "";
+    return null;
+  }
+
+  const ranked =
+    getRankedTeams();
+
+  const winner =
+    ranked[0] || null;
+
+  box.classList.remove("hidden");
+
+  ranking.innerHTML =
+    ranked.map((team,index)=>`
+      <div class="
+        team-rank-row
+        ${index === 0 ? "winner" : ""}
+      ">
+        <div class="team-rank-number">
+          ${
+            index === 0
+              ? "🏆"
+              : index + 1
+          }
+        </div>
+
+        <div class="team-rank-name">
+          ${esc(team.name)}
+        </div>
+
+        <div class="team-rank-score">
+          ${team.correct} Correct
+        </div>
+
+        <div class="team-rank-accuracy">
+          ${team.accuracy}%
+          • Answered ${team.answered}/${team.assigned}
+        </div>
+      </div>
+    `).join("");
+
+  return winner;
+}
+
+function startActivity(
+  activityId,
+  courseId
+){
+
+  stopActivityTimer();
+
+  if(
+    !CURRENT_STUDENT ||
+    !CURRENT_STUDENT_IQAMA
+  ){
+    alert(
+      "Enter the student Iqama / ID first."
+    );
+    return;
+  }
+
+  CURRENT_ACTIVITY =
+    ACTIVITIES_CACHE.find(
+      item=>item.id === activityId
+    ) || null;
+
+  const studentCourses =
+    getCoursesForCurrentStudent();
+
+  CURRENT_COURSE =
+    studentCourses.find(
+      item=>item.id === courseId
+    ) || null;
+
+  if(!CURRENT_ACTIVITY){
+    alert(
+      "Unable to open the activity."
+    );
+    return;
+  }
+
+  if(!CURRENT_COURSE){
+    alert(
+      "This activity is not linked to the student's active course."
+    );
+    return;
+  }
+
+  if(
+    !Array.isArray(
+      CURRENT_ACTIVITY.questions
+    ) ||
+    !CURRENT_ACTIVITY.questions.length
+  ){
+    alert(
+      "This activity does not contain questions."
+    );
+    return;
+  }
+
+  prepareTeamSetup();
+
+}
+
+function startActivityTimer(){
+  stopActivityTimer();
+
+  ACTIVITY_FINISHED = false;
+
+  const display =
+    document.getElementById(
+      "activityTimerDisplay"
+    );
+
+  const timerType =
+    CURRENT_ACTIVITY?.timerType ||
+    "open";
+
+  const totalSeconds =
+    Number(
+      CURRENT_ACTIVITY?.timerTotalSeconds ||
+      0
+    );
+
+  if(
+    timerType !== "limited" ||
+    totalSeconds <= 0
+  ){
+    ACTIVITY_TIME_LEFT = 0;
+    display.textContent = "⏱ Open Time";
+    display.style.background = "#17a673";
+    return;
+  }
+
+  ACTIVITY_TIME_LEFT = totalSeconds;
+
+  updateActivityTimerDisplay();
+
+  ACTIVITY_TIMER_INTERVAL =
+    setInterval(()=>{
+
+      if(
+        ACTIVITY_FINISHED ||
+        !CURRENT_ACTIVITY
+      ){
+        stopActivityTimer();
+        return;
+      }
+
+      ACTIVITY_TIME_LEFT--;
+
+      updateActivityTimerDisplay();
+
+      if(ACTIVITY_TIME_LEFT <= 0){
+        ACTIVITY_TIME_LEFT = 0;
+        stopActivityTimer();
+        finishActivityByTimeout();
+      }
+
+    },1000);
+}
+
+function stopActivityTimer(){
+  if(ACTIVITY_TIMER_INTERVAL){
+    clearInterval(
+      ACTIVITY_TIMER_INTERVAL
+    );
+
+    ACTIVITY_TIMER_INTERVAL = null;
+  }
+}
+
+function updateActivityTimerDisplay(){
+  const display =
+    document.getElementById(
+      "activityTimerDisplay"
+    );
+
+  const safe =
+    Math.max(
+      0,
+      Number(ACTIVITY_TIME_LEFT || 0)
+    );
+
+  const minutes =
+    Math.floor(safe / 60);
+
+  const seconds =
+    safe % 60;
+
+  display.textContent =
+    "⏱ " +
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+  if(safe <= 10){
+    display.style.background = "#e74c3c";
+  }else if(safe <= 30){
+    display.style.background = "#f39c12";
+  }else{
+    display.style.background = "#164478";
+  }
+}
+
+async function finishActivityByTimeout(){
+  if(ACTIVITY_FINISHED){
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+  stopActivityTimer();
+  ACTIVITY_TIME_LEFT = 0;
+
+  alert(
+    "Time is over. The activity will now finish."
+  );
+
+  await finishActivity(true);
+}
+
+function renderStudentQuestion(){
+  if(
+    !CURRENT_ACTIVITY ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  ANSWER_LOCKED = false;
+
+  renderCurrentTeam();
+  renderLiveTeamBoard();
+
+  document
+    .getElementById("nextQuestionArea")
+    .classList
+    .add("hidden");
+
+  const questions =
+    CURRENT_ACTIVITY.questions;
+
+  const question =
+    questions[CURRENT_QUESTION_INDEX];
+
+  const type =
+    question.type || "mcq";
+
+  document
+    .getElementById("questionNumber")
+    .textContent =
+      `Question ${CURRENT_QUESTION_INDEX + 1} of ${questions.length}` +
+      (
+        getCurrentTeam()
+          ? ` — ${getCurrentTeam().name}`
+          : ""
+      );
+
+  document
+    .getElementById("gameQuestion")
+    .textContent =
+      question.text || "";
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  const progress =
+    (CURRENT_QUESTION_INDEX / questions.length) *
+    100;
+
+  document
+    .getElementById("progressBar")
+    .style.width =
+      progress + "%";
+
+  const questionImage =
+    document.getElementById(
+      "gameQuestionImage"
+    );
+
+  const questionVideo =
+    document.getElementById(
+      "gameQuestionVideo"
+    );
+
+  const questionAudio =
+    document.getElementById(
+      "gameQuestionAudio"
+    );
+
+  questionImage.classList.add("hidden");
+  questionVideo.classList.add("hidden");
+  questionAudio.classList.add("hidden");
+
+  questionImage.removeAttribute("src");
+  questionVideo.removeAttribute("src");
+  questionAudio.removeAttribute("src");
+
+  questionVideo.pause();
+  questionAudio.pause();
+
+  const mediaType =
+    question.mediaType ||
+    (
+      question.video
+        ? "video"
+        : question.audio
+          ? "audio"
+          : question.image
+            ? "image"
+            : "none"
+    );
+
+  const mediaUrl =
+    question.mediaUrl ||
+    question.video ||
+    question.audio ||
+    question.image ||
+    "";
+
+  if(mediaUrl && mediaType === "image"){
+    questionImage.src = mediaUrl;
+    questionImage.classList.remove("hidden");
+  }else if(mediaUrl && mediaType === "video"){
+    questionVideo.src = mediaUrl;
+    questionVideo.classList.remove("hidden");
+    questionVideo.load();
+  }else if(mediaUrl && mediaType === "audio"){
+    questionAudio.src = mediaUrl;
+    questionAudio.classList.remove("hidden");
+    questionAudio.load();
+  }
+
+  const feedback =
+    document.getElementById("feedback");
+
+  feedback.textContent = "";
+  feedback.className = "feedback";
+
+  const answersBox =
+    document.getElementById(
+      "studentAnswers"
+    );
+
+  answersBox.innerHTML = "";
+
+  if(type === "match"){
+    renderMatchQuestion(
+      question,
+      answersBox
+    );
+    return;
+  }
+
+  if(type === "order"){
+    renderOrderQuestion(
+      question,
+      answersBox
+    );
+    return;
+  }
+
+  answersBox.className =
+    "student-answers";
+
+  (question.answers || [])
+    .forEach((answer,index)=>{
+
+      const button =
+        document.createElement("button");
+
+      button.className =
+        "student-answer";
+
+      button.type = "button";
+
+      button.innerHTML = `
+        ${
+          answer.image
+            ? `<img src="${esc(answer.image)}" alt="">`
+            : ""
+        }
+
+        ${
+          answer.text
+            ? `<div>${esc(answer.text)}</div>`
+            : ""
+        }
+      `;
+
+      button.onclick = ()=>{
+        chooseAnswer(
+          index,
+          button
+        );
+      };
+
+      answersBox.appendChild(button);
+    });
+}
+
+function chooseAnswer(answerIndex,clickedButton){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  const selected =
+    question.answers[answerIndex];
+
+  const buttons = [
+    ...document.querySelectorAll(
+      ".student-answer"
+    )
+  ];
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  buttons.forEach((button,index)=>{
+    button.disabled = true;
+
+    if(question.answers[index].correct){
+      button.classList.add("correct");
+    }
+  });
+
+  if(selected.correct){
+    CURRENT_SCORE++;
+
+    clickedButton.classList.add(
+      "correct"
+    );
+
+    feedback.textContent =
+      "🎉 Correct Answer! Excellent";
+
+    feedback.classList.add("good");
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+    clickedButton.classList.add(
+      "wrong"
+    );
+
+    feedback.textContent =
+      "❌ Incorrect Answer — See the Correct Answer";
+
+    feedback.classList.add("bad");
+
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(
+    Boolean(selected.correct)
+  );
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  showNextQuestionButton();
+}
+
+function shuffleArray(array){
+  const copy = [...array];
+
+  for(
+    let i = copy.length - 1;
+    i > 0;
+    i--
+  ){
+    const j =
+      Math.floor(
+        Math.random() * (i + 1)
+      );
+
+    [copy[i],copy[j]] =
+      [copy[j],copy[i]];
+  }
+
+  return copy;
+}
+
+function renderMatchQuestion(
+  question,
+  answersBox
+){
+  answersBox.className =
+    "match-game";
+
+  const pairs =
+    (question.answers || [])
+      .map((item,index)=>({
+        id:index,
+        left:item.text || "",
+        right:
+          item.right ||
+          item.match ||
+          ""
+      }));
+
+  const rightOptions =
+    shuffleArray(
+      pairs.map(item=>item.right)
+    );
+
+  answersBox.innerHTML =
+    pairs.map(pair=>`
+      <div class="match-row">
+
+        <div class="match-left">
+          ${esc(pair.left)}
+        </div>
+
+        <select
+          class="match-select"
+          data-correct="${esc(pair.right)}">
+
+          <option value="">
+            Select a match...
+          </option>
+
+          ${
+            rightOptions.map(option=>`
+              <option value="${esc(option)}">
+                ${esc(option)}
+              </option>
+            `).join("")
+          }
+
+        </select>
+
+      </div>
+    `).join("") +
+    `
+      <div class="type-result-actions">
+        <button
+          class="btn btn-primary"
+          type="button"
+          onclick="checkMatchAnswer()">
+
+          <i class="fa-solid fa-check"></i>
+          Check Matches
+
+        </button>
+      </div>
+    `;
+}
+
+function checkMatchAnswer(){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+    return;
+  }
+
+  const selects = [
+    ...document.querySelectorAll(
+      ".match-select"
+    )
+  ];
+
+  if(
+    selects.some(
+      select=>!select.value
+    )
+  ){
+    alert(
+      "Complete all matching pairs first."
+    );
+
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+
+  const allCorrect =
+    selects.every(
+      select=>
+        select.value ===
+        select.dataset.correct
+    );
+
+  selects.forEach(select=>{
+    select.disabled = true;
+
+    const isCorrect =
+      select.value ===
+      select.dataset.correct;
+
+    select.style.borderColor =
+      isCorrect
+        ? "var(--green)"
+        : "var(--red)";
+
+    select.style.background =
+      isCorrect
+        ? "#eafaf4"
+        : "#fff0ee";
+  });
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  feedback.className = "feedback";
+
+  if(allCorrect){
+    CURRENT_SCORE++;
+
+    feedback.textContent =
+      "🎉 All matches are correct!";
+
+    feedback.classList.add("good");
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+    feedback.textContent =
+      "❌ Some matches are incorrect.";
+
+    feedback.classList.add("bad");
+
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(
+    allCorrect
+  );
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  showNextQuestionButton();
+}
+
+function renderOrderQuestion(
+  question,
+  answersBox
+){
+  answersBox.className =
+    "order-game";
+
+  CURRENT_ORDER_SELECTION = [];
+
+  const items =
+    (question.answers || [])
+      .map((item,index)=>({
+        id:index,
+        text:item.text || ""
+      }));
+
+  const shuffled =
+    shuffleArray(items);
+
+  answersBox.innerHTML = `
+    <div id="orderButtons">
+
+      ${
+        shuffled.map(item=>`
+          <button
+            class="order-item"
+            type="button"
+            data-id="${item.id}"
+            data-text="${esc(item.text)}"
+            onclick="selectOrderItem(this)">
+
+            ${esc(item.text)}
+
+          </button>
+        `).join("")
+      }
+
+    </div>
+
+    <div
+      id="orderSequence"
+      class="order-sequence">
+
+      <span style="color:var(--muted)">
+        Click the items in the correct order.
+      </span>
+
+    </div>
+
+    <div class="type-result-actions">
+
+      <button
+        class="btn btn-light"
+        type="button"
+        onclick="resetOrderSelection()">
+
+        <i class="fa-solid fa-rotate-left"></i>
+        Reset
+
+      </button>
+
+      <button
+        class="btn btn-primary"
+        type="button"
+        onclick="checkOrderAnswer()">
+
+        <i class="fa-solid fa-check"></i>
+        Check Order
+
+      </button>
+
+    </div>
+  `;
+}
+
+function selectOrderItem(button){
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    button.disabled
+  ){
+    return;
+  }
+
+  button.disabled = true;
+  button.classList.add("selected");
+
+  CURRENT_ORDER_SELECTION.push({
+    id:Number(button.dataset.id),
+    text:button.dataset.text
+  });
+
+  renderOrderSequence();
+}
+
+function renderOrderSequence(){
+  const box =
+    document.getElementById(
+      "orderSequence"
+    );
+
+  if(!CURRENT_ORDER_SELECTION.length){
+    box.innerHTML = `
+      <span style="color:var(--muted)">
+        Click the items in the correct order.
+      </span>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    CURRENT_ORDER_SELECTION
+      .map((item,index)=>`
+        <span class="order-chip">
+          ${index + 1}. ${esc(item.text)}
+        </span>
+      `)
+      .join("");
+}
+
+function resetOrderSelection(){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+    return;
+  }
+
+  CURRENT_ORDER_SELECTION = [];
+
+  document
+    .querySelectorAll(".order-item")
+    .forEach(button=>{
+      button.disabled = false;
+      button.classList.remove(
+        "selected"
+      );
+    });
+
+  renderOrderSequence();
+}
+
+function checkOrderAnswer(){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+    return;
+  }
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  const total =
+    question.answers?.length || 0;
+
+  if(
+    CURRENT_ORDER_SELECTION.length !==
+    total
+  ){
+    alert(
+      "Select all items before checking the order."
+    );
+
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+
+  const allCorrect =
+    CURRENT_ORDER_SELECTION
+      .every(
+        (item,index)=>
+          item.id === index
+      );
+
+  document
+    .querySelectorAll(".order-item")
+    .forEach(button=>{
+      button.disabled = true;
+    });
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  feedback.className = "feedback";
+
+  if(allCorrect){
+    CURRENT_SCORE++;
+
+    feedback.textContent =
+      "🎉 The order is correct!";
+
+    feedback.classList.add("good");
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+    feedback.textContent =
+      "❌ The order is incorrect.";
+
+    feedback.classList.add("bad");
+
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(
+    allCorrect
+  );
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  showNextQuestionButton();
+}
+
+function showNextQuestionButton(){
+  const area =
+    document.getElementById(
+      "nextQuestionArea"
+    );
+
+  const button =
+    document.getElementById(
+      "nextQuestionBtn"
+    );
+
+  const isLastQuestion =
+    CURRENT_QUESTION_INDEX >=
+    CURRENT_ACTIVITY.questions.length - 1;
+
+  button.innerHTML =
+    isLastQuestion
+      ? `
+          <i class="fa-solid fa-flag-checkered"></i>
+          Finish Activity
+        `
+      : `
+          <i class="fa-solid fa-arrow-right"></i>
+          Next Question
+        `;
+
+  area.classList.remove("hidden");
+}
+
+function nextQuestionManually(){
+  if(
+    !ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  document
+    .getElementById("nextQuestionArea")
+    .classList
+    .add("hidden");
+
+  CURRENT_QUESTION_INDEX++;
+
+  if(
+    CURRENT_QUESTION_INDEX <
+    CURRENT_ACTIVITY.questions.length
+  ){
+    renderStudentQuestion();
+  }else{
+    finishActivity(false);
+  }
+}
+
+async function finishActivity(
+  finishedByTimeout = false
+){
+  if(ACTIVITY_FINISHED){
+    return;
+  }
+
+  ACTIVITY_FINISHED = true;
+  ANSWER_LOCKED = true;
+
+  stopActivityTimer();
+
+  const resultArea =
+    document.getElementById(
+      "resultArea"
+    );
+
+  document
+    .getElementById("playArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("studentStart")
+    .classList
+    .add("hidden");
+
+  resultArea.classList.remove(
+    "hidden"
+  );
+
+  const total =
+    CURRENT_ACTIVITY
+      ?.questions
+      ?.length || 0;
+
+  const percent =
+    total > 0
+      ? Math.round(
+          (
+            CURRENT_SCORE /
+            total
+          ) * 100
+        )
+      : 0;
+
+  const winningTeam =
+    renderTeamResults();
+
+  document
+    .getElementById("progressBar")
+    .style.width = "100%";
+
+  document
+    .getElementById("resultCourse")
+    .textContent =
+      `${
+        CURRENT_COURSE?.id
+          ? getCourseName(CURRENT_COURSE)
+          : "Practice Mode — No Course Selected"
+      } — ${
+        CURRENT_ACTIVITY?.title ||
+        ""
+      }`;
+
+  document
+    .getElementById("finalScore")
+    .textContent =
+      `${CURRENT_SCORE} / ${total}`;
+
+  document
+    .getElementById("finalPercent")
+    .textContent =
+      `${percent}%`;
+
+  let stars = "⭐";
+
+  let message =
+    "Try again and you will achieve a better result.";
+
+  if(percent >= 90){
+    stars = "⭐⭐⭐";
+    message =
+      "Excellent! You are the activity champion.";
+  }else if(percent >= 70){
+    stars = "⭐⭐";
+    message =
+      "Great work! Keep progressing.";
+  }
+
+  document
+    .getElementById("finalStars")
+    .textContent = stars;
+
+  if(winningTeam){
+    message =
+      `🏆 Winning Team: ${winningTeam.name} — ` +
+      `${winningTeam.correct} correct answers`;
+  }
+
+  document
+    .getElementById("resultMessage")
+    .textContent = message;
+
+  launchBigConfetti();
+
+  /*
+    مهم جدًا: عند عدم اختيار دورة مفتوحة،
+    نعرض النتيجة فقط ولا نحفظ أي سجل في التقارير.
+  */
+  if(!CURRENT_COURSE || !CURRENT_COURSE.id){
+    CURRENT_USAGE_ID = "";
+    toast("Practice Mode: result was not saved because no course was selected.");
+    return;
+  }
+
+  try{
+    await db
+      .collection(RESULTS_COLLECTION)
+      .add({
+        activityId:
+          CURRENT_ACTIVITY?.id || "",
+
+        activityTitle:
+          CURRENT_ACTIVITY?.title || "",
+
+        sourceCourseId:
+          CURRENT_ACTIVITY?.courseId ||
+          "",
+
+        sourceCourseName:
+          getSourceCourseForActivity(
+            CURRENT_ACTIVITY
+          )
+            ? getCourseName(
+                getSourceCourseForActivity(
+                  CURRENT_ACTIVITY
+                )
+              )
+            : (
+                CURRENT_ACTIVITY?.courseName ||
+                ""
+              ),
+
+        sourceTrainerName:
+          getSourceCourseForActivity(
+            CURRENT_ACTIVITY
+          )
+            ? getTrainer(
+                getSourceCourseForActivity(
+                  CURRENT_ACTIVITY
+                ),
+                CURRENT_ACTIVITY
+              )
+            : (
+                CURRENT_ACTIVITY?.trainerName ||
+                ""
+              ),
+
+        studentId:
+          CURRENT_STUDENT?.id ||
+          CURRENT_STUDENT_IQAMA,
+
+        studentIqama:
+          CURRENT_STUDENT_IQAMA,
+
+        studentName:
+          getStudentName(
+            CURRENT_STUDENT
+          ),
+
+        participantRole:
+          "student",
+
+        participantUsername:
+          getActorData().username,
+
+        participantId:
+          getActorData().id,
+
+        participantName:
+          getActorData().name,
+
+        /*
+          These fields belong to the trainer who
+          used/answered the activity, not to the
+          trainer who originally created the questions.
+        */
+
+        participantDepartment:
+          getSection(
+            CURRENT_COURSE
+          ),
+
+        participantBranch:
+          getBranch(
+            CURRENT_COURSE
+          ),
+
+        participantCourseId:
+          CURRENT_COURSE?.id || "",
+
+        participantCourseName:
+          getCourseName(
+            CURRENT_COURSE
+          ),
+
+        courseId:
+          CURRENT_COURSE?.id || "",
+
+        courseName:
+          getCourseName(
+            CURRENT_COURSE
+          ),
+
+        trainerName:
+          getTrainer(
+            CURRENT_COURSE,
+            CURRENT_ACTIVITY
+          ),
+
+        branch:
+          getBranch(
+            CURRENT_COURSE,
+            CURRENT_ACTIVITY
+          ),
+
+        section:
+          getSection(
+            CURRENT_COURSE,
+            CURRENT_ACTIVITY
+          ),
+
+        period:
+          getPeriod(
+            CURRENT_COURSE,
+            CURRENT_ACTIVITY
+          ),
+
+        courseType:
+          getCourseType(
+            CURRENT_COURSE,
+            CURRENT_ACTIVITY
+          ),
+
+        group:
+          CURRENT_ACTIVITY?.group ||
+          "General",
+
+        score:
+          CURRENT_SCORE,
+
+        total,
+        percent,
+
+        teamMode:true,
+        teamCount:TEAM_COUNT,
+
+        teams:getRankedTeams().map(
+          team=>({
+            id:team.id,
+            letter:team.letter,
+            name:team.name,
+            correct:team.correct,
+            answered:team.answered,
+            assigned:team.assigned,
+            accuracy:team.accuracy
+          })
+        ),
+
+        winningTeamId:
+          winningTeam?.id || "",
+
+        winningTeamName:
+          winningTeam?.name || "",
+
+        winningTeamCorrect:
+          Number(
+            winningTeam?.correct || 0
+          ),
+
+        winningTeamAccuracy:
+          Number(
+            winningTeam?.accuracy || 0
+          ),
+
+        timerType:
+          CURRENT_ACTIVITY
+            ?.timerType ||
+          "open",
+
+        configuredTimeSeconds:
+          Number(
+            CURRENT_ACTIVITY
+              ?.timerTotalSeconds ||
+            0
+          ),
+
+        timeRemainingSeconds:
+          Math.max(
+            0,
+            Number(
+              ACTIVITY_TIME_LEFT ||
+              0
+            )
+          ),
+
+        finishedByTimeout:
+          Boolean(
+            finishedByTimeout
+          ),
+
+        anonymous:false,
+
+        createdAt:
+          firebase
+            .firestore
+            .FieldValue
+            .serverTimestamp()
+      });
+
+    await updateActivityUsage(
+      "completed",
+      {
+        score:CURRENT_SCORE,
+        total,
+        percent,
+
+        teamMode:true,
+        teamCount:TEAM_COUNT,
+
+        teams:getRankedTeams().map(
+          team=>({
+            id:team.id,
+            name:team.name,
+            correct:team.correct,
+            answered:team.answered,
+            assigned:team.assigned,
+            accuracy:team.accuracy
+          })
+        ),
+
+        winningTeamName:
+          winningTeam?.name || "",
+
+        winningTeamCorrect:
+          Number(
+            winningTeam?.correct || 0
+          ),
+
+        finishedByTimeout:
+          Boolean(finishedByTimeout),
+        finishedAt:
+          firebase
+            .firestore
+            .FieldValue
+            .serverTimestamp()
+      }
+    );
+
+    toast(
+      "Activity result saved ✅"
+    );
+
+  }catch(error){
+    console.error(error);
+
+    toast(
+      "The activity ended, but the result could not be saved"
+    );
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function restartGame(){
+  if(!CURRENT_ACTIVITY){
+    return;
+  }
+
+  stopActivityTimer();
+
+  CURRENT_QUESTION_INDEX = 0;
+  CURRENT_SCORE = 0;
+  CURRENT_TEAM_INDEX = 0;
+  ANSWER_LOCKED = false;
+  ACTIVITY_FINISHED = false;
+  ACTIVITY_TIME_LEFT = 0;
+  CURRENT_ORDER_SELECTION = [];
+
+  TEAMS = TEAMS.map(team=>({
+    ...team,
+    correct:0,
+    answered:0
+  }));
+
+  document
+    .getElementById("resultArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("teamResultsBox")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("studentStart")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("playArea")
+    .classList
+    .remove("hidden");
+
+  CURRENT_USAGE_ID = "";
+
+  recordActivityUsageStart();
+
+  startActivityTimer();
+  renderStudentQuestion();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+async function backToActivities(){
+  stopActivityTimer();
+
+  if(
+    CURRENT_USAGE_ID &&
+    !ACTIVITY_FINISHED
+  ){
+    await updateActivityUsage(
+      "abandoned",
+      {
+        stoppedAt:
+          firebase
+            .firestore
+            .FieldValue
+            .serverTimestamp()
+      }
+    );
+  }
+
+  ACTIVITY_FINISHED = true;
+  ACTIVITY_TIME_LEFT = 0;
+
+  const video =
+    document.getElementById(
+      "gameQuestionVideo"
+    );
+
+  const audio =
+    document.getElementById(
+      "gameQuestionAudio"
+    );
+
+  video.pause();
+  audio.pause();
+
+  CURRENT_ACTIVITY = null;
+  CURRENT_COURSE = null;
+
+  CURRENT_QUESTION_INDEX = 0;
+  CURRENT_SCORE = 0;
+  ANSWER_LOCKED = false;
+  CURRENT_ORDER_SELECTION = [];
+  CURRENT_USAGE_ID = "";
+
+  TEAM_COUNT = 1;
+  TEAMS = [];
+  CURRENT_TEAM_INDEX = 0;
+
+  document
+    .getElementById("playArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("teamSetupArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("teamResultsBox")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("resultArea")
+    .classList
+    .add("hidden");
+
+  document
+    .getElementById("studentStart")
+    .classList
+    .remove("hidden");
+
+  loadStudentActivities();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function playCorrectSound(){
+  playToneSequence([
+    {
+      frequency:523.25,
+      duration:0.14,
+      delay:0
+    },
+    {
+      frequency:659.25,
+      duration:0.14,
+      delay:0.13
+    },
+    {
+      frequency:783.99,
+      duration:0.22,
+      delay:0.26
+    }
+  ]);
+}
+
+function playWrongSound(){
+  playToneSequence([
+    {
+      frequency:220,
+      duration:0.18,
+      delay:0
+    },
+    {
+      frequency:165,
+      duration:0.28,
+      delay:0.17
+    }
+  ]);
+}
+
+function playToneSequence(tones){
+  try{
+    const AudioContextClass =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AudioContextClass){
+      return;
+    }
+
+    const audioContext =
+      new AudioContextClass();
+
+    const startTime =
+      audioContext.currentTime;
+
+    tones.forEach(tone=>{
+      const oscillator =
+        audioContext
+          .createOscillator();
+
+      const gain =
+        audioContext
+          .createGain();
+
+      oscillator.type = "sine";
+
+      oscillator.frequency.value =
+        tone.frequency;
+
+      const toneStart =
+        startTime +
+        tone.delay;
+
+      const toneEnd =
+        toneStart +
+        tone.duration;
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        toneStart
+      );
+
+      gain.gain
+        .exponentialRampToValueAtTime(
+          0.18,
+          toneStart + 0.02
+        );
+
+      gain.gain
+        .exponentialRampToValueAtTime(
+          0.0001,
+          toneEnd
+        );
+
+      oscillator.connect(gain);
+
+      gain.connect(
+        audioContext.destination
+      );
+
+      oscillator.start(toneStart);
+      oscillator.stop(toneEnd);
+    });
+
+  }catch(error){
+    console.warn(
+      "Sound could not play:",
+      error
+    );
+  }
+}
+
+function makeConfetti(count){
+  const box =
+    document.getElementById(
+      "confetti"
+    );
+
+  const colors = [
+    "#f4b942",
+    "#17a673",
+    "#2467a5",
+    "#e74c3c",
+    "#a768e8"
+  ];
+
+  for(let i=0;i<count;i++){
+    const item =
+      document.createElement("i");
+
+    item.style.left =
+      Math.random() * 100 +
+      "vw";
+
+    item.style.background =
+      colors[
+        Math.floor(
+          Math.random() *
+          colors.length
+        )
+      ];
+
+    item.style.animationDelay =
+      Math.random() * .5 +
+      "s";
+
+    item.style.animationDuration =
+      (
+        2.2 +
+        Math.random() * 1.5
+      ) +
+      "s";
+
+    box.appendChild(item);
+
+    setTimeout(()=>{
+      item.remove();
+    },4200);
+  }
+}
+
+function launchSmallConfetti(){
+  makeConfetti(20);
+}
+
+function launchBigConfetti(){
+  makeConfetti(100);
+}
+
+/*
+  Stop the old attempt when the page is hidden,
+  closed, refreshed, or left.
+*/
+window.addEventListener(
+  "pagehide",
+  ()=>{
+    stopActivityTimer();
+  }
+);
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+    stopActivityTimer();
+  }
+);
+
+window.addEventListener(
+  "message",
+  event=>{
+
+    const data =
+      event.data || {};
+
+    if(
+      data.type !== "PRUDLE_AUTH"
+    ){
+      return;
+    }
+
+    if(data.username){
+      localStorage.setItem(
+        "username",
+        String(data.username)
+      );
+    }
+
+    if(data.role){
+      localStorage.setItem(
+        "role",
+        String(data.role)
+      );
+    }
+
+    if(data.loginDate){
+      localStorage.setItem(
+        "loginDate",
+        String(data.loginDate)
+      );
+    }
+
+    /*
+      Reload courses after authentication arrives
+      from the parent page/iframe wrapper.
+    */
+
+    if(
+      CURRENT_STUDENT &&
+      CURRENT_STUDENT_IQAMA
+    ){
+      loadStudentActivities();
+    }
+  }
+);
+
+window.addEventListener(
+  "DOMContentLoaded",
+  async()=>{
+
+    const savedIqama =
+      String(
+        localStorage.getItem(
+          "studentActivityIqama"
+        ) ||
+        localStorage.getItem(
+          "studentID"
+        ) ||
+        localStorage.getItem(
+          "student_iqama"
+        ) ||
+        ""
+      ).trim();
+
+    if(savedIqama){
+
+      document
+        .getElementById(
+          "studentIqamaInput"
+        )
+        .value =
+          savedIqama;
+
+      await loginActivityStudent();
+
+    }
+
+  }
+);
+</script>
+
+</body>
+</html>
