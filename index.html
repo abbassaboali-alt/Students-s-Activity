@@ -3076,6 +3076,33 @@ function updateActivityStudentUI(loggedIn){
   if(headerLogout) headerLogout.style.display = "none";
 }
 
+function saveActivityStudentSession(iqama, loginDate){
+  const normalizedIqama = normalizeStudentIqama(iqama || "");
+  const validLoginDate = String(loginDate || new Date().toDateString());
+
+  if(!normalizedIqama) return;
+
+  localStorage.setItem("studentID", normalizedIqama);
+  localStorage.setItem("student_iqama", normalizedIqama);
+  localStorage.setItem("studentLoginDate", validLoginDate);
+  localStorage.removeItem("studentLoggedOut");
+}
+
+function clearActivityStudentSession(){
+  localStorage.removeItem("studentID");
+  localStorage.removeItem("student_iqama");
+  localStorage.removeItem("studentLoginDate");
+  localStorage.setItem("studentLoggedOut", "true");
+}
+
+function requestStudentAuthFromParent(){
+  if(window.parent === window) return;
+
+  window.parent.postMessage({
+    type:"PRUDLE_REQUEST_STUDENT_AUTH"
+  }, "*");
+}
+
 async function loginActivityStudent(){
   if(ACTIVITY_LOGIN_LOADING) return;
 
@@ -3129,10 +3156,10 @@ async function loginActivityStudent(){
       )
     ];
 
-    localStorage.setItem("studentID",iqama);
-    localStorage.setItem("student_iqama",iqama);
-    localStorage.setItem("studentLoginDate",new Date().toDateString());
-    localStorage.removeItem("studentLoggedOut");
+    saveActivityStudentSession(
+      iqama,
+      new Date().toDateString()
+    );
 
     setActivityLoginMessage("Login successful.","success");
     updateActivityStudentUI(true);
@@ -3156,10 +3183,7 @@ async function logoutActivityStudent(){
   clearWheelState();
   stopActivityTimer();
 
-  localStorage.removeItem("studentID");
-  localStorage.removeItem("student_iqama");
-  localStorage.removeItem("studentLoginDate");
-  localStorage.setItem("studentLoggedOut","true");
+  clearActivityStudentSession();
 
   /* مزامنة تسجيل الخروج مع صفحة لوحة الطالب الأم */
   if(window.parent !== window){
@@ -9697,23 +9721,9 @@ window.addEventListener(
         return;
       }
 
-      localStorage.setItem(
-        "studentID",
-        studentID
-      );
-
-      localStorage.setItem(
-        "student_iqama",
-        studentID
-      );
-
-      localStorage.setItem(
-        "studentLoginDate",
+      saveActivityStudentSession(
+        studentID,
         receivedLoginDate
-      );
-
-      localStorage.removeItem(
-        "studentLoggedOut"
       );
 
       const input =
@@ -9794,15 +9804,43 @@ window.addEventListener(
       !ACTIVITY_STUDENT_IQAMA &&
       window.parent !== window
     ){
-      window.parent.postMessage(
-        {
-          type:"PRUDLE_REQUEST_STUDENT_AUTH"
-        },
-        "*"
-      );
+      requestStudentAuthFromParent();
     }
   }
 );
+
+/* إعادة مزامنة جلسة الطالب عند الرجوع للصفحة من زر Back */
+window.addEventListener("pageshow", async()=>{
+  if(ACTIVITY_STUDENT_IQAMA && ACTIVITY_STUDENT_MAIN){
+    return;
+  }
+
+  await autoLoginActivityStudent();
+
+  if(!ACTIVITY_STUDENT_IQAMA){
+    requestStudentAuthFromParent();
+  }
+});
+
+/* مزامنة تسجيل الخروج بين التبويبات التابعة لنفس النطاق */
+window.addEventListener("storage", event=>{
+  if(event.key !== "studentLoggedOut") return;
+
+  if(event.newValue === "true"){
+    clearRandomQuestionTimers();
+    clearWheelState();
+    stopActivityTimer();
+
+    ACTIVITY_STUDENT_DOCS = [];
+    ACTIVITY_STUDENT_MAIN = null;
+    ACTIVITY_STUDENT_DOC_ID = "";
+    ACTIVITY_STUDENT_IQAMA = "";
+    ACTIVITY_STUDENT_COURSE_IDS = [];
+
+    updateActivityStudentUI(false);
+  }
+});
+
 </script>
 
 </body>
