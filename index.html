@@ -3194,32 +3194,42 @@ function isCourseAssignedToLoggedStudent(course){
 async function autoLoginActivityStudent(){
   const params = new URLSearchParams(window.location.search);
 
+  /* رقم الطالب القادم من الرابط أو من صفحة الـ iframe */
   const urlStudentId = normalizeStudentIqama(
     params.get("studentID") ||
     params.get("student_iqama") ||
     ""
   );
 
+  /* رقم الطالب المحفوظ من تسجيل الدخول السابق */
   const storedStudentId = normalizeStudentIqama(
     localStorage.getItem("student_iqama") ||
     localStorage.getItem("studentID") ||
     ""
   );
 
-  const loginDate = String(localStorage.getItem("studentLoginDate") || "");
+  /* لا نمنع الدخول المحفوظ إلا بعد تسجيل خروج يدوي */
   const loggedOut = localStorage.getItem("studentLoggedOut") === "true";
 
-  const candidate = urlStudentId || (
-    !loggedOut &&
-    loginDate === new Date().toDateString()
-      ? storedStudentId
-      : ""
-  );
+  /* الأولوية دائمًا للرقم المرسل في الرابط */
+  const candidate = urlStudentId || (!loggedOut ? storedStudentId : "");
 
-  if(!candidate){
+  if(!candidate || candidate.length < 10){
+    ACTIVITY_STUDENT_DOCS = [];
+    ACTIVITY_STUDENT_MAIN = null;
+    ACTIVITY_STUDENT_DOC_ID = "";
+    ACTIVITY_STUDENT_IQAMA = "";
+    ACTIVITY_STUDENT_COURSE_IDS = [];
+
     updateActivityStudentUI(false);
     return;
   }
+
+  /* حفظ الرقم القادم من البوابة قبل التحقق لتوحيد مفاتيح الدخول */
+  localStorage.setItem("studentID",candidate);
+  localStorage.setItem("student_iqama",candidate);
+  localStorage.setItem("studentLoginDate",new Date().toDateString());
+  localStorage.removeItem("studentLoggedOut");
 
   const input = document.getElementById("studentIqamaInput");
   if(input) input.value = candidate;
