@@ -2368,8 +2368,8 @@ button{font-family:inherit;cursor:pointer}
       <h2>Student Activity Login</h2>
 
       <p>
-        Enter your ID or Iqama number to display the activities
-        connected to your open courses.
+        Enter your ID or Iqama number to display Individual activities
+        opened by an admin or trainer.
       </p>
 
       <div class="student-login-field">
@@ -2400,8 +2400,8 @@ button{font-family:inherit;cursor:pointer}
       <div class="hero-icon">🎮</div>
       <h2>Choose an Activity and Start Playing</h2>
       <p style="color:var(--muted)">
-        Open activities linked to open courses are displayed.
-        This page can be used by a trainer or a student.
+        Only Individual activities opened by an admin or trainer are displayed.
+        Activities are available to every logged-in student.
       </p>
     </div>
 
@@ -5071,11 +5071,8 @@ function startActivity(activityId,courseId){
     return;
   }
 
-  if(
-    !CURRENT_COURSE ||
-    !isCourseAssignedToLoggedStudent(CURRENT_COURSE)
-  ){
-    alert("This activity is not assigned to one of the student's open courses.");
+  if(!CURRENT_COURSE){
+    alert("Unable to find the course connected to this activity.");
     CURRENT_ACTIVITY = null;
     CURRENT_COURSE = null;
     return;
@@ -9773,8 +9770,12 @@ window.addEventListener("storage", event=>{
       .find(session=>
         safe(session.activityId) ===
           safe(activityId) &&
-        safe(session.courseId) ===
-          safe(courseId) &&
+        (
+          !safe(courseId) ||
+          !safe(session.courseId) ||
+          safe(session.courseId) ===
+            safe(courseId)
+        ) &&
         session.status === "active" &&
         session.mode === "individual"
       ) || null;
