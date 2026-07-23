@@ -1,3 +1,83 @@
+<style>
+/* =========================================================
+   PRUDLE — FULL WIDTH / FULL SCREEN + ULTRA NARROW MARGINS
+   Weebly / Caspio Safe + Mobile Friendly
+========================================================= */
+
+/* 1) الصفحة بكامل العرض بدون أي هوامش */
+html, body{
+  margin:0 !important;
+  padding:0 !important;
+  width:100% !important;
+  max-width:100% !important;
+  overflow-x:hidden !important;
+}
+
+/* 2) كل العناصر داخل الصفحة لا تكسر العرض */
+*,
+*::before,
+*::after{
+  box-sizing:border-box !important;
+}
+
+/* 3) كسر أي حاويات من القالب قد تقيد العرض */
+.container, .section, .wrapper, .content, .main-content,
+#page, #main, #body, #content,
+[class*="container"], [class*="wrapper"], [class*="content"]{
+  width:100% !important;
+  max-width:100% !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* 4) هوامش داخلية عامة (تضييق الهوامش) */
+:root{
+  --gutter: 6px;          /* ✅ غيّرها 4px أو 8px حسب رغبتك */
+  --radius: 14px;
+}
+
+/* أي عنصر رئيسي في الصفحة خليه يستفيد من الـ gutter */
+body{
+  font-family:'Tajawal', sans-serif;
+  background:#f4f6fb;
+  padding:var(--gutter) !important;  /* ✅ يديك هامش صغير جدًا حول الصفحة */
+}
+
+/* 5) تقليل هوامش عناصر واجهتك (بدون ما تخرب التصميم) */
+.logout-badge,
+.header,
+.actions,
+.stats,
+.filters,
+.wrap{
+  margin:var(--gutter) !important;
+}
+
+/* 6) تحسين العرض على الجوال (هوامش أضيق + تكبير لمس) */
+@media (max-width: 768px){
+  :root{ --gutter: 4px; }
+  .header{ font-size:18px !important; }
+  .header img{ width:58px !important; height:58px !important; }
+  .btn{ padding:10px 12px !important; }
+}
+
+/* 7) الجدول: اجعله يتمدد ولا يخرج خارج الشاشة */
+table{
+  width:max-content;
+  max-width:100%;
+}
+.course-body{
+  overflow-x:auto !important;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* 8) منع أي عنصر يسبب سكرول أفقي بالقوة */
+img, video, canvas{
+  max-width:100% !important;
+  height:auto !important;
+}
+</style>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -184,7 +264,229 @@ button{font-family:inherit;cursor:pointer}
   font-weight:900;
 }
 
+
+.activity-card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:10px;
+}
+
+.game-type-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.game-type-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  border:1px solid transparent;
+  white-space:nowrap;
+}
+
+.game-type-badge i{
+  font-size:14px;
+}
+
+.game-wheel{
+  color:#755300;
+  background:#fff4c7;
+  border-color:#f4cf58;
+}
+
+.game-random{
+  color:#6c3483;
+  background:#f4e8fb;
+  border-color:#d5a8eb;
+}
+
+.game-balloon{
+  color:#a61f55;
+  background:#ffe8f1;
+  border-color:#f2a5c2;
+}
+
+.game-mystery{
+  color:#6b4b00;
+  background:#fff3c9;
+  border-color:#e8c75f;
+}
+
+.game-match{
+  color:#155a8a;
+  background:#e7f4fd;
+  border-color:#a9d7f4;
+}
+
+.game-order{
+  color:#9a4d00;
+  background:#fff0df;
+  border-color:#f5c18d;
+}
+
+.game-mcq{
+  color:#08744f;
+  background:#e5f8f0;
+  border-color:#9edcc4;
+}
+
+.game-text{
+  color:#7a3e00;
+  background:#fff4e7;
+  border-color:#eac293;
+}
+
+.game-voice{
+  color:#9b2445;
+  background:#fde9ef;
+  border-color:#efabc0;
+}
+
+.game-media{
+  color:#34495e;
+  background:#edf2f6;
+  border-color:#c6d2dc;
+}
+
+.game-default{
+  color:var(--blue);
+  background:#edf4fa;
+  border-color:#b9d0e4;
+}
+
+
+.activity-search-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:#f8fbfd;
+}
+
+
+.activity-filter-bar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,300px);
+  gap:12px;
+  align-items:end;
+  margin-bottom:16px;
+}
+
+.activity-filter-group label{
+  display:block;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:900;
+  color:var(--blue);
+}
+
+.activity-type-select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:12px 14px;
+  background:#f8fbfd;
+  color:var(--text);
+  font-family:inherit;
+  font-size:14px;
+  font-weight:800;
+  outline:none;
+}
+
+.activity-filter-count{
+  margin:-4px 0 14px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+}
+
+@media(max-width:700px){
+  .activity-filter-bar{
+    grid-template-columns:1fr;
+  }
+}
+
+.activity-search-wrap i{
+  color:var(--blue);
+  font-size:18px;
+}
+
+.activity-search-input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-family:inherit;
+  font-size:15px;
+  font-weight:700;
+  color:var(--text);
+}
+
+.activity-search-input::placeholder{
+  color:#8a9aaa;
+  font-weight:600;
+}
+
+.search-no-results{
+  text-align:center;
+  color:var(--muted);
+  padding:28px 10px;
+  font-weight:800;
+}
+
 .empty{text-align:center;color:var(--muted);padding:35px 10px}
+
+/* STUDENT ID / IQAMA LOGIN */
+.student-login-shell{width:min(720px,100%);margin:35px auto}
+.student-login-card{
+  background:#fff;border:1px solid var(--border);border-radius:25px;
+  padding:28px;box-shadow:0 16px 42px rgba(22,68,120,.13)
+}
+.student-login-icon{
+  width:88px;height:88px;border-radius:25px;margin:0 auto 15px;
+  display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;font-size:39px;box-shadow:0 12px 26px rgba(22,68,120,.24)
+}
+.student-login-card h2{margin:0;text-align:center;color:var(--blue);font-size:27px}
+.student-login-card p{text-align:center;color:var(--muted);line-height:1.75}
+.student-login-field{margin-top:19px}
+.student-login-field label{display:block;margin-bottom:7px;color:var(--blue);font-weight:900}
+.student-login-field input{
+  width:100%;border:1px solid var(--border);border-radius:14px;padding:14px 15px;
+  outline:none;font-family:inherit;font-size:16px;font-weight:700;text-align:center;direction:ltr
+}
+.student-login-field input:focus{
+  border-color:var(--blue2);box-shadow:0 0 0 4px rgba(36,103,165,.11)
+}
+.student-login-message{min-height:25px;margin-top:11px;text-align:center;font-size:13px;font-weight:900}
+.student-login-message.error{color:var(--red)}
+.student-login-message.success{color:var(--green)}
+.student-profile-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  margin-bottom:16px;padding:14px 16px;border:1px solid var(--border);
+  border-radius:17px;background:linear-gradient(135deg,#f7fbff,#fffaf0)
+}
+.student-profile-info{color:var(--blue);font-weight:900}
+.student-profile-info small{display:block;margin-top:4px;color:var(--muted);font-weight:700}
+.student-logout-btn{
+  border:none;border-radius:13px;padding:10px 15px;background:var(--red);
+  color:#fff;font-family:inherit;font-weight:900
+}
+@media(max-width:650px){
+  .student-login-card{padding:20px 15px}
+  .student-login-card h2{font-size:23px}
+}
 
 .play-shell{max-width:930px;margin:auto}
 
@@ -264,6 +566,49 @@ button{font-family:inherit;cursor:pointer}
   background:#f5f8fa;
 }
 
+.question-youtube{
+  width:min(720px,100%);
+  aspect-ratio:16/9;
+  display:block;
+  margin:0 auto 20px;
+  border:0;
+  border-radius:18px;
+  background:#000;
+  box-shadow:0 10px 24px rgba(22,68,120,.14);
+}
+
+.revealed-question-media{
+  width:100%;
+  margin:0 auto 18px;
+}
+
+.revealed-question-media img,
+.revealed-question-media video{
+  display:block;
+  width:min(520px,100%);
+  max-height:300px;
+  object-fit:contain;
+  margin:0 auto;
+  border-radius:16px;
+  background:#f3f7fb;
+}
+
+.revealed-question-media iframe{
+  display:block;
+  width:min(680px,100%);
+  aspect-ratio:16/9;
+  margin:0 auto;
+  border:0;
+  border-radius:16px;
+  background:#000;
+}
+
+.revealed-question-media audio{
+  display:block;
+  width:min(620px,100%);
+  margin:0 auto;
+}
+
 .student-answers{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -319,29 +664,185 @@ button{font-family:inherit;cursor:pointer}
   margin-top:15px;
 }
 
-.match-game{display:grid;gap:12px}
+/* =====================================
+   MATCH: TEXT WITH TEXT OR IMAGE
+===================================== */
+
+.match-game{
+  display:grid;
+  gap:18px;
+  width:100%;
+}
+
+.match-image-instruction{
+  width:100%;
+  padding:12px 15px;
+  border:1px solid #cfe0ef;
+  border-radius:14px;
+  background:#eef6fd;
+  color:var(--blue);
+  text-align:center;
+  font-weight:900;
+  line-height:1.6;
+}
 
 .match-row{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:12px;
-  align-items:center;
-  padding:12px;
+  display:block;
+  width:100%;
+  padding:16px;
   border:1px solid var(--border);
-  border-radius:15px;
+  border-radius:18px;
   background:#fbfdff;
 }
 
-.match-left{font-weight:900;color:var(--blue)}
-
-.match-row select{
+.match-left{
   width:100%;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:11px;
+  margin-bottom:13px;
+  padding:12px 14px;
+  border-radius:13px;
+  background:linear-gradient(
+    135deg,
+    var(--blue),
+    var(--blue2)
+  );
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+  text-align:center;
+  overflow-wrap:anywhere;
+}
+
+.match-image-options{
+  display:grid;
+  grid-template-columns:repeat(
+    auto-fit,
+    minmax(150px,1fr)
+  );
+  gap:12px;
+  width:100%;
+}
+
+.match-image-option{
+  width:100%;
+  min-width:0;
+  min-height:130px;
+  padding:10px;
+  border:2px solid var(--border);
+  border-radius:16px;
   background:#fff;
+  color:var(--text);
   font-family:inherit;
-  font-weight:700;
+  font-size:15px;
+  font-weight:900;
+  line-height:1.5;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  transition:
+    transform .2s,
+    border-color .2s,
+    background .2s,
+    box-shadow .2s;
+  overflow:hidden;
+}
+
+.match-image-option:hover:not(:disabled){
+  transform:translateY(-3px);
+  border-color:var(--blue2);
+  box-shadow:0 8px 18px rgba(36,103,165,.13);
+}
+
+.match-image-option img{
+  display:block;
+  width:100%;
+  height:135px;
+  object-fit:contain;
+  border-radius:11px;
+  background:#f3f7fb;
+}
+
+.match-image-option span{
+  display:block;
+  width:100%;
+  text-align:center;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+.match-image-option.selected{
+  border-color:var(--blue2);
+  background:#eef6fd;
+  box-shadow:
+    0 0 0 3px rgba(36,103,165,.13);
+}
+
+.match-image-option.correct{
+  border-color:var(--green);
+  background:#eafaf4;
+  box-shadow:
+    0 0 0 3px rgba(23,166,115,.13);
+}
+
+.match-image-option.wrong{
+  border-color:var(--red);
+  background:#fff0ee;
+  box-shadow:
+    0 0 0 3px rgba(231,76,60,.12);
+}
+
+.match-image-option.correct-answer{
+  border-color:var(--green);
+  background:#eafaf4;
+  box-shadow:
+    0 0 0 4px rgba(23,166,115,.18);
+}
+
+.match-image-option:disabled{
+  cursor:default;
+  opacity:1;
+}
+
+@media(max-width:650px){
+
+  .match-row{
+    padding:12px;
+  }
+
+  .match-left{
+    padding:11px;
+    font-size:16px;
+  }
+
+  .match-image-options{
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+
+  .match-image-option{
+    min-height:110px;
+    padding:8px;
+    font-size:13px;
+  }
+
+  .match-image-option img{
+    height:100px;
+  }
+
+}
+
+@media(max-width:420px){
+
+  .match-image-options{
+    grid-template-columns:1fr;
+  }
+
+  .match-image-option img{
+    height:140px;
+  }
+
 }
 
 .order-game{display:grid;gap:10px}
@@ -660,7 +1161,9 @@ button{font-family:inherit;cursor:pointer}
 
 @media(max-width:750px){
   .topbar{align-items:flex-start;flex-direction:column}
-  .student-answers,.match-row{grid-template-columns:1fr}
+  .student-answers{
+  grid-template-columns:1fr;
+}
   .container{width:95%;margin-top:14px}
   .panel,.game-card{padding:16px;border-radius:18px}
   .game-question{font-size:21px}
@@ -669,63 +1172,1157 @@ button{font-family:inherit;cursor:pointer}
   .progress-wrap{flex-basis:100%;order:3}
 }
 
-.student-login{
-  max-width:620px;
-  margin:35px auto;
+
+/* =====================================
+   RANDOM IMAGE QUESTION
+===================================== */
+.random-game{
   text-align:center;
 }
-.student-login .login-icon{
-  width:95px;
-  height:95px;
-  border-radius:28px;
-  margin:0 auto 14px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#ffdf73,#f4a62a);
-  font-size:45px;
-}
-.student-login-field{
-  margin-top:18px;
-  text-align:left;
-}
-.student-login-field label{
-  display:block;
-  margin-bottom:7px;
-  font-weight:900;
-}
-.student-login-field input{
-  width:100%;
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:13px 14px;
-  font:inherit;
-  font-size:17px;
-  outline:none;
-}
-.student-login-field input:focus{
-  border-color:var(--blue2);
-  box-shadow:0 0 0 3px rgba(36,103,165,.12);
-}
-.student-login-message{
-  min-height:25px;
-  margin-top:12px;
-  color:var(--red);
-  font-weight:800;
-}
-.student-identity-card{
+
+.random-display{
+  width:min(560px,100%);
+  min-height:350px;
+  margin:0 auto 18px;
+  padding:15px;
+  border:3px solid var(--blue2);
+  border-radius:25px;
+  background:#fff;
   display:flex;
+  flex-direction:column;
+  justify-content:center;
   align-items:center;
-  justify-content:space-between;
+  box-shadow:0 15px 35px rgba(22,68,120,.15);
+  overflow:hidden;
+}
+
+.random-display.spinning{
+  animation:randomPulse .25s infinite alternate;
+}
+
+.random-display img{
+  width:100%;
+  max-height:330px;
+  object-fit:contain;
+  border-radius:17px;
+  background:#f3f7fb;
+}
+
+.random-display-text{
+  margin-top:13px;
+  font-size:22px;
+  font-weight:900;
+  color:var(--blue);
+  overflow-wrap:anywhere;
+}
+
+.random-placeholder{
+  color:var(--muted);
+  font-size:18px;
+  font-weight:800;
+  line-height:1.7;
+}
+
+.random-controls{
+  display:flex;
+  justify-content:center;
   gap:12px;
   flex-wrap:wrap;
-  padding:14px 16px;
-  margin-bottom:16px;
-  border:1px solid var(--border);
-  border-radius:17px;
-  background:linear-gradient(135deg,#f7fbff,#fffaf0);
+  margin-top:15px;
 }
-.student-identity-card strong{
+
+.random-correct-btn{
+  background:var(--green);
+  color:#fff;
+}
+
+.random-wrong-btn{
+  background:var(--red);
+  color:#fff;
+}
+
+@keyframes randomPulse{
+  from{
+    transform:scale(.985);
+    box-shadow:0 8px 25px rgba(22,68,120,.12);
+  }
+  to{
+    transform:scale(1.015);
+    box-shadow:0 18px 38px rgba(244,185,66,.28);
+  }
+}
+
+
+/* =====================================
+   WHEEL OF FORTUNE QUESTION
+===================================== */
+.wheel-game{
+  text-align:center;
+}
+
+.wheel-wrap{
+  position:relative;
+  width:min(520px,92vw);
+  aspect-ratio:1;
+  margin:0 auto 18px;
+}
+
+.wheel-pointer{
+  position:absolute;
+  left:50%;
+  top:-8px;
+  transform:translateX(-50%);
+  z-index:5;
+  font-size:48px;
+  color:var(--red);
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.22));
+}
+
+.wheel-disc{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:10px solid #fff;
+  box-shadow:0 18px 45px rgba(22,68,120,.22);
+  position:relative;
+  overflow:hidden;
+  transition:transform 4.4s cubic-bezier(.12,.72,.12,1);
+}
+
+.wheel-label{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:42%;
+  transform-origin:0 0;
+  text-align:right;
+  font-size:14px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,.45);
+  padding-right:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.wheel-center{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:92px;
+  height:92px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ffffff,#f8f8f8);
+  border:8px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  font-weight:900;
   color:var(--blue);
+  z-index:10;
+  box-shadow:
+    0 0 0 6px rgba(255,255,255,.95),
+    0 10px 28px rgba(0,0,0,.25);
+  user-select:none;
+}
+
+.wheel-result-card{
+  margin:16px auto 0;
+  max-width:720px;
+  border:2px solid var(--gold);
+  border-radius:18px;
+  padding:17px;
+  background:linear-gradient(135deg,#fff8dd,#fff);
+}
+
+.wheel-result-category{
+  font-size:22px;
+  font-weight:900;
+  color:var(--blue);
+}
+
+.wheel-result-question{
+  font-size:20px;
+  font-weight:800;
+  line-height:1.7;
+  margin-top:8px;
+}
+
+.wheel-result-card img{
+  max-width:100%;
+  max-height:280px;
+  object-fit:contain;
+  border-radius:14px;
+  margin-top:12px;
+}
+
+.wheel-controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.wheel-correct{
+  background:var(--green);
+  color:#fff;
+}
+
+.wheel-wrong{
+  background:var(--red);
+  color:#fff;
+}
+
+@media(max-width:600px){
+  .wheel-label{font-size:11px}
+  .wheel-pointer{font-size:40px}
+}
+
+
+/* =====================================
+   BALLOON POP QUESTION
+===================================== */
+.balloon-game{
+  width:100%;
+  text-align:center;
+}
+
+.balloon-stage{
+  position:relative;
+  min-height:420px;
+  overflow:hidden;
+  border:2px dashed #c7dbea;
+  border-radius:26px;
+  padding:28px 18px 34px;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,255,255,.9),transparent 13%),
+    radial-gradient(circle at 80% 18%,rgba(255,255,255,.75),transparent 11%),
+    linear-gradient(180deg,#dff5ff 0%,#f8fdff 62%,#eaf8e5 100%);
+}
+
+.balloon-instruction{
+  position:relative;
+  z-index:3;
+  color:var(--blue);
+  font-weight:900;
+  margin-bottom:18px;
+}
+
+.balloon-main{
+  position:relative;
+  width:190px;
+  height:235px;
+  margin:25px auto 85px;
+  border:0;
+  background:transparent;
+  animation:balloonFloat 2.4s ease-in-out infinite;
+}
+
+.balloon-body{
+  position:absolute;
+  inset:0 0 35px;
+  display:grid;
+  place-items:center;
+  border-radius:50% 50% 46% 46%;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.82),transparent 15%),
+    linear-gradient(145deg,#ff7fa6,#e73f77);
+  box-shadow:
+    inset -15px -18px 24px rgba(120,0,45,.18),
+    0 18px 28px rgba(22,68,120,.18);
+  color:#fff;
+  font-size:58px;
+  transition:.22s;
+}
+
+.balloon-main:hover .balloon-body{
+  transform:scale(1.05);
+}
+
+.balloon-knot{
+  position:absolute;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-top:19px solid #d93368;
+}
+
+.balloon-string{
+  position:absolute;
+  left:50%;
+  top:204px;
+  width:2px;
+  height:94px;
+  background:#74889b;
+  transform:translateX(-50%);
+}
+
+.balloon-main.popping{
+  animation:balloonPop .38s ease forwards;
+  pointer-events:none;
+}
+
+.balloon-question-card{
+  max-width:760px;
+  margin:0 auto;
+  padding:22px;
+  border:2px solid var(--gold);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 16px 35px rgba(22,68,120,.16);
+  animation:balloonReveal .45s ease;
+}
+
+.balloon-question-text{
+  font-size:24px;
+  line-height:1.65;
+  font-weight:900;
+  color:var(--blue);
+  margin-bottom:18px;
+}
+
+.balloon-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+
+.balloon-option{
+  min-height:82px;
+}
+
+.balloon-burst{
+  position:absolute;
+  left:50%;
+  top:48%;
+  transform:translate(-50%,-50%);
+  font-size:92px;
+  z-index:6;
+  animation:balloonBurst .55s ease forwards;
+  pointer-events:none;
+}
+
+@keyframes balloonFloat{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-18px) rotate(2deg)}
+}
+
+@keyframes balloonPop{
+  0%{transform:scale(1)}
+  65%{transform:scale(1.24)}
+  100%{transform:scale(0);opacity:0}
+}
+
+@keyframes balloonBurst{
+  0%{transform:translate(-50%,-50%) scale(.35);opacity:0}
+  45%{opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}
+}
+
+@keyframes balloonReveal{
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:650px){
+  .balloon-stage{min-height:390px;padding:20px 12px 28px}
+  .balloon-main{width:155px;height:195px;margin-bottom:75px}
+  .balloon-body{inset:0 0 30px;font-size:48px}
+  .balloon-knot{bottom:20px}
+  .balloon-string{top:168px;height:82px}
+  .balloon-options{grid-template-columns:1fr}
+  .balloon-question-text{font-size:20px}
+}
+
+
+/* =====================================
+   MYSTERY BOX QUESTION
+===================================== */
+.mystery-game{
+  width:100%;
+  text-align:center;
+}
+
+.mystery-stage{
+  position:relative;
+  min-height:430px;
+  overflow:hidden;
+  border:2px dashed #d8c79a;
+  border-radius:26px;
+  padding:28px 18px 34px;
+  background:
+    radial-gradient(circle at 20% 18%,rgba(255,255,255,.8),transparent 12%),
+    radial-gradient(circle at 82% 20%,rgba(255,255,255,.7),transparent 10%),
+    linear-gradient(180deg,#fff8dc 0%,#fffdf6 58%,#f8f2df 100%);
+}
+
+.mystery-instruction{
+  position:relative;
+  z-index:3;
+  color:#765500;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+.mystery-box-button{
+  position:relative;
+  width:230px;
+  height:210px;
+  margin:40px auto 45px;
+  border:none;
+  background:transparent;
+  transition:.25s;
+  animation:mysteryFloat 2.4s ease-in-out infinite;
+}
+
+.mystery-box-button:hover{
+  transform:scale(1.04);
+}
+
+.mystery-box-body{
+  position:absolute;
+  left:24px;
+  right:24px;
+  bottom:0;
+  height:138px;
+  border-radius:18px 18px 22px 22px;
+  background:
+    linear-gradient(90deg,
+      transparent 0 42%,
+      #ffd65c 42% 58%,
+      transparent 58% 100%
+    ),
+    linear-gradient(145deg,#8f57d6,#5f2e9d);
+  box-shadow:
+    inset -12px -14px 20px rgba(55,18,95,.22),
+    0 20px 35px rgba(22,68,120,.18);
+}
+
+.mystery-box-lid{
+  position:absolute;
+  left:8px;
+  right:8px;
+  top:34px;
+  height:62px;
+  border-radius:18px;
+  background:
+    linear-gradient(90deg,
+      transparent 0 42%,
+      #ffd65c 42% 58%,
+      transparent 58% 100%
+    ),
+    linear-gradient(145deg,#a96cf0,#6f38b6);
+  box-shadow:0 10px 18px rgba(50,20,90,.18);
+  transform-origin:50% 100%;
+  transition:.55s cubic-bezier(.2,.8,.2,1);
+  z-index:4;
+}
+
+.mystery-box-ribbon-v{
+  position:absolute;
+  left:50%;
+  top:28px;
+  width:32px;
+  height:172px;
+  transform:translateX(-50%);
+  background:#ffd65c;
+  z-index:5;
+  border-radius:10px;
+  pointer-events:none;
+}
+
+.mystery-box-ribbon-h{
+  position:absolute;
+  left:16px;
+  right:16px;
+  top:78px;
+  height:28px;
+  background:#ffd65c;
+  z-index:5;
+  border-radius:10px;
+  pointer-events:none;
+}
+
+.mystery-box-bow{
+  position:absolute;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+  font-size:58px;
+  z-index:6;
+  filter:drop-shadow(0 6px 6px rgba(0,0,0,.18));
+}
+
+.mystery-box-mark{
+  position:absolute;
+  left:50%;
+  bottom:38px;
+  transform:translateX(-50%);
+  font-size:48px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 4px 7px rgba(0,0,0,.25);
+  z-index:6;
+}
+
+.mystery-box-button.shaking{
+  animation:mysteryShake .55s ease;
+}
+
+.mystery-box-button.opened{
+  animation:none;
+  pointer-events:none;
+}
+
+.mystery-box-button.opened .mystery-box-lid{
+  transform:translateY(-42px) rotate(-18deg);
+}
+
+.mystery-box-button.opened .mystery-box-ribbon-v,
+.mystery-box-button.opened .mystery-box-ribbon-h{
+  opacity:0;
+  transition:.25s;
+}
+
+.mystery-glow{
+  position:absolute;
+  left:50%;
+  top:150px;
+  width:150px;
+  height:150px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(255,223,99,.85),rgba(255,223,99,0));
+  animation:mysteryGlow .9s ease forwards;
+  pointer-events:none;
+  z-index:2;
+}
+
+.mystery-stars{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:7;
+}
+
+.mystery-stars span{
+  position:absolute;
+  left:50%;
+  top:48%;
+  font-size:28px;
+  animation:mysteryStar .9s ease forwards;
+}
+
+.mystery-question-card{
+  max-width:760px;
+  margin:0 auto;
+  padding:22px;
+  border:2px solid var(--gold);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 16px 35px rgba(22,68,120,.16);
+  animation:mysteryReveal .45s ease;
+}
+
+/* Selected grouped question takes the full available page */
+.balloon-stage.reveal-active,
+.mystery-stage.reveal-active{
+  min-height:auto;
+  padding:18px;
+  overflow:visible;
+  background:transparent;
+  border:none;
+}
+
+.balloon-stage.reveal-active .balloon-instruction,
+.balloon-stage.reveal-active .balloon-choice-grid,
+.mystery-stage.reveal-active .mystery-instruction,
+.mystery-stage.reveal-active .mystery-choice-grid{
+  display:none!important;
+}
+
+.balloon-stage.reveal-active .balloon-question-card,
+.mystery-stage.reveal-active .mystery-question-card{
+  width:100%;
+  max-width:100%;
+  margin:0;
+  min-height:420px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.balloon-stage.reveal-active .balloon-question-text,
+.mystery-stage.reveal-active .mystery-question-text{
+  font-size:clamp(24px,3vw,36px);
+  margin-bottom:22px;
+}
+
+@media(max-width:650px){
+  .balloon-stage.reveal-active,
+  .mystery-stage.reveal-active{
+    padding:8px;
+  }
+
+  .balloon-stage.reveal-active .balloon-question-card,
+  .mystery-stage.reveal-active .mystery-question-card{
+    min-height:360px;
+    padding:18px 12px;
+  }
+}
+
+.mystery-question-text{
+  font-size:24px;
+  line-height:1.65;
+  font-weight:900;
+  color:var(--blue);
+  margin-bottom:18px;
+}
+
+.mystery-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px;
+}
+
+.mystery-option{
+  min-height:82px;
+}
+
+@keyframes mysteryFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+@keyframes mysteryShake{
+  0%,100%{transform:translateX(0) rotate(0)}
+  20%{transform:translateX(-8px) rotate(-3deg)}
+  40%{transform:translateX(8px) rotate(3deg)}
+  60%{transform:translateX(-6px) rotate(-2deg)}
+  80%{transform:translateX(6px) rotate(2deg)}
+}
+
+@keyframes mysteryGlow{
+  from{transform:translate(-50%,-50%) scale(.2);opacity:0}
+  45%{opacity:1}
+  to{transform:translate(-50%,-50%) scale(1.8);opacity:0}
+}
+
+@keyframes mysteryStar{
+  from{transform:translate(-50%,-50%) scale(.4);opacity:0}
+  to{
+    transform:
+      translate(
+        calc(-50% + var(--x)),
+        calc(-50% + var(--y))
+      )
+      scale(1.25)
+      rotate(240deg);
+    opacity:0;
+  }
+}
+
+@keyframes mysteryReveal{
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:650px){
+  .mystery-stage{min-height:400px;padding:20px 12px 28px}
+  .mystery-box-button{width:190px;height:180px;margin-top:34px}
+  .mystery-box-body{height:116px}
+  .mystery-box-lid{height:54px}
+  .mystery-box-ribbon-v{height:145px}
+  .mystery-box-bow{font-size:48px}
+  .mystery-options{grid-template-columns:1fr}
+  .mystery-question-text{font-size:20px}
+}
+
+
+
+/* =====================================
+   BALLOON AND MYSTERY GROUP SELECTION
+===================================== */
+
+.balloon-choice-grid,
+.mystery-choice-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:24px 16px;
+  width:min(900px,100%);
+  margin:22px auto 38px;
+  align-items:end;
+}
+
+.balloon-choice{
+  position:relative;
+  width:145px;
+  height:205px;
+  margin:auto;
+  border:0;
+  background:transparent;
+  animation:balloonFloat 2.4s ease-in-out infinite;
+  transition:opacity .25s,filter .25s,transform .25s;
+}
+
+.balloon-choice:nth-child(2n){
+  animation-delay:.25s;
+}
+
+.balloon-choice:nth-child(3n){
+  animation-delay:.5s;
+}
+
+.balloon-choice-body{
+  position:absolute;
+  inset:0 0 34px;
+  display:grid;
+  place-items:center;
+  border-radius:50% 50% 46% 46%;
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.82),transparent 15%),
+    linear-gradient(145deg,#ff7fa6,#e73f77);
+  box-shadow:
+    inset -12px -15px 21px rgba(120,0,45,.18),
+    0 15px 25px rgba(22,68,120,.18);
+  transition:.2s;
+}
+
+.balloon-choice:nth-child(4n + 2) .balloon-choice-body{
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.82),transparent 15%),
+    linear-gradient(145deg,#68c8ff,#2479c7);
+}
+
+.balloon-choice:nth-child(4n + 3) .balloon-choice-body{
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.82),transparent 15%),
+    linear-gradient(145deg,#ffd66e,#f39c12);
+}
+
+.balloon-choice:nth-child(4n) .balloon-choice-body{
+  background:
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.82),transparent 15%),
+    linear-gradient(145deg,#86dfad,#17a673);
+}
+
+.balloon-choice:hover:not(:disabled) .balloon-choice-body{
+  transform:scale(1.07);
+}
+
+.balloon-choice-number{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:var(--blue);
+  font-size:23px;
+  font-weight:900;
+  box-shadow:0 5px 12px rgba(0,0,0,.15);
+}
+
+.balloon-choice-knot{
+  position:absolute;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+  border-left:10px solid transparent;
+  border-right:10px solid transparent;
+  border-top:17px solid #d93368;
+}
+
+.balloon-choice-string{
+  position:absolute;
+  left:50%;
+  top:171px;
+  width:2px;
+  height:62px;
+  background:#74889b;
+  transform:translateX(-50%);
+}
+
+.balloon-choice-unselected{
+  opacity:.3;
+  filter:grayscale(.8);
+}
+
+.balloon-choice.popping{
+  animation:balloonPop .38s ease forwards;
+  pointer-events:none;
+}
+
+.mystery-choice{
+  position:relative;
+  width:170px;
+  height:165px;
+  margin:auto;
+  border:none;
+  background:transparent;
+  animation:mysteryFloat 2.4s ease-in-out infinite;
+  transition:opacity .25s,filter .25s,transform .25s;
+}
+
+.mystery-choice:nth-child(2n){
+  animation-delay:.25s;
+}
+
+.mystery-choice:nth-child(3n){
+  animation-delay:.5s;
+}
+
+.mystery-choice:hover:not(:disabled){
+  transform:scale(1.05);
+}
+
+.mystery-choice-body{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:0;
+  height:106px;
+  border-radius:15px 15px 19px 19px;
+  background:
+    linear-gradient(90deg,transparent 0 42%,#ffd65c 42% 58%,transparent 58% 100%),
+    linear-gradient(145deg,#8f57d6,#5f2e9d);
+  box-shadow:
+    inset -10px -12px 18px rgba(55,18,95,.22),
+    0 16px 28px rgba(22,68,120,.18);
+}
+
+.mystery-choice:nth-child(4n + 2) .mystery-choice-body,
+.mystery-choice:nth-child(4n + 2) .mystery-choice-lid{
+  background:
+    linear-gradient(90deg,transparent 0 42%,#ffd65c 42% 58%,transparent 58% 100%),
+    linear-gradient(145deg,#ef6a8a,#c83262);
+}
+
+.mystery-choice:nth-child(4n + 3) .mystery-choice-body,
+.mystery-choice:nth-child(4n + 3) .mystery-choice-lid{
+  background:
+    linear-gradient(90deg,transparent 0 42%,#ffd65c 42% 58%,transparent 58% 100%),
+    linear-gradient(145deg,#39b9d5,#197caa);
+}
+
+.mystery-choice:nth-child(4n) .mystery-choice-body,
+.mystery-choice:nth-child(4n) .mystery-choice-lid{
+  background:
+    linear-gradient(90deg,transparent 0 42%,#ffd65c 42% 58%,transparent 58% 100%),
+    linear-gradient(145deg,#55c98b,#148658);
+}
+
+.mystery-choice-lid{
+  position:absolute;
+  left:6px;
+  right:6px;
+  top:31px;
+  height:49px;
+  border-radius:15px;
+  background:
+    linear-gradient(90deg,transparent 0 42%,#ffd65c 42% 58%,transparent 58% 100%),
+    linear-gradient(145deg,#a96cf0,#6f38b6);
+  box-shadow:0 8px 15px rgba(50,20,90,.18);
+  transform-origin:50% 100%;
+  transition:.55s cubic-bezier(.2,.8,.2,1);
+  z-index:4;
+}
+
+.mystery-choice-ribbon-v{
+  position:absolute;
+  left:50%;
+  top:27px;
+  width:25px;
+  height:132px;
+  transform:translateX(-50%);
+  background:#ffd65c;
+  z-index:5;
+  border-radius:8px;
+  pointer-events:none;
+}
+
+.mystery-choice-ribbon-h{
+  position:absolute;
+  left:12px;
+  right:12px;
+  top:66px;
+  height:22px;
+  background:#ffd65c;
+  z-index:5;
+  border-radius:8px;
+  pointer-events:none;
+}
+
+.mystery-choice-bow{
+  position:absolute;
+  left:50%;
+  top:-5px;
+  transform:translateX(-50%);
+  font-size:43px;
+  z-index:6;
+  filter:drop-shadow(0 5px 5px rgba(0,0,0,.18));
+}
+
+.mystery-choice-number{
+  position:absolute;
+  left:50%;
+  bottom:27px;
+  transform:translateX(-50%);
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  color:var(--blue);
+  font-size:20px;
+  font-weight:900;
+  z-index:7;
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+}
+
+.mystery-choice.shaking{
+  animation:mysteryShake .55s ease;
+}
+
+.mystery-choice.opened{
+  animation:none;
+  pointer-events:none;
+}
+
+.mystery-choice.opened .mystery-choice-lid{
+  transform:translateY(-34px) rotate(-18deg);
+}
+
+.mystery-choice.opened .mystery-choice-ribbon-v,
+.mystery-choice.opened .mystery-choice-ribbon-h{
+  opacity:0;
+  transition:.25s;
+}
+
+.mystery-choice-unselected{
+  opacity:.3;
+  filter:grayscale(.8);
+}
+
+@media(max-width:650px){
+
+  .balloon-choice-grid,
+  .mystery-choice-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:20px 8px;
+  }
+
+  .balloon-choice{
+    width:120px;
+    height:178px;
+  }
+
+  .balloon-choice-string{
+    top:144px;
+    height:55px;
+  }
+
+  .mystery-choice{
+    width:145px;
+    height:145px;
+  }
+
+}
+
+
+/* Keep selected balloon/box position empty without rearranging the grid */
+.group-choice-placeholder{
+  visibility:hidden;
+  pointer-events:none;
+}
+
+.balloon-choice-grid,
+.mystery-choice-grid{
+  grid-auto-flow:row;
+}
+
+
+/* =====================================
+   TEAM RACE GAME MODE
+===================================== */
+
+.race-board{
+  margin:0 0 16px;
+  padding:17px;
+  border:2px solid var(--gold);
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff9e7,#fff);
+  box-shadow:0 10px 25px rgba(22,68,120,.10);
+}
+
+.race-board-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:13px;
+}
+
+.race-board-title{
+  color:var(--blue);
+  font-size:19px;
+  font-weight:900;
+}
+
+.race-board-note{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+}
+
+.race-lanes{
+  display:grid;
+  gap:11px;
+}
+
+.race-lane{
+  display:grid;
+  grid-template-columns:minmax(90px,145px) minmax(0,1fr);
+  align-items:center;
+  gap:10px;
+}
+
+.race-team-name{
+  color:var(--blue);
+  font-size:13px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+
+.race-team-name span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:2px;
+}
+
+.race-track{
+  position:relative;
+  height:67px;
+  overflow:hidden;
+  border:3px solid #24384a;
+  border-radius:14px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.07) 0 42px,
+      rgba(255,255,255,.20) 42px 44px
+    ),
+    linear-gradient(180deg,#5e7180,#34495e);
+}
+
+.race-track::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:50%;
+  height:3px;
+  transform:translateY(-50%);
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #fff 0 16px,
+      transparent 16px 32px
+    );
+  opacity:.65;
+}
+
+.race-start-line{
+  position:absolute;
+  left:11px;
+  top:5px;
+  bottom:5px;
+  width:5px;
+  border-radius:4px;
+  background:var(--green);
+  z-index:2;
+}
+
+.race-finish-line{
+  position:absolute;
+  right:9px;
+  top:0;
+  bottom:0;
+  width:23px;
+  background:
+    conic-gradient(
+      #fff 25%,
+      #111 0 50%,
+      #fff 0 75%,
+      #111 0
+    ) 0 0 / 13px 13px;
+  border-left:2px solid #fff;
+  border-right:2px solid #fff;
+  z-index:2;
+}
+
+.race-car{
+  position:absolute;
+  left:17px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:4;
+  font-size:39px;
+  line-height:1;
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.35));
+  transition:left .65s cubic-bezier(.2,.8,.2,1);
+}
+
+.race-car.race-moving{
+  animation:raceCarMove .65s ease;
+}
+
+.race-car.race-winner{
+  animation:raceWinnerPulse .8s ease infinite alternate;
+}
+
+@keyframes raceCarMove{
+  0%,100%{transform:translateY(-50%) rotate(0)}
+  45%{transform:translateY(-65%) rotate(-5deg)}
+}
+
+@keyframes raceWinnerPulse{
+  from{transform:translateY(-50%) scale(1)}
+  to{transform:translateY(-50%) scale(1.13)}
+}
+
+@media(max-width:650px){
+
+  .race-board{
+    padding:12px;
+  }
+
+  .race-lane{
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+
+  .race-track{
+    height:61px;
+  }
+
+  .race-car{
+    font-size:34px;
+  }
+
 }
 
 </style>
@@ -742,70 +2339,71 @@ button{font-family:inherit;cursor:pointer}
     </div>
   </div>
 
-  <button class="btn btn-light" type="button" onclick="loadStudentActivities()">
-    <i class="fa-solid fa-rotate-right"></i>
-    Refresh
-  </button>
+  <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+    <span id="headerStudentName" style="font-weight:900;display:none"></span>
+
+    <button id="headerRefreshBtn" class="btn btn-light" type="button"
+      onclick="loadStudentActivities()" style="display:none">
+      <i class="fa-solid fa-rotate-right"></i>
+      Refresh
+    </button>
+
+    <button id="headerStudentLogoutBtn" class="btn" type="button"
+      onclick="logoutActivityStudent()"
+      style="display:none;background:#e74c3c;color:#fff">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Logout
+    </button>
+  </div>
 </header>
 
 <main class="container">
 
-  <section id="studentLoginArea" class="panel student-login">
-    <div class="login-icon">🎓</div>
+  <section id="studentLoginArea" class="student-login-shell">
+    <div class="student-login-card">
+      <div class="student-login-icon">
+        <i class="fa-solid fa-user-graduate"></i>
+      </div>
 
-    <h2 style="margin:0">
-      Student Login
-    </h2>
+      <h2>Student Activity Login</h2>
 
-    <p style="color:var(--muted)">
-      Enter the student Iqama / ID number.
-      Only activities linked to the student's active course will be displayed.
-    </p>
+      <p>
+        Enter your ID or Iqama number to display the activities
+        connected to your open courses.
+      </p>
 
-    <div class="student-login-field">
-      <label>
-        <i class="fa-solid fa-id-card"></i>
-        Iqama / Student ID
-      </label>
+      <div class="student-login-field">
+        <label for="studentIqamaInput">
+          <i class="fa-solid fa-id-card"></i>
+          ID / Iqama Number
+        </label>
 
-      <input
-        id="studentIqamaInput"
-        inputmode="numeric"
-        autocomplete="off"
-        placeholder="Enter Iqama or student ID"
-        onkeydown="if(event.key==='Enter') loginActivityStudent()">
-    </div>
+        <input id="studentIqamaInput" type="text" inputmode="numeric"
+          autocomplete="off" maxlength="15" placeholder="Enter ID / Iqama"
+          onkeydown="if(event.key==='Enter'){loginActivityStudent()}">
+      </div>
 
-    <div class="actions" style="justify-content:center">
-      <button
-        id="studentLoginButton"
-        class="btn btn-primary"
-        type="button"
-        onclick="loginActivityStudent()">
+      <button id="studentLoginBtn" class="btn btn-primary" type="button"
+        onclick="loginActivityStudent()" style="width:100%;margin-top:14px">
         <i class="fa-solid fa-right-to-bracket"></i>
         Login
       </button>
-    </div>
 
-    <div id="studentLoginMessage" class="student-login-message"></div>
+      <div id="studentLoginMessage" class="student-login-message"></div>
+    </div>
   </section>
 
   <section id="studentStart" class="hidden">
+    <div id="studentProfileBar" class="student-profile-bar">
+      <div id="studentProfileInfo" class="student-profile-info"></div>
 
-    <div id="studentIdentityCard" class="student-identity-card">
-      <div>
-        <strong id="loggedStudentName">Student</strong>
-        <div id="loggedStudentDetails" style="color:var(--muted);font-size:13px;font-weight:700"></div>
-      </div>
-
-      <button
-        class="btn btn-light"
-        type="button"
+      <button class="student-logout-btn" type="button"
         onclick="logoutActivityStudent()">
         <i class="fa-solid fa-right-from-bracket"></i>
-        Change Student
+        Logout
       </button>
     </div>
+
     <div class="start-intro">
       <div class="hero-icon">🎮</div>
       <h2>Choose an Activity and Start Playing</h2>
@@ -831,9 +2429,67 @@ button{font-family:inherit;cursor:pointer}
     </div>
 
     <div class="panel">
+
+      <div class="activity-filter-bar">
+
+        <div class="activity-filter-group">
+          <label for="activitySearchInput">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Search Activities
+          </label>
+
+          <div class="activity-search-wrap" style="margin-bottom:0">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="activitySearchInput"
+              class="activity-search-input"
+              type="search"
+              placeholder="Search by activity, course, trainer, branch, or section..."
+              autocomplete="off"
+              oninput="filterActivityCards()">
+          </div>
+        </div>
+
+        <div class="activity-filter-group">
+          <label for="activityTypeFilter">
+            <i class="fa-solid fa-gamepad"></i>
+            Activity Type
+          </label>
+
+          <select
+            id="activityTypeFilter"
+            class="activity-type-select"
+            onchange="filterActivityCards()">
+
+            <option value="">🎮 All Activities</option>
+            <option value="wheel">🎡 Wheel of Fortune</option>
+            <option value="random">🖼️ Random Image</option>
+            <option value="balloon">🎈 Balloon Pop</option>
+            <option value="mystery">🎁 Mystery Box</option>
+            <option value="match">🔗 Matching</option>
+            <option value="order">🔀 Ordering</option>
+            <option value="mcq">✅ Multiple Choice</option>
+            <option value="text">✍️ Written Answer</option>
+            <option value="voice">🎤 Speaking</option>
+            <option value="audio">🔊 Audio</option>
+            <option value="video">🎥 Video</option>
+
+          </select>
+        </div>
+
+      </div>
+
+      <div id="activityFilterCount" class="activity-filter-count"></div>
+
       <div id="openActivitiesBox" class="empty">
         Loading activities and open courses...
       </div>
+
+      <div id="activitySearchNoResults" class="search-no-results hidden">
+        No activities match your search.
+      </div>
+
     </div>
   </section>
 
@@ -931,13 +2587,51 @@ button{font-family:inherit;cursor:pointer}
 
     <div id="liveTeamBoard" class="live-team-board"></div>
 
+    <div id="raceBoard" class="race-board hidden">
+
+      <div class="race-board-head">
+
+        <div class="race-board-title">
+          🏁 Race Game
+        </div>
+
+        <div class="race-board-note">
+          Every correct answer moves the current team forward.
+        </div>
+
+      </div>
+
+      <div id="raceLanes" class="race-lanes"></div>
+
+    </div>
+
     <div class="game-card">
       <div id="questionNumber" class="question-number"></div>
       <h2 id="gameQuestion" class="game-question"></h2>
 
       <img id="gameQuestionImage" class="question-image hidden" alt="Question image">
-      <video id="gameQuestionVideo" class="question-image hidden" controls playsinline></video>
-      <audio id="gameQuestionAudio" class="hidden" controls style="width:100%;margin:0 auto 20px"></audio>
+
+      <video
+        id="gameQuestionVideo"
+        class="question-image hidden"
+        controls
+        playsinline>
+      </video>
+
+      <iframe
+        id="gameQuestionYouTube"
+        class="question-youtube hidden"
+        title="YouTube video"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+
+      <audio
+        id="gameQuestionAudio"
+        class="hidden"
+        controls
+        style="width:100%;margin:0 auto 20px">
+      </audio>
 
       <div id="studentAnswers" class="student-answers"></div>
       <div id="feedback" class="feedback"></div>
@@ -1005,7 +2699,6 @@ const ACTIVITIES_COLLECTION = "FunActivities";
 const COURSES_COLLECTION = "Courses";
 const RESULTS_COLLECTION = "FunActivityResults";
 const USAGE_COLLECTION = "FunActivityUsage";
-const STUDENTS_COLLECTION = "Students";
 
 let ACTIVITIES_CACHE = [];
 let OPEN_COURSES_CACHE = [];
@@ -1017,21 +2710,285 @@ let CURRENT_SCORE = 0;
 let ANSWER_LOCKED = false;
 let CURRENT_ORDER_SELECTION = [];
 
+/* Random Image Question state */
+let RANDOM_SPIN_INTERVAL = null;
+let RANDOM_STOP_TIMEOUT = null;
+let RANDOM_SELECTED_INDEX = -1;
+let RANDOM_IS_SPINNING = false;
+let RANDOM_TIMER_STARTED = false;
+
+/* Wheel of Fortune state */
+let WHEEL_IS_SPINNING = false;
+let WHEEL_SELECTED_INDEX = -1;
+let WHEEL_ROTATION = 0;
+let WHEEL_POINTS_MULTIPLIER = 1;
+let WHEEL_STOP_TIMEOUT = null;
+let WHEEL_TIMER_STARTED = false;
+
+/*
+  يمنع تكرار صوت حركة الصور بسرعة زائدة جدًا.
+*/
+let LAST_RANDOM_MOVE_SOUND_TIME = 0;
+
+/*
+  AudioContext واحد يعاد استخدامه
+  بدلاً من إنشاء واحد جديد كل مرة.
+*/
+let SHARED_AUDIO_CONTEXT = null;
+
 let ACTIVITY_TIMER_INTERVAL = null;
 let ACTIVITY_TIME_LEFT = 0;
 let ACTIVITY_FINISHED = false;
+
+/*
+  آخر ثانية تم تشغيل صوت المؤقت عندها.
+  يمنع تكرار الصوت أكثر من مرة لنفس الثانية.
+*/
+let LAST_TIMER_TICK_SECOND = null;
 
 let TEAM_COUNT = 1;
 let TEAMS = [];
 let CURRENT_TEAM_INDEX = 0;
 
+let RACE_MODE_ACTIVE = false;
+let RACE_TOTAL_STEPS = 1;
+let RACE_CAR_ICONS = [
+  "🏎️",
+  "🚙",
+  "🚗",
+  "🚕",
+  "🛻",
+  "🚓"
+];
+
 
 let CURRENT_USAGE_ID = "";
 
-let CURRENT_STUDENT = null;
-let CURRENT_STUDENT_IQAMA = "";
-let CURRENT_STUDENT_COURSE_IDS = [];
-let CURRENT_STUDENT_COURSE_NAMES = [];
+let ACTIVITY_STUDENT_DOCS = [];
+let ACTIVITY_STUDENT_MAIN = null;
+let ACTIVITY_STUDENT_DOC_ID = "";
+let ACTIVITY_STUDENT_IQAMA = "";
+let ACTIVITY_STUDENT_COURSE_IDS = [];
+let ACTIVITY_LOGIN_LOADING = false;
+
+/* Prevent older overlapping Firebase loads from overwriting newer results. */
+let ACTIVITIES_LOAD_REQUEST_ID = 0;
+
+function getActivityGameMode(){
+
+  return String(
+    CURRENT_ACTIVITY?.gameMode ||
+    CURRENT_ACTIVITY?.activityGameMode ||
+    "normal"
+  )
+  .trim()
+  .toLowerCase();
+
+}
+
+function setupRaceGame(){
+
+  RACE_MODE_ACTIVE =
+    getActivityGameMode() ===
+    "race";
+
+  RACE_TOTAL_STEPS =
+    Math.max(
+      1,
+      ...TEAMS.map(
+        team=>
+          Number(
+            team.assigned ||
+            0
+          )
+      )
+    );
+
+  TEAMS.forEach(team=>{
+
+    team.racePosition =
+      Number(
+        team.racePosition ||
+        0
+      );
+
+  });
+
+  const board =
+    document.getElementById(
+      "raceBoard"
+    );
+
+  if(!board){
+    return;
+  }
+
+  board.classList.toggle(
+    "hidden",
+    !RACE_MODE_ACTIVE
+  );
+
+  renderRaceBoard();
+
+}
+
+function renderRaceBoard(
+  movingTeamId = ""
+){
+
+  const lanes =
+    document.getElementById(
+      "raceLanes"
+    );
+
+  if(
+    !lanes ||
+    !RACE_MODE_ACTIVE
+  ){
+    return;
+  }
+
+  lanes.innerHTML =
+    TEAMS.map(
+      (team,index)=>{
+
+        const safePosition =
+          Math.max(
+            0,
+            Math.min(
+              RACE_TOTAL_STEPS,
+              Number(
+                team.racePosition ||
+                0
+              )
+            )
+          );
+
+        const percent =
+          RACE_TOTAL_STEPS > 0
+            ? (
+                safePosition /
+                RACE_TOTAL_STEPS
+              ) * 100
+            : 0;
+
+        const leftPercent =
+          2 +
+          Math.min(
+            100,
+            percent
+          ) * 0.82;
+
+        const finished =
+          safePosition >=
+          RACE_TOTAL_STEPS;
+
+        return `
+          <div class="race-lane">
+
+            <div class="race-team-name">
+              ${esc(team.name)}
+
+              <span>
+                ${safePosition}/${RACE_TOTAL_STEPS} steps
+              </span>
+            </div>
+
+            <div class="race-track">
+
+              <div class="race-start-line"></div>
+              <div class="race-finish-line"></div>
+
+              <div
+                class="
+                  race-car
+                  ${
+                    team.id === movingTeamId
+                      ? "race-moving"
+                      : ""
+                  }
+                  ${
+                    finished
+                      ? "race-winner"
+                      : ""
+                  }
+                "
+                style="
+                  left:calc(${leftPercent}% - 17px)
+                "
+                aria-label="${esc(team.name)} race position">
+
+                ${
+                  RACE_CAR_ICONS[
+                    index %
+                    RACE_CAR_ICONS.length
+                  ]
+                }
+
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+      }
+    )
+    .join("");
+
+}
+
+function moveCurrentTeamInRace(
+  steps = 1
+){
+
+  if(
+    !RACE_MODE_ACTIVE
+  ){
+    return;
+  }
+
+  const team =
+    getCurrentTeam();
+
+  if(!team){
+    return;
+  }
+
+  team.racePosition =
+    Math.min(
+      RACE_TOTAL_STEPS,
+      Number(
+        team.racePosition ||
+        0
+      ) +
+      Math.max(
+        1,
+        Number(
+          steps ||
+          1
+        )
+      )
+    );
+
+  renderRaceBoard(
+    team.id
+  );
+
+}
+
+function resetRaceGame(){
+
+  TEAMS.forEach(team=>{
+
+    team.racePosition = 0;
+
+  });
+
+  setupRaceGame();
+
+}
+
 
 function getLoginUsername(){
   return String(
@@ -1053,12 +3010,229 @@ function getLoginRole(){
 
 function getLoginStudentId(){
   return String(
-    CURRENT_STUDENT_IQAMA ||
-    localStorage.getItem("studentActivityIqama") ||
     localStorage.getItem("studentID") ||
     localStorage.getItem("student_iqama") ||
     ""
   ).trim();
+}
+
+function normalizeStudentIqama(value){
+  return String(value || "").trim().replace(/\s+/g,"");
+}
+
+function setActivityLoginLoading(isLoading){
+  ACTIVITY_LOGIN_LOADING = Boolean(isLoading);
+  const button = document.getElementById("studentLoginBtn");
+  if(!button) return;
+  button.disabled = ACTIVITY_LOGIN_LOADING;
+  button.innerHTML = ACTIVITY_LOGIN_LOADING
+    ? `<i class="fa-solid fa-spinner fa-spin"></i> Logging in...`
+    : `<i class="fa-solid fa-right-to-bracket"></i> Login`;
+}
+
+function setActivityLoginMessage(message,type=""){
+  const box = document.getElementById("studentLoginMessage");
+  if(!box) return;
+  box.textContent = String(message || "");
+  box.className = "student-login-message" + (type ? " " + type : "");
+}
+
+function updateActivityStudentUI(loggedIn){
+  const loginArea = document.getElementById("studentLoginArea");
+  const studentStart = document.getElementById("studentStart");
+  const headerName = document.getElementById("headerStudentName");
+  const headerRefresh = document.getElementById("headerRefreshBtn");
+  const headerLogout = document.getElementById("headerStudentLogoutBtn");
+
+  if(loggedIn){
+    loginArea?.classList.add("hidden");
+    studentStart?.classList.remove("hidden");
+
+    const studentName = String(
+      ACTIVITY_STUDENT_MAIN?.name ||
+      ACTIVITY_STUDENT_MAIN?.studentName ||
+      ACTIVITY_STUDENT_MAIN?.Name ||
+      "Student"
+    ).trim();
+
+    const profile = document.getElementById("studentProfileInfo");
+    if(profile){
+      profile.innerHTML = `
+        <i class="fa-solid fa-user-graduate"></i>
+        ${esc(studentName)}
+        <small>ID / Iqama: ${esc(ACTIVITY_STUDENT_IQAMA)}</small>
+      `;
+    }
+
+    if(headerName){
+      headerName.textContent = studentName;
+      headerName.style.display = "";
+    }
+    if(headerRefresh) headerRefresh.style.display = "";
+    if(headerLogout) headerLogout.style.display = "";
+    return;
+  }
+
+  loginArea?.classList.remove("hidden");
+  studentStart?.classList.add("hidden");
+  document.getElementById("teamSetupArea")?.classList.add("hidden");
+  document.getElementById("playArea")?.classList.add("hidden");
+  document.getElementById("resultArea")?.classList.add("hidden");
+
+  if(headerName) headerName.style.display = "none";
+  if(headerRefresh) headerRefresh.style.display = "none";
+  if(headerLogout) headerLogout.style.display = "none";
+}
+
+async function loginActivityStudent(){
+  if(ACTIVITY_LOGIN_LOADING) return;
+
+  const input = document.getElementById("studentIqamaInput");
+  const iqama = normalizeStudentIqama(input?.value || "");
+
+  if(!iqama){
+    setActivityLoginMessage("Enter the ID or Iqama number.","error");
+    return;
+  }
+
+  if(iqama.length < 10){
+    setActivityLoginMessage("The ID or Iqama number is not valid.","error");
+    return;
+  }
+
+  setActivityLoginLoading(true);
+  setActivityLoginMessage("Checking student information...");
+
+  try{
+    const snapshot = await db.collection("students")
+      .where("iqama","==",iqama)
+      .get();
+
+    if(snapshot.empty){
+      localStorage.removeItem("studentID");
+      localStorage.removeItem("student_iqama");
+      setActivityLoginMessage("Student not found.","error");
+      return;
+    }
+
+    ACTIVITY_STUDENT_DOCS = snapshot.docs.map(doc=>({
+      id:doc.id,
+      ...doc.data()
+    }));
+
+    ACTIVITY_STUDENT_MAIN = ACTIVITY_STUDENT_DOCS[0] || null;
+    ACTIVITY_STUDENT_DOC_ID = ACTIVITY_STUDENT_MAIN?.id || "";
+    ACTIVITY_STUDENT_IQAMA = iqama;
+
+    ACTIVITY_STUDENT_COURSE_IDS = [
+      ...new Set(
+        ACTIVITY_STUDENT_DOCS
+          .map(student=>String(
+            student.courseId ||
+            student.CourseId ||
+            student.courseID ||
+            ""
+          ).trim())
+          .filter(Boolean)
+      )
+    ];
+
+    localStorage.setItem("studentID",iqama);
+    localStorage.setItem("student_iqama",iqama);
+    localStorage.setItem("studentLoginDate",new Date().toDateString());
+    localStorage.removeItem("studentLoggedOut");
+
+    setActivityLoginMessage("Login successful.","success");
+    updateActivityStudentUI(true);
+
+    await loadStudentActivities();
+    window.scrollTo({top:0,behavior:"smooth"});
+
+  }catch(error){
+    console.error(error);
+    setActivityLoginMessage(
+      "Unable to log in. Check the internet connection and Firebase permissions.",
+      "error"
+    );
+  }finally{
+    setActivityLoginLoading(false);
+  }
+}
+
+async function logoutActivityStudent(){
+  clearRandomQuestionTimers();
+  clearWheelState();
+  stopActivityTimer();
+
+  localStorage.removeItem("studentID");
+  localStorage.removeItem("student_iqama");
+  localStorage.removeItem("studentLoginDate");
+  localStorage.setItem("studentLoggedOut","true");
+
+  ACTIVITY_STUDENT_DOCS = [];
+  ACTIVITY_STUDENT_MAIN = null;
+  ACTIVITY_STUDENT_DOC_ID = "";
+  ACTIVITY_STUDENT_IQAMA = "";
+  ACTIVITY_STUDENT_COURSE_IDS = [];
+
+  CURRENT_ACTIVITY = null;
+  CURRENT_COURSE = null;
+  CURRENT_USAGE_ID = "";
+  ACTIVITY_FINISHED = true;
+
+  const input = document.getElementById("studentIqamaInput");
+  if(input) input.value = "";
+
+  const activitiesBox = document.getElementById("openActivitiesBox");
+  if(activitiesBox){
+    activitiesBox.className = "empty";
+    activitiesBox.textContent = "";
+  }
+
+  setActivityLoginMessage("");
+  updateActivityStudentUI(false);
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function isCourseAssignedToLoggedStudent(course){
+  if(!course || !course.id) return false;
+  return ACTIVITY_STUDENT_COURSE_IDS.includes(String(course.id));
+}
+
+async function autoLoginActivityStudent(){
+  const params = new URLSearchParams(window.location.search);
+
+  const urlStudentId = normalizeStudentIqama(
+    params.get("studentID") ||
+    params.get("student_iqama") ||
+    ""
+  );
+
+  const storedStudentId = normalizeStudentIqama(
+    localStorage.getItem("student_iqama") ||
+    localStorage.getItem("studentID") ||
+    ""
+  );
+
+  const loginDate = String(localStorage.getItem("studentLoginDate") || "");
+  const loggedOut = localStorage.getItem("studentLoggedOut") === "true";
+
+  const candidate = urlStudentId || (
+    !loggedOut &&
+    loginDate === new Date().toDateString()
+      ? storedStudentId
+      : ""
+  );
+
+  if(!candidate){
+    updateActivityStudentUI(false);
+    return;
+  }
+
+  const input = document.getElementById("studentIqamaInput");
+  if(input) input.value = candidate;
+
+  await loginActivityStudent();
 }
 
 
@@ -1071,72 +3245,246 @@ function esc(value){
     .replaceAll("'","&#039;");
 }
 
+function getYouTubeVideoId(value){
+
+  const raw =
+    String(value || "")
+      .trim();
+
+  if(!raw){
+    return "";
+  }
+
+  try{
+
+    const normalized =
+      /^https?:\/\//i.test(raw)
+        ? raw
+        : "https://" + raw;
+
+    const url =
+      new URL(normalized);
+
+    const host =
+      url.hostname
+        .replace(/^www\./i,"")
+        .toLowerCase();
+
+    if(host === "youtu.be"){
+
+      return String(
+        url.pathname
+          .split("/")
+          .filter(Boolean)[0] ||
+        ""
+      ).trim();
+
+    }
+
+    if(
+      host === "youtube.com" ||
+      host === "m.youtube.com" ||
+      host === "music.youtube.com" ||
+      host === "youtube-nocookie.com"
+    ){
+
+      const watchId =
+        String(
+          url.searchParams.get("v") ||
+          ""
+        ).trim();
+
+      if(watchId){
+        return watchId;
+      }
+
+      const parts =
+        url.pathname
+          .split("/")
+          .filter(Boolean);
+
+      if(
+        parts.length >= 2 &&
+        [
+          "embed",
+          "shorts",
+          "live"
+        ].includes(
+          String(parts[0]).toLowerCase()
+        )
+      ){
+
+        return String(
+          parts[1] ||
+          ""
+        ).trim();
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Invalid YouTube URL:",
+      error
+    );
+
+  }
+
+  const fallbackMatch =
+    raw.match(
+      /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{6,})/i
+    );
+
+  return fallbackMatch
+    ? String(
+        fallbackMatch[1] ||
+        ""
+      ).trim()
+    : "";
+
+}
+
+function isYouTubeUrl(value){
+
+  return Boolean(
+    getYouTubeVideoId(value)
+  );
+
+}
+
+function toYouTubeEmbedUrl(value){
+
+  const videoId =
+    getYouTubeVideoId(value);
+
+  if(!videoId){
+    return "";
+  }
+
+  return (
+    "https://www.youtube-nocookie.com/embed/" +
+    encodeURIComponent(videoId) +
+    "?rel=0"
+  );
+
+}
+
 function clean(value){
   return String(value ?? "")
     .trim()
     .toLowerCase()
-    .replace(/[ـ\u200e\u200f]/g,"")
-    .replace(/[_\-–—/\\]+/g," ")
     .replace(/\s+/g," ");
 }
 
-function cleanId(value){
-  return String(value ?? "")
+function buildRevealedQuestionMedia(question){
+
+  const mediaType =
+    String(
+      question?.mediaType ||
+      (
+        question?.video
+          ? "video"
+          : question?.audio
+            ? "audio"
+            : question?.image
+              ? "image"
+              : "none"
+      )
+    )
     .trim()
-    .replace(/\.0+$/,"")
-    .replace(/[^0-9a-zA-Z_-]/g,"")
     .toLowerCase();
-}
 
-function deepValuesByKey(object,keyPattern){
-  const output = [];
-  const visited = new Set();
+  const mediaUrl =
+    String(
+      question?.mediaUrl ||
+      question?.video ||
+      question?.audio ||
+      question?.image ||
+      ""
+    ).trim();
 
-  function walk(value,keyName=""){
-    if(value === null || value === undefined) return;
+  if(
+    !mediaUrl ||
+    mediaType === "none"
+  ){
+    return "";
+  }
 
-    if(typeof value === "object"){
-      if(visited.has(value)) return;
-      visited.add(value);
+  if(mediaType === "image"){
 
-      if(Array.isArray(value)){
-        value.forEach(item=>walk(item,keyName));
-        return;
-      }
+    return `
+      <div class="revealed-question-media">
+        <img
+          src="${esc(mediaUrl)}"
+          alt="Question image"
+          onerror="this.parentElement.style.display='none'">
+      </div>
+    `;
 
-      Object.entries(value).forEach(([key,item])=>{
-        if(keyPattern.test(String(key))){
-          output.push(item);
-        }
-        walk(item,key);
-      });
-      return;
+  }
+
+  if(mediaType === "video"){
+
+    const youtubeEmbedUrl =
+      toYouTubeEmbedUrl(
+        mediaUrl
+      );
+
+    if(youtubeEmbedUrl){
+
+      return `
+        <div class="revealed-question-media">
+          <iframe
+            src="${esc(youtubeEmbedUrl)}"
+            title="YouTube question video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+
     }
 
-    if(keyPattern.test(String(keyName))){
-      output.push(value);
-    }
+    return `
+      <div class="revealed-question-media">
+        <video
+          src="${esc(mediaUrl)}"
+          controls
+          playsinline>
+        </video>
+      </div>
+    `;
+
   }
 
-  walk(object);
-  return output;
+  if(mediaType === "audio"){
+
+    return `
+      <div class="revealed-question-media">
+        <audio
+          src="${esc(mediaUrl)}"
+          controls>
+        </audio>
+      </div>
+    `;
+
+  }
+
+  return "";
+
 }
 
-function flattenPrimitiveValues(value,output=[]){
-  if(value === null || value === undefined) return output;
+function getItemImage(item){
 
-  if(Array.isArray(value)){
-    value.forEach(item=>flattenPrimitiveValues(item,output));
-    return output;
-  }
+  return String(
+    item?.image ||
+    item?.imageUrl ||
+    item?.url ||
+    ""
+  ).trim();
 
-  if(typeof value === "object"){
-    Object.values(value).forEach(item=>flattenPrimitiveValues(item,output));
-    return output;
-  }
-
-  output.push(String(value));
-  return output;
 }
 
 function first(object,fields,fallback=""){
@@ -1161,8 +3509,6 @@ function isOpenStatus(value){
   return [
     "open",
     "opened",
-    "open to students",
-    "available",
     "active",
     "نشط",
     "نشطة",
@@ -1260,474 +3606,7 @@ function toast(message){
 }
 
 
-
-function getStudentIqama(student){
-
-  const direct = first(student,[
-    "iqama",
-    "Iqama",
-    "IQAMA",
-    "studentIqama",
-    "StudentIqama",
-    "studentID",
-    "studentId",
-    "StudentID",
-    "idNumber",
-    "identity",
-    "nationalId",
-    "NationalID",
-    "ID",
-    "id"
-  ],"");
-
-  if(direct !== ""){
-    return String(direct).trim();
-  }
-
-  const possible = deepValuesByKey(
-    student,
-    /(iqama|identity|national.?id|student.?id|id.?number)/i
-  );
-
-  return possible.length
-    ? String(possible[0] ?? "").trim()
-    : "";
-}
-
-function getStudentName(student){
-  return first(student,[
-    "studentName",
-    "StudentName",
-    "name",
-    "Name",
-    "fullName"
-  ],"Student");
-}
-
-function collectStudentCourseLinks(student){
-
-  const ids = new Set();
-  const names = new Set();
-
-  const addCourseValue = value=>{
-
-    if(value === null || value === undefined){
-      return;
-    }
-
-    if(Array.isArray(value)){
-      value.forEach(addCourseValue);
-      return;
-    }
-
-    if(typeof value === "object"){
-
-      const possibleId = first(value,[
-        "id",
-        "courseId",
-        "CourseId",
-        "CourseID",
-        "courseID",
-        "course_id",
-        "trainingCourseId",
-        "classId"
-      ],"");
-
-      const possibleName = first(value,[
-        "courseName",
-        "CourseName",
-        "TrainingCourse",
-        "trainingCourse",
-        "course",
-        "name",
-        "title",
-        "className"
-      ],"");
-
-      if(possibleId !== "") ids.add(cleanId(possibleId));
-      if(possibleName !== "") names.add(clean(possibleName));
-
-      Object.values(value).forEach(addCourseValue);
-      return;
-    }
-
-    const text = String(value).trim();
-    if(!text) return;
-
-    // Store as both because some systems save the course document ID
-    // while others save only the displayed course name.
-    ids.add(cleanId(text));
-    names.add(clean(text));
-  };
-
-  [
-    "courseId","CourseId","CourseID","courseID","course_id",
-    "selectedCourseId","trainingCourseId","classId",
-    "courseName","CourseName","TrainingCourse","trainingCourse",
-    "course","Course","className",
-    "courseIds","CourseIds","courses","Courses",
-    "enrolledCourses","registeredCourses","studentCourses",
-    "classes","registeredClass"
-  ].forEach(field=>{
-    if(student?.[field] !== undefined){
-      addCourseValue(student[field]);
-    }
-  });
-
-  // Read nested fields too, for example registration.courseId
-  // or enrollment.TrainingCourse.
-  deepValuesByKey(
-    student,
-    /(course|training|class)/i
-  ).forEach(addCourseValue);
-
-  return {
-    ids:[...ids].filter(Boolean),
-    names:[...names].filter(Boolean)
-  };
-}
-
-function courseContainsStudent(
-  course,
-  studentIqama
-){
-
-  const target = cleanId(studentIqama);
-
-  if(!target){
-    return false;
-  }
-
-  const directArrays = [
-    course?.studentIds,
-    course?.students,
-    course?.studentIqamas,
-    course?.iqamas,
-    course?.enrolledStudents,
-    course?.Students,
-    course?.studentList,
-    course?.members,
-    course?.participants
-  ];
-
-  const directMatch = directArrays.some(value=>{
-
-    if(!Array.isArray(value)){
-      return false;
-    }
-
-    return value.some(item=>{
-
-      if(item && typeof item === "object"){
-        return cleanId(getStudentIqama(item)) === target;
-      }
-
-      return cleanId(item) === target;
-    });
-  });
-
-  if(directMatch){
-    return true;
-  }
-
-  // Also detect the Iqama when it is saved inside a nested map/object.
-  const possibleStudentValues = deepValuesByKey(
-    course,
-    /(student|iqama|identity|national.?id|participant|member)/i
-  );
-
-  return possibleStudentValues.some(value=>
-    flattenPrimitiveValues(value)
-      .some(item=>cleanId(item) === target)
-  );
-}
-
-function courseMatchesStudentLinks(course){
-
-  const possibleCourseIds = [
-    course?.id,
-    course?.courseId,
-    course?.CourseId,
-    course?.CourseID,
-    course?.courseID,
-    course?.course_id,
-    course?.trainingCourseId
-  ]
-  .map(cleanId)
-  .filter(Boolean);
-
-  const possibleCourseNames = [
-    getCourseName(course),
-    course?.TrainingCourse,
-    course?.trainingCourse,
-    course?.courseName,
-    course?.CourseName,
-    course?.course,
-    course?.title,
-    course?.name
-  ]
-  .map(clean)
-  .filter(Boolean);
-
-  return (
-    possibleCourseIds.some(id=>
-      CURRENT_STUDENT_COURSE_IDS.includes(id)
-    ) ||
-    possibleCourseNames.some(name=>
-      CURRENT_STUDENT_COURSE_NAMES.includes(name)
-    ) ||
-    courseContainsStudent(
-      course,
-      CURRENT_STUDENT_IQAMA
-    )
-  );
-}
-
-function getCoursesForCurrentStudent(){
-
-  if(
-    !CURRENT_STUDENT ||
-    !CURRENT_STUDENT_IQAMA
-  ){
-    return [];
-  }
-
-  return OPEN_COURSES_CACHE.filter(
-    course=>courseMatchesStudentLinks(course)
-  );
-}
-
-async function loginActivityStudent(){
-
-  const input =
-    document.getElementById(
-      "studentIqamaInput"
-    );
-
-  const message =
-    document.getElementById(
-      "studentLoginMessage"
-    );
-
-  const button =
-    document.getElementById(
-      "studentLoginButton"
-    );
-
-  const iqama =
-    String(input?.value || "")
-      .trim();
-
-  message.textContent = "";
-
-  if(!iqama){
-    message.textContent =
-      "Enter the student Iqama / ID number.";
-    return;
-  }
-
-  button.disabled = true;
-  button.innerHTML =
-    '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
-
-  try{
-
-    const snapshot =
-      await db
-        .collection(
-          STUDENTS_COLLECTION
-        )
-        .get();
-
-    const student =
-      snapshot.docs
-        .map(doc=>({
-          id:doc.id,
-          ...doc.data()
-        }))
-        .find(item=>
-          cleanId(getStudentIqama(item)) === cleanId(iqama) ||
-          cleanId(item.id) === cleanId(iqama)
-        );
-
-    if(!student){
-      throw new Error(
-        "Student data was not found for this Iqama / ID."
-      );
-    }
-
-    CURRENT_STUDENT =
-      student;
-
-    CURRENT_STUDENT_IQAMA =
-      iqama;
-
-    const links =
-      collectStudentCourseLinks(
-        student
-      );
-
-    CURRENT_STUDENT_COURSE_IDS =
-      links.ids;
-
-    CURRENT_STUDENT_COURSE_NAMES =
-      links.names;
-
-    localStorage.setItem(
-      "studentActivityIqama",
-      iqama
-    );
-
-    localStorage.setItem(
-      "studentID",
-      iqama
-    );
-
-    localStorage.setItem(
-      "student_iqama",
-      iqama
-    );
-
-    document
-      .getElementById(
-        "loggedStudentName"
-      )
-      .textContent =
-        getStudentName(student);
-
-    document
-      .getElementById(
-        "loggedStudentDetails"
-      )
-      .textContent =
-        "Iqama / ID: " +
-        iqama;
-
-    document
-      .getElementById(
-        "studentLoginArea"
-      )
-      .classList
-      .add("hidden");
-
-    document
-      .getElementById(
-        "studentStart"
-      )
-      .classList
-      .remove("hidden");
-
-    await loadStudentActivities();
-
-  }catch(error){
-
-    console.error(error);
-
-    message.textContent =
-      error.message ||
-      "Unable to log in.";
-
-  }finally{
-
-    button.disabled = false;
-
-    button.innerHTML =
-      '<i class="fa-solid fa-right-to-bracket"></i> Login';
-
-  }
-
-}
-
-function logoutActivityStudent(){
-
-  stopActivityTimer();
-
-  CURRENT_STUDENT = null;
-  CURRENT_STUDENT_IQAMA = "";
-  CURRENT_STUDENT_COURSE_IDS = [];
-  CURRENT_STUDENT_COURSE_NAMES = [];
-
-  localStorage.removeItem(
-    "studentActivityIqama"
-  );
-
-  localStorage.removeItem(
-    "studentID"
-  );
-
-  localStorage.removeItem(
-    "student_iqama"
-  );
-
-  document
-    .getElementById(
-      "studentStart"
-    )
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById(
-      "teamSetupArea"
-    )
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById(
-      "playArea"
-    )
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById(
-      "resultArea"
-    )
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById(
-      "studentLoginArea"
-    )
-    .classList
-    .remove("hidden");
-
-  document
-    .getElementById(
-      "studentIqamaInput"
-    )
-    .value = "";
-
-  document
-    .getElementById(
-      "studentLoginMessage"
-    )
-    .textContent = "";
-
-}
-
 function getActorData(){
-
-  if(
-    CURRENT_STUDENT &&
-    CURRENT_STUDENT_IQAMA
-  ){
-    return {
-      role:"student",
-      username:"",
-      id:
-        CURRENT_STUDENT?.id ||
-        CURRENT_STUDENT_IQAMA,
-      iqama:
-        CURRENT_STUDENT_IQAMA,
-      name:
-        getStudentName(
-          CURRENT_STUDENT
-        )
-    };
-  }
 
   const role =
     getLoginRole();
@@ -1735,12 +3614,14 @@ function getActorData(){
   const username =
     getLoginUsername();
 
+  const studentId =
+    getLoginStudentId();
+
   if(role === "trainer"){
     return {
       role:"trainer",
       username:username || "Trainer",
       id:username || "",
-      iqama:"",
       name:username || "Trainer"
     };
   }
@@ -1750,8 +3631,22 @@ function getActorData(){
       role:"admin",
       username:username || "Admin",
       id:username || "",
-      iqama:"",
       name:username || "Admin"
+    };
+  }
+
+  if(studentId){
+    return {
+      role:"student",
+      username:"",
+      id:ACTIVITY_STUDENT_DOC_ID || studentId,
+      iqama:ACTIVITY_STUDENT_IQAMA || studentId,
+      name:String(
+        ACTIVITY_STUDENT_MAIN?.name ||
+        ACTIVITY_STUDENT_MAIN?.studentName ||
+        ACTIVITY_STUDENT_MAIN?.Name ||
+        studentId
+      ).trim()
     };
   }
 
@@ -1759,7 +3654,6 @@ function getActorData(){
     role:"guest",
     username:"",
     id:"",
-    iqama:"",
     name:"Guest"
   };
 }
@@ -1935,8 +3829,8 @@ function setupActorPanel(){
 
     info.innerHTML =
       `<i class="fa-solid fa-user-graduate"></i> ` +
-      `Student: ${esc(actor.id)}` +
-      `<small>The result will record this student ID and the activity course.</small>`;
+      `Student: ${esc(actor.name)}` +
+      `<small>ID / Iqama: ${esc(actor.iqama || actor.id)} — Only activities connected to this student's open courses are displayed.</small>`;
 
   }else{
 
@@ -2069,6 +3963,20 @@ async function recordActivityUsageStart(){
     actorName:
       actor.name,
 
+    studentId:
+      ACTIVITY_STUDENT_DOC_ID ||
+      actor.id ||
+      "",
+
+    studentIqama:
+      ACTIVITY_STUDENT_IQAMA ||
+      actor.iqama ||
+      "",
+
+    studentName:
+      actor.name ||
+      "",
+
     participantDepartment:
       getSection(
         CURRENT_COURSE
@@ -2150,7 +4058,6 @@ async function updateActivityUsage(
 }
 
 async function loadOpenCourses(){
-
   const snap = await db
     .collection(COURSES_COLLECTION)
     .get();
@@ -2161,19 +4068,13 @@ async function loadOpenCourses(){
       ...doc.data()
     }))
     .filter(course=>{
-
       const status = first(course,[
         "status",
         "Status",
-        "courseStatus",
-        "CourseStatus",
-        "state",
-        "State"
+        "courseStatus"
       ],"");
 
-      // Some older course records do not have a status field.
-      // Keep them so the student-course link is not lost.
-      return !String(status).trim() || isOpenStatus(status);
+      return isOpenStatus(status);
     });
 }
 
@@ -2224,284 +4125,444 @@ function findCourseForActivity(activity){
   return null;
 }
 
-async function loadStudentActivities(){
 
-  const box =
+
+function getGameTypeInfo(type){
+
+  const normalized =
+    clean(type || "mcq");
+
+  const types = {
+    wheel:{
+      label:"Wheel of Fortune",
+      icon:"fa-solid fa-dharmachakra",
+      className:"game-wheel"
+    },
+
+    random:{
+      label:"Random Image",
+      icon:"fa-solid fa-images",
+      className:"game-random"
+    },
+
+    balloon:{
+      label:"Balloon Pop",
+      icon:"fa-solid fa-burst",
+      className:"game-balloon"
+    },
+
+    mystery:{
+      label:"Mystery Box",
+      icon:"fa-solid fa-gift",
+      className:"game-mystery"
+    },
+
+    match:{
+      label:"Matching",
+      icon:"fa-solid fa-link",
+      className:"game-match"
+    },
+
+    order:{
+      label:"Ordering",
+      icon:"fa-solid fa-arrow-down-short-wide",
+      className:"game-order"
+    },
+
+    mcq:{
+      label:"Multiple Choice",
+      icon:"fa-solid fa-circle-check",
+      className:"game-mcq"
+    },
+
+    text:{
+      label:"Written Answer",
+      icon:"fa-solid fa-pen",
+      className:"game-text"
+    },
+
+    voice:{
+      label:"Speaking",
+      icon:"fa-solid fa-microphone",
+      className:"game-voice"
+    },
+
+    audio:{
+      label:"Audio",
+      icon:"fa-solid fa-volume-high",
+      className:"game-media"
+    },
+
+    video:{
+      label:"Video",
+      icon:"fa-solid fa-film",
+      className:"game-media"
+    }
+  };
+
+  return types[normalized] || {
+    label:
+      normalized
+        ? normalized
+            .replaceAll("_"," ")
+            .replace(/\b\w/g,letter=>letter.toUpperCase())
+        : "Interactive Game",
+
+    icon:"fa-solid fa-gamepad",
+    className:"game-default"
+  };
+}
+
+function getActivityGameTypes(activity){
+
+  const questions =
+    Array.isArray(activity?.questions)
+      ? activity.questions
+      : [];
+
+  const uniqueTypes = [];
+
+  questions.forEach(question=>{
+
+    const type =
+      clean(question?.type || "mcq");
+
+    if(
+      type &&
+      !uniqueTypes.includes(type)
+    ){
+      uniqueTypes.push(type);
+    }
+  });
+
+  return uniqueTypes.length
+    ? uniqueTypes
+    : ["mcq"];
+}
+
+function renderActivityGameBadges(activity){
+
+  return getActivityGameTypes(activity)
+    .map(type=>{
+
+      const info =
+        getGameTypeInfo(type);
+
+      return `
+        <span class="
+          game-type-badge
+          ${info.className}
+        ">
+          <i class="${info.icon}"></i>
+          ${esc(info.label)}
+        </span>
+      `;
+    })
+    .join("");
+}
+
+function normalizeSearchText(value){
+  return String(value || "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g," ");
+}
+
+function filterActivityCards(){
+
+  const input =
     document.getElementById(
-      "openActivitiesBox"
+      "activitySearchInput"
     );
 
-  if(
-    !CURRENT_STUDENT ||
-    !CURRENT_STUDENT_IQAMA
-  ){
+  const typeSelect =
+    document.getElementById(
+      "activityTypeFilter"
+    );
+
+  const noResults =
+    document.getElementById(
+      "activitySearchNoResults"
+    );
+
+  const countBox =
+    document.getElementById(
+      "activityFilterCount"
+    );
+
+  const query =
+    normalizeSearchText(
+      input?.value || ""
+    );
+
+  const selectedType =
+    clean(
+      typeSelect?.value || ""
+    );
+
+  const cards = [
+    ...document.querySelectorAll(
+      ".open-activity-card"
+    )
+  ];
+
+  if(!cards.length){
+
+    noResults?.classList.add("hidden");
+
+    if(countBox){
+      countBox.textContent = "";
+    }
+
     return;
   }
 
+  let visibleCount = 0;
+
+  cards.forEach(card=>{
+
+    const searchable =
+      normalizeSearchText(
+        card.dataset.search ||
+        card.textContent ||
+        ""
+      );
+
+    const types =
+      String(
+        card.dataset.types || ""
+      )
+      .split(",")
+      .map(type=>clean(type))
+      .filter(Boolean);
+
+    const matchesSearch =
+      !query ||
+      searchable.includes(query);
+
+    const matchesType =
+      !selectedType ||
+      types.includes(selectedType);
+
+    const matched =
+      matchesSearch &&
+      matchesType;
+
+    card.classList.toggle(
+      "hidden",
+      !matched
+    );
+
+    if(matched){
+      visibleCount++;
+    }
+  });
+
+  if(noResults){
+    noResults.classList.toggle(
+      "hidden",
+      visibleCount > 0
+    );
+  }
+
+  if(countBox){
+
+    countBox.textContent =
+      `Showing ${visibleCount} of ${cards.length} Activities`;
+
+  }
+}
+
+async function loadStudentActivities(){
+
+  if(!ACTIVITY_STUDENT_IQAMA || !ACTIVITY_STUDENT_MAIN){
+    updateActivityStudentUI(false);
+    return;
+  }
+
+  const requestId = ++ACTIVITIES_LOAD_REQUEST_ID;
+
+  const box =
+    document.getElementById("openActivitiesBox");
+
   box.className = "empty";
   box.textContent =
-    "Loading activities linked to the student's course...";
+    "Loading activities and open courses...";
 
   try{
-
     await Promise.all([
       loadOpenCourses(),
       loadActivitiesData()
     ]);
 
-    const studentCourses =
-      getCoursesForCurrentStudent();
-
-    const studentCourseIds =
-      new Set(
-        studentCourses.map(
-          course=>String(course.id)
-        )
-      );
-
-    const studentCourseNames =
-      new Set(
-        studentCourses.map(
-          course=>clean(
-            getCourseName(course)
-          )
-        )
-      );
-
-    const available =
-      ACTIVITIES_CACHE
-        .filter(activity=>{
-
-          const status =
-            activity.status ||
-            activity.Status ||
-            "open";
-
-          const questions =
-            Array.isArray(
-              activity.questions
-            )
-              ? activity.questions
-              : [];
-
-          const activityCourseId =
-            cleanId(
-              activity.courseId ||
-              activity.CourseId ||
-              activity.CourseID ||
-              activity.courseID ||
-              activity.linkedCourseId ||
-              ""
-            );
-
-          const activityCourseName =
-            clean(
-              activity.courseName ||
-              activity.TrainingCourse ||
-              ""
-            );
-
-          return (
-            isOpenStatus(status) &&
-            questions.length > 0 &&
-            (
-              [...studentCourseIds]
-                .map(cleanId)
-                .includes(activityCourseId) ||
-              (
-                activityCourseName &&
-                studentCourseNames.has(
-                  activityCourseName
-                )
-              )
-            )
-          );
-
-        });
-
-    document
-      .getElementById(
-        "actorPanel"
-      )
-      ?.classList
-      .add("hidden");
-
-    if(!studentCourses.length){
-
-      box.className = "empty";
-
-      box.innerHTML = `
-        <i class="fa-solid fa-triangle-exclamation" style="font-size:35px;color:var(--gold)"></i>
-        <h3>No active course was found for this student.</h3>
-        <p>Check that the student record contains the course ID/name, or that the course record contains this Iqama.</p>
-        <div style="margin-top:10px;font-size:12px;text-align:left;background:#f7fafc;padding:10px;border-radius:10px">
-          Detected course IDs: ${esc(CURRENT_STUDENT_COURSE_IDS.join(" | ") || "None")}<br>
-          Detected course names: ${esc(CURRENT_STUDENT_COURSE_NAMES.join(" | ") || "None")}
-        </div>
-      `;
-
+    if(requestId !== ACTIVITIES_LOAD_REQUEST_ID){
       return;
-
     }
+
+    setupActorPanel();
+
+    const available = ACTIVITIES_CACHE
+      .filter(activity=>{
+        const status = clean(
+          activity.status || "open"
+        );
+
+        const questions =
+          Array.isArray(activity.questions)
+            ? activity.questions
+            : [];
+
+        const activityCourse = findCourseForActivity(activity);
+
+        return (
+          status === "open" &&
+          questions.length > 0 &&
+          activityCourse &&
+          isCourseAssignedToLoggedStudent(activityCourse)
+        );
+      });
 
     if(!available.length){
-
       box.className = "empty";
-
-      box.innerHTML = `
-        <i class="fa-solid fa-circle-info" style="font-size:35px;color:var(--blue)"></i>
-        <h3>No open activities are linked to the student's course.</h3>
-        <p>
-          Student:
-          <b>${esc(getStudentName(CURRENT_STUDENT))}</b>
-          — Course:
-          <b>${esc(studentCourses.map(getCourseName).join(" / "))}</b>
-        </p>
-      `;
-
+      box.textContent =
+        "No open activities are currently assigned to this student's courses.";
       return;
-
     }
 
-    box.className =
-      "open-activity-list";
+    box.className = "open-activity-list";
 
-    box.innerHTML =
-      available.map(activity=>{
+    box.innerHTML = available.map(activity=>{
+      const sourceCourse =
+        findCourseForActivity(activity);
 
-        const course =
-          studentCourses.find(item=>
-            cleanId(item.id) ===
-            cleanId(
-              activity.courseId ||
-              activity.CourseId ||
-              activity.CourseID ||
-              activity.courseID ||
-              activity.linkedCourseId ||
-              ""
-            )
-          ) ||
-          studentCourses.find(item=>
-            clean(getCourseName(item)) ===
-            clean(
-              activity.courseName ||
-              activity.TrainingCourse ||
-              ""
-            )
-          );
+      const course = sourceCourse;
+      const startCourseId = sourceCourse?.id || "";
 
-        const questionCount =
-          activity.questions?.length ||
-          0;
+      const questionCount =
+        activity.questions?.length || 0;
 
-        const timerText =
-          activity.timerType === "limited"
-            ? formatConfiguredTime(
-                Number(
-                  activity.timerTotalSeconds ||
-                  0
-                )
+      const timerText =
+        activity.timerType === "limited"
+          ? formatConfiguredTime(
+              Number(
+                activity.timerTotalSeconds ||
+                0
               )
-            : "Open Time";
+            )
+          : "Open Time";
 
-        return `
-          <article class="open-activity-card">
+      return `
+        <article
+          class="open-activity-card"
+          data-types="${esc(getActivityGameTypes(activity).join(","))}"
+          data-search="${esc([
+            activity.title || "",
+            activity.description || "",
+            getCourseName(course),
+            course ? getTrainer(course,activity) : "",
+            course ? getBranch(course,activity) : "",
+            course ? getSection(course,activity) : "",
+            course ? getPeriod(course,activity) : "",
+            sourceCourse
+              ? getTrainer(sourceCourse,activity)
+              : (activity.trainerName || ""),
+            getActivityGameTypes(activity)
+              .map(type=>getGameTypeInfo(type).label)
+              .join(" ")
+          ].join(" ").toLowerCase())}">
+
+          <div class="activity-card-head">
+
+            <div class="game-type-list">
+              ${renderActivityGameBadges(activity)}
+            </div>
 
             <div class="open-badge">
               <i class="fa-solid fa-circle-play"></i>
               Open
             </div>
 
-            <h3>
+          </div>
+
+          <h3>${esc(activity.title || "Interactive Activity")}</h3>
+
+          <p style="color:var(--muted);min-height:44px">
+            ${esc(activity.description || "Educational and recreational activity")}
+          </p>
+
+          <div class="activity-meta">
+            <span class="mini">
+              <i class="fa-solid fa-book"></i>
+              ${esc(getCourseName(course))}
+            </span>
+
+            <span class="mini">
+              <i class="fa-solid fa-user-tie"></i>
+              ${esc(course ? getTrainer(course,activity) : "—")}
+            </span>
+
+            <span class="mini">
+              <i class="fa-solid fa-location-dot"></i>
+              ${esc(course ? getBranch(course,activity) : "—")}
+            </span>
+
+            <span class="mini">
+              <i class="fa-solid fa-users"></i>
+              ${esc(course ? getSection(course,activity) : "—")}
+            </span>
+
+            <span class="mini">
+              <i class="fa-solid fa-code-branch"></i>
+              Source:
               ${esc(
-                activity.title ||
-                "Interactive Activity"
+                sourceCourse
+                  ? getTrainer(sourceCourse,activity)
+                  : (
+                      activity.trainerName ||
+                      "Not specified"
+                    )
               )}
-            </h3>
+            </span>
 
-            <p style="color:var(--muted);min-height:44px">
-              ${esc(
-                activity.description ||
-                "Educational activity"
-              )}
-            </p>
+            <span class="mini">
+              <i class="fa-solid fa-circle-question"></i>
+              ${questionCount} Questions
+            </span>
 
-            <div class="activity-meta">
+            <span class="mini">
+              <i class="fa-solid fa-clock"></i>
+              ${esc(timerText)}
+            </span>
+          </div>
 
-              <span class="mini">
-                <i class="fa-solid fa-book"></i>
-                ${esc(getCourseName(course))}
-              </span>
+          <button
+            class="btn btn-primary"
+            type="button"
+            onclick="startActivity(
+              '${esc(activity.id)}',
+              '${esc(startCourseId)}'
+            )">
+            <i class="fa-solid fa-play"></i>
+            Start Activity
+          </button>
 
-              <span class="mini">
-                <i class="fa-solid fa-user-tie"></i>
-                ${esc(
-                  getTrainer(
-                    course,
-                    activity
-                  )
-                )}
-              </span>
+        </article>
+      `;
+    }).join("");
 
-              <span class="mini">
-                <i class="fa-solid fa-location-dot"></i>
-                ${esc(
-                  getBranch(
-                    course,
-                    activity
-                  )
-                )}
-              </span>
-
-              <span class="mini">
-                <i class="fa-solid fa-users"></i>
-                ${esc(
-                  getSection(
-                    course,
-                    activity
-                  )
-                )}
-              </span>
-
-              <span class="mini">
-                <i class="fa-solid fa-circle-question"></i>
-                ${questionCount} Questions
-              </span>
-
-              <span class="mini">
-                <i class="fa-solid fa-clock"></i>
-                ${esc(timerText)}
-              </span>
-
-            </div>
-
-            <button
-              class="btn btn-primary"
-              type="button"
-              onclick="startActivity(
-                '${esc(activity.id)}',
-                '${esc(course?.id || "")}'
-              )">
-              <i class="fa-solid fa-play"></i>
-              Start Activity
-            </button>
-
-          </article>
-        `;
-
-      }).join("");
+    filterActivityCards();
 
   }catch(error){
-
     console.error(error);
 
+    if(requestId !== ACTIVITIES_LOAD_REQUEST_ID){
+      return;
+    }
+
     box.className = "empty";
-
     box.textContent =
-      "Unable to load the student's activities. Check Firebase permissions.";
-
+      "Unable to load activities. Check the internet connection and Firebase permissions.";
   }
-
 }
 
 function formatConfiguredTime(totalSeconds){
@@ -2520,7 +4581,108 @@ function formatConfiguredTime(totalSeconds){
     String(seconds).padStart(2,"0")
   );
 }
+function prepareTimerForCurrentQuestion(){
 
+  stopActivityTimer();
+
+  const question =
+    CURRENT_ACTIVITY
+      ?.questions?.[CURRENT_QUESTION_INDEX];
+
+  const type =
+    question?.type || "mcq";
+
+  /*
+    سؤال الصور العشوائية أو عجلة الحظ:
+    نعرض الوقت فقط، ولا نبدأ العد
+    حتى يضغط المستخدم زر التشغيل.
+  */
+  if(
+    type === "random" ||
+    type === "wheel" ||
+    type === "balloon" ||
+    type === "mystery"
+  ){
+
+    if(type === "random"){
+      RANDOM_TIMER_STARTED = false;
+    }
+
+    if(type === "wheel"){
+      WHEEL_TIMER_STARTED = false;
+    }
+
+    const timerType =
+      CURRENT_ACTIVITY?.timerType ||
+      "open";
+
+    const totalSeconds =
+      Number(
+        CURRENT_ACTIVITY?.timerTotalSeconds ||
+        0
+      );
+
+    const display =
+      document.getElementById(
+        "activityTimerDisplay"
+      );
+
+    if(
+      timerType !== "limited" ||
+      totalSeconds <= 0
+    ){
+      ACTIVITY_TIME_LEFT = 0;
+
+      display.textContent =
+        "⏱ Open Time";
+
+      display.style.background =
+        "#17a673";
+
+      return;
+    }
+
+    ACTIVITY_TIME_LEFT =
+      totalSeconds;
+
+    const minutes =
+      Math.floor(totalSeconds / 60);
+
+    const seconds =
+      totalSeconds % 60;
+
+    display.textContent =
+      "⏱ " +
+      String(minutes).padStart(2,"0") +
+      ":" +
+      String(seconds).padStart(2,"0");
+
+    if(totalSeconds <= 10){
+
+      display.style.background =
+        "#e74c3c";
+
+    }else if(totalSeconds <= 30){
+
+      display.style.background =
+        "#f39c12";
+
+    }else{
+
+      display.style.background =
+        "#164478";
+
+    }
+
+    return;
+  }
+
+  /*
+    بقية أنواع الأسئلة:
+    يبدأ المؤقت مباشرة.
+  */
+  startActivityTimer();
+}
 
 function getDefaultTeamName(index){
   return "Team " +
@@ -2531,11 +4693,30 @@ function getDefaultTeamName(index){
 
 function prepareTeamSetup(){
 
+  clearRandomQuestionTimers();
+  clearWheelState();
   stopActivityTimer();
 
   TEAM_COUNT = 1;
   TEAMS = [];
   CURRENT_TEAM_INDEX = 0;
+
+  RACE_MODE_ACTIVE = false;
+  RACE_TOTAL_STEPS = 1;
+
+  document
+    .getElementById("raceBoard")
+    ?.classList
+    .add("hidden");
+
+  const raceLanes =
+    document.getElementById(
+      "raceLanes"
+    );
+
+  if(raceLanes){
+    raceLanes.innerHTML = "";
+  }
 
   const select =
     document.getElementById(
@@ -2690,7 +4871,8 @@ function confirmTeamSetup(){
       name,
       correct:0,
       answered:0,
-      assigned:0
+      assigned:0,
+      racePosition:0
     })
   );
 
@@ -2766,10 +4948,11 @@ function confirmTeamSetup(){
     .filter(Boolean)
     .join(" • ");
 
-  recordActivityUsageStart();
+recordActivityUsageStart();
 
-  startActivityTimer();
-  renderStudentQuestion();
+setupRaceGame();
+renderStudentQuestion();
+prepareTimerForCurrentQuestion();
 
   window.scrollTo({
     top:0,
@@ -2795,7 +4978,8 @@ function getCurrentTeam(){
 }
 
 function recordCurrentTeamAnswer(
-  isCorrect
+  isCorrect,
+  raceSteps = 1
 ){
 
   const team =
@@ -2808,7 +4992,13 @@ function recordCurrentTeamAnswer(
   team.answered++;
 
   if(isCorrect){
+
     team.correct++;
+
+    moveCurrentTeamInRace(
+      raceSteps
+    );
+
   }
 
   renderLiveTeamBoard();
@@ -2864,6 +5054,16 @@ function renderLiveTeamBoard(){
           ✅ ${team.correct}
           &nbsp; | &nbsp;
           Answered ${team.answered}/${team.assigned}
+          ${
+            RACE_MODE_ACTIVE
+              ? `&nbsp; | &nbsp; 🏁 ${
+                  Number(
+                    team.racePosition ||
+                    0
+                  )
+                }/${RACE_TOTAL_STEPS}`
+              : ""
+          }
         </span>
       </div>
     `).join("");
@@ -2885,6 +5085,21 @@ function getRankedTeams(){
         : 0
     }))
     .sort((a,b)=>
+      (
+        RACE_MODE_ACTIVE
+          ? (
+              Number(
+                b.racePosition ||
+                0
+              ) -
+              Number(
+                a.racePosition ||
+                0
+              )
+            )
+          : 0
+      ) ||
+
       b.correct -
       a.correct ||
 
@@ -2943,7 +5158,16 @@ function renderTeamResults(){
         </div>
 
         <div class="team-rank-score">
-          ${team.correct} Correct
+          ${
+            RACE_MODE_ACTIVE
+              ? `🏁 ${
+                  Number(
+                    team.racePosition ||
+                    0
+                  )
+                }/${RACE_TOTAL_STEPS}`
+              : `${team.correct} Correct`
+          }
         </div>
 
         <div class="team-rank-accuracy">
@@ -2956,64 +5180,53 @@ function renderTeamResults(){
   return winner;
 }
 
-function startActivity(
-  activityId,
-  courseId
-){
-
+function startActivity(activityId,courseId){
   stopActivityTimer();
-
-  if(
-    !CURRENT_STUDENT ||
-    !CURRENT_STUDENT_IQAMA
-  ){
-    alert(
-      "Enter the student Iqama / ID first."
-    );
-    return;
-  }
 
   CURRENT_ACTIVITY =
     ACTIVITIES_CACHE.find(
       item=>item.id === activityId
     ) || null;
 
-  const studentCourses =
-    getCoursesForCurrentStudent();
-
   CURRENT_COURSE =
-    studentCourses.find(
-      item=>cleanId(item.id) === cleanId(courseId)
-    ) || null;
+    OPEN_COURSES_CACHE.find(
+      item=>item.id === courseId
+    ) ||
+    getSelectedTargetCourse(
+      CURRENT_ACTIVITY
+    ) ||
+    null;
 
   if(!CURRENT_ACTIVITY){
-    alert(
-      "Unable to open the activity."
-    );
+    alert("Unable to open the activity.");
     return;
   }
 
-  if(!CURRENT_COURSE){
-    alert(
-      "This activity is not linked to the student's active course."
-    );
+  if(!ACTIVITY_STUDENT_IQAMA || !ACTIVITY_STUDENT_MAIN){
+    alert("Please log in using the student ID first.");
+    updateActivityStudentUI(false);
     return;
   }
 
   if(
-    !Array.isArray(
-      CURRENT_ACTIVITY.questions
-    ) ||
+    !CURRENT_COURSE ||
+    !isCourseAssignedToLoggedStudent(CURRENT_COURSE)
+  ){
+    alert("This activity is not assigned to one of the student's open courses.");
+    CURRENT_ACTIVITY = null;
+    CURRENT_COURSE = null;
+    return;
+  }
+
+  if(
+    !Array.isArray(CURRENT_ACTIVITY.questions) ||
     !CURRENT_ACTIVITY.questions.length
   ){
-    alert(
-      "This activity does not contain questions."
-    );
+    alert("This activity does not contain questions.");
     return;
   }
 
   prepareTeamSetup();
-
 }
 
 function startActivityTimer(){
@@ -3046,9 +5259,14 @@ function startActivityTimer(){
     return;
   }
 
-  ACTIVITY_TIME_LEFT = totalSeconds;
+ACTIVITY_TIME_LEFT = totalSeconds;
 
-  updateActivityTimerDisplay();
+/*
+  تصفير آخر ثانية صوتية عند بدء سؤال جديد.
+*/
+LAST_TIMER_TICK_SECOND = null;
+
+updateActivityTimerDisplay();
 
   ACTIVITY_TIMER_INTERVAL =
     setInterval(()=>{
@@ -3075,16 +5293,29 @@ function startActivityTimer(){
 }
 
 function stopActivityTimer(){
+
   if(ACTIVITY_TIMER_INTERVAL){
+
     clearInterval(
       ACTIVITY_TIMER_INTERVAL
     );
 
-    ACTIVITY_TIMER_INTERVAL = null;
+    ACTIVITY_TIMER_INTERVAL =
+      null;
+
   }
+
+  /*
+    تصفير ذاكرة صوت Tick.
+    عند السؤال الجديد يسمح بتشغيل الصوت مرة أخرى.
+  */
+  LAST_TIMER_TICK_SECOND =
+    null;
+
 }
 
 function updateActivityTimerDisplay(){
+
   const display =
     document.getElementById(
       "activityTimerDisplay"
@@ -3093,11 +5324,15 @@ function updateActivityTimerDisplay(){
   const safe =
     Math.max(
       0,
-      Number(ACTIVITY_TIME_LEFT || 0)
+      Number(
+        ACTIVITY_TIME_LEFT || 0
+      )
     );
 
   const minutes =
-    Math.floor(safe / 60);
+    Math.floor(
+      safe / 60
+    );
 
   const seconds =
     safe % 60;
@@ -3108,32 +5343,100 @@ function updateActivityTimerDisplay(){
     ":" +
     String(seconds).padStart(2,"0");
 
-  if(safe <= 10){
-    display.style.background = "#e74c3c";
-  }else if(safe <= 30){
-    display.style.background = "#f39c12";
-  }else{
-    display.style.background = "#164478";
+  /*
+    تشغيل صوت العد فقط في آخر 10 ثوانٍ.
+
+    safe > 0:
+    حتى لا يصدر Tick عند وصول الوقت إلى صفر.
+
+    LAST_TIMER_TICK_SECOND !== safe:
+    يمنع تشغيل الصوت مرتين لنفس الثانية.
+  */
+  if(
+    safe <= 10 &&
+    safe > 0 &&
+    LAST_TIMER_TICK_SECOND !== safe
+  ){
+
+    LAST_TIMER_TICK_SECOND =
+      safe;
+
+    playTimerTickSound();
+
   }
+
+  /*
+    تغيير لون المؤقت حسب الوقت المتبقي.
+  */
+  if(safe <= 10){
+
+    display.style.background =
+      "#e74c3c";
+
+  }else if(safe <= 30){
+
+    display.style.background =
+      "#f39c12";
+
+  }else{
+
+    display.style.background =
+      "#164478";
+
+  }
+
 }
 
 async function finishActivityByTimeout(){
-  if(ACTIVITY_FINISHED){
-    return;
-  }
 
+  if(ACTIVITY_FINISHED) return;
+
+  clearRandomQuestionTimers();
+  clearWheelState();
   ANSWER_LOCKED = true;
+
   stopActivityTimer();
+
   ACTIVITY_TIME_LEFT = 0;
 
-  alert(
-    "Time is over. The activity will now finish."
-  );
+  // يعتبر السؤال الحالي خطأ
+  recordCurrentTeamAnswer(false);
 
-  await finishActivity(true);
+  document.getElementById("feedback").textContent =
+    "⏰ Time is over";
+
+  document.getElementById("feedback").className =
+    "feedback bad";
+
+  playWrongSound();
+
+  // نصف ثانية ثم السؤال التالي
+  setTimeout(()=>{
+
+    CURRENT_QUESTION_INDEX++;
+
+    if(
+      CURRENT_QUESTION_INDEX >=
+      CURRENT_ACTIVITY.questions.length
+    ){
+
+      finishActivity();
+
+}else{
+
+  renderStudentQuestion();
+  prepareTimerForCurrentQuestion();
+
+}
+
+  },700);
+
 }
 
 function renderStudentQuestion(){
+  clearRandomQuestionTimers();
+  clearWheelState();
+
   if(
     !CURRENT_ACTIVITY ||
     ACTIVITY_FINISHED
@@ -3199,18 +5502,43 @@ function renderStudentQuestion(){
       "gameQuestionVideo"
     );
 
+  const questionYouTube =
+    document.getElementById(
+      "gameQuestionYouTube"
+    );
+
   const questionAudio =
     document.getElementById(
       "gameQuestionAudio"
     );
 
-  questionImage.classList.add("hidden");
-  questionVideo.classList.add("hidden");
-  questionAudio.classList.add("hidden");
+  questionImage
+    .classList
+    .add("hidden");
 
-  questionImage.removeAttribute("src");
-  questionVideo.removeAttribute("src");
-  questionAudio.removeAttribute("src");
+  questionVideo
+    .classList
+    .add("hidden");
+
+  questionYouTube
+    .classList
+    .add("hidden");
+
+  questionAudio
+    .classList
+    .add("hidden");
+
+  questionImage
+    .removeAttribute("src");
+
+  questionVideo
+    .removeAttribute("src");
+
+  questionYouTube
+    .removeAttribute("src");
+
+  questionAudio
+    .removeAttribute("src");
 
   questionVideo.pause();
   questionAudio.pause();
@@ -3228,23 +5556,89 @@ function renderStudentQuestion(){
     );
 
   const mediaUrl =
-    question.mediaUrl ||
-    question.video ||
-    question.audio ||
-    question.image ||
-    "";
+    String(
+      question.mediaUrl ||
+      question.video ||
+      question.audio ||
+      question.image ||
+      ""
+    ).trim();
 
-  if(mediaUrl && mediaType === "image"){
-    questionImage.src = mediaUrl;
-    questionImage.classList.remove("hidden");
-  }else if(mediaUrl && mediaType === "video"){
-    questionVideo.src = mediaUrl;
-    questionVideo.classList.remove("hidden");
-    questionVideo.load();
-  }else if(mediaUrl && mediaType === "audio"){
-    questionAudio.src = mediaUrl;
-    questionAudio.classList.remove("hidden");
+  /*
+    Balloon and Mystery media must remain hidden until
+    the student selects a balloon or opens a mystery box.
+  */
+  const revealMediaAfterSelection =
+    [
+      "balloon",
+      "mystery"
+    ].includes(
+      String(type)
+        .trim()
+        .toLowerCase()
+    );
+
+  if(
+    !revealMediaAfterSelection &&
+    mediaUrl &&
+    mediaType === "image"
+  ){
+
+    questionImage.src =
+      mediaUrl;
+
+    questionImage
+      .classList
+      .remove("hidden");
+
+  }else if(
+    !revealMediaAfterSelection &&
+    mediaUrl &&
+    mediaType === "video"
+  ){
+
+    const youtubeEmbedUrl =
+      toYouTubeEmbedUrl(
+        mediaUrl
+      );
+
+    if(youtubeEmbedUrl){
+
+      questionYouTube.src =
+        youtubeEmbedUrl;
+
+      questionYouTube
+        .classList
+        .remove("hidden");
+
+    }else{
+
+      questionVideo.src =
+        mediaUrl;
+
+      questionVideo
+        .classList
+        .remove("hidden");
+
+      questionVideo.load();
+
+    }
+
+  }else if(
+    !revealMediaAfterSelection &&
+    mediaUrl &&
+    mediaType === "audio"
+  ){
+
+    questionAudio.src =
+      mediaUrl;
+
+    questionAudio
+      .classList
+      .remove("hidden");
+
     questionAudio.load();
+
   }
 
   const feedback =
@@ -3276,6 +5670,50 @@ function renderStudentQuestion(){
     return;
   }
 
+  if(type === "random"){
+    renderRandomImageQuestion(
+      question,
+      answersBox
+    );
+    return;
+  }
+
+  if(type === "wheel"){
+    renderWheelQuestion(
+      question,
+      answersBox
+    );
+    return;
+  }
+
+  if(type === "balloon"){
+    document
+      .getElementById("gameQuestion")
+      .textContent =
+        "🎈 Pop the balloon to reveal the question!";
+
+    renderBalloonQuestion(
+      question,
+      answersBox
+    );
+
+    return;
+  }
+
+  if(type === "mystery"){
+    document
+      .getElementById("gameQuestion")
+      .textContent =
+        "🎁 Open the mystery box to reveal the question!";
+
+    renderMysteryQuestion(
+      question,
+      answersBox
+    );
+
+    return;
+  }
+
   answersBox.className =
     "student-answers";
 
@@ -3292,8 +5730,8 @@ function renderStudentQuestion(){
 
       button.innerHTML = `
         ${
-          answer.image
-            ? `<img src="${esc(answer.image)}" alt="">`
+          getItemImage(answer)
+            ? `<img src="${esc(getItemImage(answer))}" alt="">`
             : ""
         }
 
@@ -3313,6 +5751,2019 @@ function renderStudentQuestion(){
 
       answersBox.appendChild(button);
     });
+}
+
+
+/* =====================================
+   RANDOM IMAGE QUESTION PLAYER
+===================================== */
+function clearRandomQuestionTimers(){
+  if(RANDOM_SPIN_INTERVAL){
+    clearInterval(RANDOM_SPIN_INTERVAL);
+    RANDOM_SPIN_INTERVAL = null;
+  }
+
+  if(RANDOM_STOP_TIMEOUT){
+    clearTimeout(RANDOM_STOP_TIMEOUT);
+    RANDOM_STOP_TIMEOUT = null;
+  }
+
+  RANDOM_IS_SPINNING = false;
+LAST_RANDOM_MOVE_SOUND_TIME = 0;
+  const display =
+    document.getElementById("randomDisplay");
+
+  if(display){
+    display.classList.remove("spinning");
+  }
+}
+
+function getRandomQuestionItems(){
+  const question =
+    CURRENT_ACTIVITY
+      ?.questions?.[CURRENT_QUESTION_INDEX];
+
+  return Array.isArray(question?.answers)
+    ? question.answers.filter(item=>
+        Boolean(
+          getItemImage(item)
+        )
+      )
+    : [];
+}
+
+function renderRandomImageQuestion(question,answersBox){
+  clearRandomQuestionTimers();
+
+  RANDOM_SELECTED_INDEX = -1;
+  RANDOM_IS_SPINNING = false;
+
+  answersBox.className = "random-game";
+
+  const items =
+    Array.isArray(question.answers)
+      ? question.answers.filter(item=>
+          Boolean(
+            getItemImage(item)
+          )
+        )
+      : [];
+
+  if(items.length < 2){
+    answersBox.innerHTML = `
+      <div class="feedback bad">
+        This random question requires at least two images.
+      </div>
+    `;
+    return;
+  }
+
+  answersBox.innerHTML = `
+    <div id="randomDisplay" class="random-display">
+      <div class="random-placeholder">
+        <i class="fa-solid fa-images" style="font-size:44px;margin-bottom:10px"></i><br>
+        Press Start Random Selection.<br>
+        The images will change quickly and stop on one image.
+      </div>
+    </div>
+
+    <div class="random-controls">
+      <button
+        id="randomStartBtn"
+        class="btn btn-gold"
+        type="button"
+        onclick="startRandomImageSelection()">
+        <i class="fa-solid fa-shuffle"></i>
+        Start Random Selection
+      </button>
+
+      <button
+        id="randomCorrectBtn"
+        class="btn random-correct-btn hidden"
+        type="button"
+        onclick="gradeRandomAnswer(true)">
+        <i class="fa-solid fa-check"></i>
+        Correct
+      </button>
+
+      <button
+        id="randomWrongBtn"
+        class="btn random-wrong-btn hidden"
+        type="button"
+        onclick="gradeRandomAnswer(false)">
+        <i class="fa-solid fa-xmark"></i>
+        Wrong
+      </button>
+    </div>
+
+    <div class="play-summary-info" style="margin-top:13px">
+      The student answers verbally. The trainer then selects Correct or Wrong.
+    </div>
+  `;
+}
+
+function showRandomItem(index){
+  const items = getRandomQuestionItems();
+  const item = items[index];
+  const display =
+    document.getElementById("randomDisplay");
+
+  if(!display || !item){
+    return;
+  }
+
+  display.innerHTML = `
+    <img
+      src="${esc(getItemImage(item))}"
+      alt="Random question image"
+      onerror="this.style.display='none';this.nextElementSibling?.classList.remove('hidden')">
+
+    <div class="random-placeholder hidden">
+      The selected image could not be loaded.
+    </div>
+
+    ${
+      item.text
+        ? `<div class="random-display-text">${esc(item.text)}</div>`
+        : ""
+    }
+  `;
+}
+
+function startRandomImageSelection(){
+
+  if(
+    ANSWER_LOCKED ||
+    RANDOM_IS_SPINNING ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  const items =
+    getRandomQuestionItems();
+
+  /*
+    التأكد من الصور أولًا،
+    ثم تشغيل المؤقت.
+  */
+  if(items.length < 2){
+
+    alert(
+      "This random question requires at least two images."
+    );
+
+    return;
+  }
+
+  /*
+    يبدأ المؤقت عند الضغط الأول فقط.
+    Spin Again لا يعيد الوقت.
+  */
+  if(!RANDOM_TIMER_STARTED){
+
+    RANDOM_TIMER_STARTED = true;
+
+    startActivityTimer();
+
+  }
+
+  clearRandomQuestionTimers();
+
+  RANDOM_IS_SPINNING = true;
+  RANDOM_SELECTED_INDEX = -1;
+
+  const startButton =
+    document.getElementById(
+      "randomStartBtn"
+    );
+
+  const correctButton =
+    document.getElementById(
+      "randomCorrectBtn"
+    );
+
+  const wrongButton =
+    document.getElementById(
+      "randomWrongBtn"
+    );
+
+  const display =
+    document.getElementById(
+      "randomDisplay"
+    );
+
+  if(startButton){
+
+    startButton.disabled = true;
+
+    startButton.innerHTML = `
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Selecting...
+    `;
+  }
+
+  correctButton?.classList.add(
+    "hidden"
+  );
+
+  wrongButton?.classList.add(
+    "hidden"
+  );
+
+  display?.classList.add(
+    "spinning"
+  );
+
+  let previousIndex = -1;
+
+  RANDOM_SPIN_INTERVAL =
+    setInterval(()=>{
+
+      let nextIndex = 0;
+
+      do{
+
+        nextIndex =
+          Math.floor(
+            Math.random() *
+            items.length
+          );
+
+      }while(
+        items.length > 1 &&
+        nextIndex === previousIndex
+      );
+
+      previousIndex =
+        nextIndex;
+
+      showRandomItem(
+        nextIndex
+      );
+playRandomMoveSound();
+    },90);
+
+  const spinDuration =
+    2200 +
+    Math.floor(
+      Math.random() * 1400
+    );
+
+  RANDOM_STOP_TIMEOUT =
+    setTimeout(()=>{
+
+      if(RANDOM_SPIN_INTERVAL){
+
+        clearInterval(
+          RANDOM_SPIN_INTERVAL
+        );
+
+        RANDOM_SPIN_INTERVAL =
+          null;
+      }
+
+      RANDOM_STOP_TIMEOUT =
+        null;
+
+      RANDOM_SELECTED_INDEX =
+        Math.floor(
+          Math.random() *
+          items.length
+        );
+
+      showRandomItem(
+        RANDOM_SELECTED_INDEX
+      );
+
+      display?.classList.remove(
+        "spinning"
+      );
+
+      RANDOM_IS_SPINNING =
+        false;
+
+      if(correctButton){
+
+        correctButton
+          .classList
+          .remove("hidden");
+
+        correctButton.disabled =
+          false;
+      }
+
+      if(wrongButton){
+
+        wrongButton
+          .classList
+          .remove("hidden");
+
+        wrongButton.disabled =
+          false;
+      }
+
+      if(startButton){
+
+        startButton.disabled =
+          false;
+
+        startButton.innerHTML = `
+          <i class="fa-solid fa-rotate-right"></i>
+          Spin Again
+        `;
+      }
+
+    },spinDuration);
+}
+
+function gradeRandomAnswer(isCorrect){
+  if(
+    ANSWER_LOCKED ||
+    RANDOM_IS_SPINNING ||
+    RANDOM_SELECTED_INDEX < 0 ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+  clearRandomQuestionTimers();
+LAST_RANDOM_MOVE_SOUND_TIME = 0;
+  const feedback =
+    document.getElementById("feedback");
+
+  feedback.className = "feedback";
+
+  if(isCorrect){
+    CURRENT_SCORE++;
+    feedback.textContent =
+      "✅ The trainer marked the answer as correct.";
+    feedback.classList.add("good");
+    launchSmallConfetti();
+    playCorrectSound();
+  }else{
+    feedback.textContent =
+      "❌ The trainer marked the answer as incorrect.";
+    feedback.classList.add("bad");
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(Boolean(isCorrect));
+
+  [
+    "randomCorrectBtn",
+    "randomWrongBtn",
+    "randomStartBtn"
+  ].forEach(id=>{
+    const button = document.getElementById(id);
+    if(button){
+      button.disabled = true;
+    }
+  });
+
+  document
+    .getElementById("scorePill")
+    .textContent = `⭐ ${CURRENT_SCORE}`;
+/*
+  إيقاف المؤقت بعد تسجيل الإجابة
+*/
+stopActivityTimer();
+
+/*
+  إظهار زر السؤال التالي
+*/
+  showNextQuestionButton();
+}
+
+
+/* =====================================
+   WHEEL OF FORTUNE PLAYER
+===================================== */
+
+function clearWheelState(){
+
+  if(WHEEL_STOP_TIMEOUT){
+    clearTimeout(WHEEL_STOP_TIMEOUT);
+    WHEEL_STOP_TIMEOUT = null;
+  }
+
+  WHEEL_IS_SPINNING = false;
+  WHEEL_SELECTED_INDEX = -1;
+  WHEEL_POINTS_MULTIPLIER = 1;
+
+  const disc =
+    document.getElementById(
+      "wheelDisc"
+    );
+
+  if(disc){
+    disc.style.transition = "none";
+  }
+}
+
+function getWheelItems(){
+
+  const question =
+    CURRENT_ACTIVITY
+      ?.questions?.[CURRENT_QUESTION_INDEX];
+
+  return Array.isArray(question?.answers)
+    ? question.answers.filter(item=>
+        String(item?.text || "").trim()
+      )
+    : [];
+}
+
+function getWheelColors(count){
+
+  const colors = [
+    "#164478",
+    "#f4b942",
+    "#17a673",
+    "#e74c3c",
+    "#7f5af0",
+    "#00a8cc",
+    "#f08a24",
+    "#34495e",
+    "#c0392b",
+    "#16a085",
+    "#8e44ad",
+    "#2980b9"
+  ];
+
+  return Array.from(
+    {length:count},
+    (_,index)=>
+      colors[index % colors.length]
+  );
+}
+
+function renderWheelQuestion(
+  question,
+  answersBox
+){
+
+  clearWheelState();
+
+  const items =
+    Array.isArray(question.answers)
+      ? question.answers.filter(item=>
+          String(item?.text || "").trim()
+        )
+      : [];
+
+  answersBox.className =
+    "wheel-game";
+
+  WHEEL_SELECTED_INDEX = -1;
+  WHEEL_IS_SPINNING = false;
+  WHEEL_POINTS_MULTIPLIER = 1;
+
+  if(items.length < 2){
+
+    answersBox.innerHTML = `
+      <div class="feedback bad">
+        This wheel requires at least two sections.
+      </div>
+    `;
+
+    return;
+  }
+
+  const colors =
+    getWheelColors(items.length);
+
+  const step =
+    360 / items.length;
+
+  const gradient =
+    items.map(
+      (_,index)=>
+        `${colors[index]} ${index * step}deg ${(index + 1) * step}deg`
+    ).join(",");
+
+  answersBox.innerHTML = `
+    <div class="wheel-wrap">
+
+      <div class="wheel-pointer">
+        ▼
+      </div>
+
+      <div
+        id="wheelDisc"
+        class="wheel-disc"
+        style="background:conic-gradient(${gradient})">
+
+        ${
+          items.map((item,index)=>`
+            <div
+              class="wheel-label"
+              style="
+              transform:
+  rotate(${index * step + step / 2 - 90}deg)
+  translateY(-50%);
+              ">
+              ${esc(item.text)}
+            </div>
+          `).join("")
+        }
+
+        <div class="wheel-center">
+          🎡
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="wheel-controls">
+
+      <button
+        id="wheelSpinBtn"
+        class="btn btn-gold"
+        type="button"
+        onclick="spinWheel()">
+
+        <i class="fa-solid fa-rotate"></i>
+        Spin Wheel
+
+      </button>
+
+      <button
+        id="wheelCorrectBtn"
+        class="btn wheel-correct hidden"
+        type="button"
+        onclick="gradeWheelAnswer(true)">
+
+        <i class="fa-solid fa-check"></i>
+        Correct
+
+      </button>
+
+      <button
+        id="wheelWrongBtn"
+        class="btn wheel-wrong hidden"
+        type="button"
+        onclick="gradeWheelAnswer(false)">
+
+        <i class="fa-solid fa-xmark"></i>
+        Wrong
+
+      </button>
+
+    </div>
+
+    <div
+      id="wheelResult"
+      class="wheel-result-card hidden">
+    </div>
+
+    <div
+      class="play-summary-info"
+      style="margin-top:13px">
+
+      Spin the wheel, let the student complete the selected challenge,
+      then choose Correct or Wrong.
+
+    </div>
+  `;
+}
+
+function spinWheel(){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    WHEEL_IS_SPINNING
+  ){
+    return;
+  }
+
+  const items =
+    getWheelItems();
+
+  if(items.length < 2){
+
+    alert(
+      "This wheel requires at least two sections."
+    );
+
+    return;
+  }
+
+  /*
+    يبدأ المؤقت عند أول دوران فقط.
+    Spin Again لا يعيد المؤقت.
+  */
+  if(!WHEEL_TIMER_STARTED){
+
+    WHEEL_TIMER_STARTED = true;
+
+    startActivityTimer();
+
+  }
+
+  WHEEL_IS_SPINNING = true;
+
+  const button =
+    document.getElementById(
+      "wheelSpinBtn"
+    );
+
+  const disc =
+    document.getElementById(
+      "wheelDisc"
+    );
+
+  const correctButton =
+    document.getElementById(
+      "wheelCorrectBtn"
+    );
+
+  const wrongButton =
+    document.getElementById(
+      "wheelWrongBtn"
+    );
+
+  const result =
+    document.getElementById(
+      "wheelResult"
+    );
+
+  if(!button || !disc){
+    WHEEL_IS_SPINNING = false;
+    return;
+  }
+
+  button.disabled = true;
+
+  button.innerHTML = `
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    Spinning...
+  `;
+
+  correctButton?.classList.add(
+    "hidden"
+  );
+
+  wrongButton?.classList.add(
+    "hidden"
+  );
+
+  result?.classList.add(
+    "hidden"
+  );
+
+WHEEL_SELECTED_INDEX =
+  Math.floor(
+    Math.random() *
+    items.length
+  );
+
+const step =
+  360 / items.length;
+
+/*
+  زاوية منتصف القطاع المختار.
+*/
+const selectedCenterAngle =
+  WHEEL_SELECTED_INDEX *
+  step +
+  step / 2;
+
+/*
+  موضع دوران العجلة الحالي من 0 إلى 359.
+*/
+const currentRotation =
+  (
+    (
+      WHEEL_ROTATION % 360
+    ) +
+    360
+  ) % 360;
+
+/*
+  نريد أن يصل منتصف القطاع المختار إلى أعلى العجلة،
+  حيث يوجد السهم عند زاوية 0.
+*/
+const targetRotation =
+  (
+    360 -
+    selectedCenterAngle
+  ) % 360;
+
+/*
+  مقدار الحركة المطلوبة من الوضع الحالي
+  إلى الوضع الصحيح.
+*/
+const adjustment =
+  (
+    targetRotation -
+    currentRotation +
+    360
+  ) % 360;
+
+/*
+  أربع دورات كاملة ثم الوصول إلى القطاع المختار.
+*/
+WHEEL_ROTATION +=
+  1440 +
+  adjustment;
+
+  disc.style.transition =
+  "transform 4.4s cubic-bezier(.12,.72,.12,1)";
+
+  requestAnimationFrame(()=>{
+
+    disc.style.transform =
+      `rotate(${WHEEL_ROTATION}deg)`;
+
+  });
+
+  playWheelSpinSound();
+
+  WHEEL_STOP_TIMEOUT =
+    setTimeout(()=>{
+
+      WHEEL_STOP_TIMEOUT = null;
+
+      if(
+        ACTIVITY_FINISHED ||
+        ANSWER_LOCKED
+      ){
+        WHEEL_IS_SPINNING = false;
+        return;
+      }
+
+      WHEEL_IS_SPINNING = false;
+
+      const selected =
+        items[WHEEL_SELECTED_INDEX];
+
+      const doublePoints =
+        clean(
+          selected?.text || ""
+        ).includes(
+          "double points"
+        );
+
+      WHEEL_POINTS_MULTIPLIER =
+        doublePoints
+          ? 2
+          : 1;
+
+      if(result){
+
+        result.innerHTML = `
+          <div class="wheel-result-category">
+
+            ${
+              doublePoints
+                ? "✨"
+                : "🎯"
+            }
+
+            ${esc(
+              selected?.text ||
+              "Selected Challenge"
+            )}
+
+            ${
+              doublePoints
+                ? " — 2 Points"
+                : ""
+            }
+
+          </div>
+
+          <div class="wheel-result-question">
+
+            ${esc(
+              selected?.right ||
+              selected?.challenge ||
+              selected?.question ||
+              "Complete the selected challenge."
+            )}
+
+          </div>
+
+          ${
+            selected?.image
+              ? `
+                <img
+                  src="${esc(selected.image)}"
+                  alt="Wheel challenge">
+              `
+              : ""
+          }
+        `;
+
+        result.classList.remove(
+          "hidden"
+        );
+      }
+
+      correctButton?.classList.remove(
+        "hidden"
+      );
+
+      wrongButton?.classList.remove(
+        "hidden"
+      );
+
+      button.disabled = false;
+
+      button.innerHTML = `
+        <i class="fa-solid fa-rotate-right"></i>
+        Spin Again
+      `;
+
+      playWheelStopSound();
+
+    },4400);
+}
+
+function gradeWheelAnswer(isCorrect){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    WHEEL_IS_SPINNING ||
+    WHEEL_SELECTED_INDEX < 0
+  ){
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  feedback.className =
+    "feedback";
+
+  if(isCorrect){
+
+    CURRENT_SCORE +=
+      WHEEL_POINTS_MULTIPLIER;
+
+    feedback.textContent =
+      WHEEL_POINTS_MULTIPLIER === 2
+        ? "🎉 Correct! Double points awarded."
+        : "🎉 Correct wheel challenge!";
+
+    feedback.classList.add(
+      "good"
+    );
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+
+    feedback.textContent =
+      "❌ The wheel challenge was marked incorrect.";
+
+    feedback.classList.add(
+      "bad"
+    );
+
+    playWrongSound();
+
+  }
+
+  recordCurrentTeamAnswer(
+    Boolean(isCorrect),
+    isCorrect
+      ? WHEEL_POINTS_MULTIPLIER
+      : 1
+  );
+
+  WHEEL_POINTS_MULTIPLIER = 1;
+
+  [
+    "wheelSpinBtn",
+    "wheelCorrectBtn",
+    "wheelWrongBtn"
+  ].forEach(id=>{
+
+    const button =
+      document.getElementById(id);
+
+    if(button){
+      button.disabled = true;
+    }
+
+  });
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  stopActivityTimer();
+
+  showNextQuestionButton();
+}
+
+function playWheelSpinSound(){
+
+  try{
+
+    const audioContext =
+      getSharedAudioContext();
+
+    if(!audioContext){
+      return;
+    }
+
+    const startTime =
+      audioContext.currentTime;
+
+    for(let index = 0; index < 24; index++){
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type =
+        "square";
+
+      oscillator.frequency.value =
+        290 +
+        index * 14;
+
+      const tickStart =
+        startTime +
+        index * 0.075;
+
+      const tickEnd =
+        tickStart + 0.045;
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        tickStart
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.035,
+        tickStart + 0.008
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        tickEnd
+      );
+
+      oscillator.connect(gain);
+
+      gain.connect(
+        audioContext.destination
+      );
+
+      oscillator.start(
+        tickStart
+      );
+
+      oscillator.stop(
+        tickEnd
+      );
+
+      oscillator.onended = ()=>{
+
+        oscillator.disconnect();
+        gain.disconnect();
+
+      };
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Wheel spin sound could not play:",
+      error
+    );
+
+  }
+
+}
+
+function playWheelStopSound(){
+
+  playToneSequence([
+    {
+      frequency:523.25,
+      duration:0.12,
+      delay:0
+    },
+    {
+      frequency:659.25,
+      duration:0.12,
+      delay:0.12
+    },
+    {
+      frequency:880,
+      duration:0.25,
+      delay:0.24
+    }
+  ]);
+
+}
+
+
+
+/* =====================================
+   BALLOON POP QUESTION PLAYER
+===================================== */
+
+function ensureGroupedChoiceSlots(type){
+
+  if(
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions)
+  ){
+    return [];
+  }
+
+  const normalizedType =
+    String(type || "")
+      .trim()
+      .toLowerCase();
+
+  const matchingQuestions =
+    CURRENT_ACTIVITY.questions
+      .map((question,index)=>({
+        question,
+        index
+      }))
+      .filter(item=>
+        String(
+          item.question?.type ||
+          ""
+        )
+        .trim()
+        .toLowerCase() ===
+        normalizedType
+      );
+
+  matchingQuestions.forEach((item,slotIndex)=>{
+
+    if(
+      !Number.isInteger(
+        item.question._groupChoiceSlot
+      )
+    ){
+      item.question._groupChoiceSlot =
+        slotIndex;
+    }
+
+  });
+
+  return matchingQuestions
+    .sort((a,b)=>
+      a.question._groupChoiceSlot -
+      b.question._groupChoiceSlot
+    );
+
+}
+
+function getGroupedChoiceItems(type){
+
+  return ensureGroupedChoiceSlots(type)
+    .map(item=>({
+
+      question:
+        item.question,
+
+      questionIndex:
+        CURRENT_ACTIVITY.questions.indexOf(
+          item.question
+        ),
+
+      slot:
+        item.question._groupChoiceSlot,
+
+      completed:
+        CURRENT_ACTIVITY.questions.indexOf(
+          item.question
+        ) <
+        CURRENT_QUESTION_INDEX
+
+    }));
+
+}
+
+function moveSelectedQuestionToCurrent(selectedIndex){
+
+  if(
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions) ||
+    selectedIndex === CURRENT_QUESTION_INDEX
+  ){
+    return;
+  }
+
+  const questions =
+    CURRENT_ACTIVITY.questions;
+
+  const selectedQuestion =
+    questions[selectedIndex];
+
+  questions[selectedIndex] =
+    questions[CURRENT_QUESTION_INDEX];
+
+  questions[CURRENT_QUESTION_INDEX] =
+    selectedQuestion;
+
+}
+
+function renderBalloonQuestion(question,answersBox){
+
+  const balloonItems =
+    getGroupedChoiceItems(
+      "balloon"
+    );
+
+  answersBox.className =
+    "balloon-game";
+
+  answersBox.innerHTML = `
+    <div id="balloonStage" class="balloon-stage">
+
+      <div class="balloon-instruction">
+        Choose and pop one balloon. Each balloon contains a different question.
+      </div>
+
+      <div class="balloon-choice-grid">
+
+        ${balloonItems
+          .map(item=>{
+
+            if(
+              item.completed ||
+              item.questionIndex <
+              CURRENT_QUESTION_INDEX
+            ){
+              return `
+                <div
+                  class="balloon-choice group-choice-placeholder"
+                  aria-hidden="true">
+                </div>
+              `;
+            }
+
+            return `
+              <button
+                id="questionBalloon_${item.slot}"
+                class="balloon-choice"
+                type="button"
+                onclick="popQuestionBalloon(${item.questionIndex},this)"
+                aria-label="Pop balloon ${item.slot + 1}">
+
+                <span class="balloon-choice-body">
+                  <span class="balloon-choice-number">
+                    ${item.slot + 1}
+                  </span>
+                </span>
+
+                <span class="balloon-choice-knot"></span>
+                <span class="balloon-choice-string"></span>
+
+              </button>
+            `;
+
+          })
+          .join("")}
+
+      </div>
+
+      <div
+        id="balloonQuestionCard"
+        class="balloon-question-card hidden">
+      </div>
+
+    </div>
+  `;
+
+}
+
+function playBalloonPopSound(){
+
+  try{
+
+    const context =
+      getSharedAudioContext();
+
+    if(!context){
+      return;
+    }
+
+    const now =
+      context.currentTime;
+
+    const oscillator =
+      context.createOscillator();
+
+    const gain =
+      context.createGain();
+
+    oscillator.type =
+      "sawtooth";
+
+    oscillator.frequency.setValueAtTime(
+      190,
+      now
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+      55,
+      now + 0.16
+    );
+
+    gain.gain.setValueAtTime(
+      0.28,
+      now
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + 0.18
+    );
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.19);
+
+  }catch(error){
+
+    console.warn(
+      "Balloon sound could not play:",
+      error
+    );
+
+  }
+
+}
+
+function popQuestionBalloon(
+  selectedQuestionIndex,
+  clickedBalloon
+){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  const selectedIndex =
+    Number(
+      selectedQuestionIndex
+    );
+
+  if(
+    !Number.isInteger(selectedIndex) ||
+    selectedIndex < CURRENT_QUESTION_INDEX ||
+    !CURRENT_ACTIVITY?.questions?.[selectedIndex] ||
+    String(
+      CURRENT_ACTIVITY.questions[selectedIndex]?.type ||
+      ""
+    ).toLowerCase() !== "balloon"
+  ){
+    return;
+  }
+
+  const stage =
+    document.getElementById(
+      "balloonStage"
+    );
+
+  const card =
+    document.getElementById(
+      "balloonQuestionCard"
+    );
+
+  if(
+    !clickedBalloon ||
+    !stage ||
+    !card ||
+    clickedBalloon.dataset.popped === "1"
+  ){
+    return;
+  }
+
+  moveSelectedQuestionToCurrent(
+    selectedIndex
+  );
+
+  /*
+    Balloon questions display the configured time first,
+    but the countdown starts only after a balloon is selected.
+  */
+  if(!ACTIVITY_TIMER_INTERVAL){
+    startActivityTimer();
+  }
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  clickedBalloon.dataset.popped =
+    "1";
+
+  document
+    .querySelectorAll(
+      ".balloon-choice"
+    )
+    .forEach(balloon=>{
+
+      balloon.disabled =
+        true;
+
+
+    });
+
+  clickedBalloon.classList.add(
+    "popping"
+  );
+
+  const burst =
+    document.createElement(
+      "div"
+    );
+
+  burst.className =
+    "balloon-burst";
+
+  burst.textContent =
+    "💥";
+
+  const balloonRect =
+    clickedBalloon.getBoundingClientRect();
+
+  const stageRect =
+    stage.getBoundingClientRect();
+
+  burst.style.left =
+    (
+      balloonRect.left -
+      stageRect.left +
+      balloonRect.width / 2
+    ) +
+    "px";
+
+  burst.style.top =
+    (
+      balloonRect.top -
+      stageRect.top +
+      balloonRect.height / 2
+    ) +
+    "px";
+
+  stage.appendChild(
+    burst
+  );
+
+  playBalloonPopSound();
+
+  setTimeout(()=>{
+
+    clickedBalloon.classList.add(
+      "hidden"
+    );
+
+    burst.remove();
+
+    /*
+      The question is rendered inside the revealed card only.
+      Clear the top heading to prevent duplicate text.
+    */
+    document
+      .getElementById(
+        "gameQuestion"
+      )
+      .textContent = "";
+
+    stage.classList.add(
+      "reveal-active"
+    );
+
+    card.innerHTML = `
+      <div class="balloon-question-text">
+        ${esc(
+          question.text ||
+          "Choose the correct answer."
+        )}
+      </div>
+
+      ${buildRevealedQuestionMedia(question)}
+
+      <div class="balloon-options">
+
+        ${(question.answers || [])
+          .map((answer,index)=>`
+            <button
+              class="student-answer balloon-option"
+              type="button"
+              onclick="chooseBalloonAnswer(${index},this)">
+
+              ${
+                answer.image
+                  ? `<img src="${esc(answer.image)}" alt="">`
+                  : ""
+              }
+
+              <div>
+                ${esc(answer.text || "")}
+              </div>
+
+            </button>
+          `)
+          .join("")}
+
+      </div>
+    `;
+
+    card.classList.remove(
+      "hidden"
+    );
+
+    requestAnimationFrame(()=>{
+      card.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    });
+
+  },330);
+
+}
+
+function chooseBalloonAnswer(
+  answerIndex,
+  clickedButton
+){
+
+  if(ANSWER_LOCKED){
+    return;
+  }
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  const selected =
+    question.answers[
+      answerIndex
+    ];
+
+  const buttons = [
+    ...document.querySelectorAll(
+      ".balloon-option"
+    )
+  ];
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  ANSWER_LOCKED =
+    true;
+
+  buttons.forEach(
+    (button,index)=>{
+
+      button.disabled =
+        true;
+
+      if(
+        question.answers[index]
+          ?.correct
+      ){
+
+        button.classList.add(
+          "correct"
+        );
+
+      }
+
+    }
+  );
+
+  if(selected?.correct){
+
+    CURRENT_SCORE++;
+
+    clickedButton.classList.add(
+      "correct"
+    );
+
+    feedback.textContent =
+      "🎉 Correct Answer! Excellent";
+
+    feedback.className =
+      "feedback good";
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+
+    clickedButton.classList.add(
+      "wrong"
+    );
+
+    feedback.textContent =
+      "❌ Incorrect Answer — See the Correct Answer";
+
+    feedback.className =
+      "feedback bad";
+
+    playWrongSound();
+
+  }
+
+  document
+    .getElementById(
+      "scorePill"
+    )
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  showNextQuestionButton();
+
+}
+
+
+/* =====================================
+   MYSTERY BOX QUESTION PLAYER
+===================================== */
+
+function renderMysteryQuestion(
+  question,
+  answersBox
+){
+
+  const mysteryItems =
+    getGroupedChoiceItems(
+      "mystery"
+    );
+
+  answersBox.className =
+    "mystery-game";
+
+  answersBox.innerHTML = `
+    <div id="mysteryStage" class="mystery-stage">
+
+      <div class="mystery-instruction">
+        Choose and open one mystery box. Each box contains a different question.
+      </div>
+
+      <div class="mystery-choice-grid">
+
+        ${mysteryItems
+          .map(item=>{
+
+            if(
+              item.completed ||
+              item.questionIndex <
+              CURRENT_QUESTION_INDEX
+            ){
+              return `
+                <div
+                  class="mystery-choice group-choice-placeholder"
+                  aria-hidden="true">
+                </div>
+              `;
+            }
+
+            return `
+              <button
+                id="mysteryBox_${item.slot}"
+                class="mystery-choice"
+                type="button"
+                onclick="openMysteryBox(${item.questionIndex},this)"
+                aria-label="Open mystery box ${item.slot + 1}">
+
+                <span class="mystery-choice-bow">🎀</span>
+                <span class="mystery-choice-lid"></span>
+                <span class="mystery-choice-body"></span>
+                <span class="mystery-choice-ribbon-v"></span>
+                <span class="mystery-choice-ribbon-h"></span>
+                <span class="mystery-choice-number">
+                  ${item.slot + 1}
+                </span>
+
+              </button>
+            `;
+
+          })
+          .join("")}
+
+      </div>
+
+      <div
+        id="mysteryQuestionCard"
+        class="mystery-question-card hidden">
+      </div>
+
+    </div>
+  `;
+
+}
+
+function playMysteryOpenSound(){
+
+  playToneSequence([
+    {
+      frequency:392,
+      duration:0.12,
+      delay:0
+    },
+    {
+      frequency:523.25,
+      duration:0.13,
+      delay:0.1
+    },
+    {
+      frequency:659.25,
+      duration:0.16,
+      delay:0.2
+    },
+    {
+      frequency:783.99,
+      duration:0.23,
+      delay:0.31
+    }
+  ]);
+
+}
+
+function createMysteryStars(stage){
+
+  const stars =
+    document.createElement(
+      "div"
+    );
+
+  stars.className =
+    "mystery-stars";
+
+  const positions = [
+    ["-120px","-90px"],
+    ["-75px","-135px"],
+    ["0px","-150px"],
+    ["85px","-125px"],
+    ["130px","-65px"],
+    ["-135px","10px"],
+    ["125px","25px"],
+    ["-65px","65px"],
+    ["65px","70px"]
+  ];
+
+  stars.innerHTML =
+    positions.map((position,index)=>`
+      <span style="
+        --x:${position[0]};
+        --y:${position[1]};
+        animation-delay:${index * 0.035}s;
+      ">
+        ${index % 2 ? "✨" : "⭐"}
+      </span>
+    `).join("");
+
+  stage.appendChild(
+    stars
+  );
+
+  setTimeout(()=>{
+    stars.remove();
+  },1200);
+
+}
+
+function openMysteryBox(
+  selectedQuestionIndex,
+  clickedBox
+){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  const selectedIndex =
+    Number(
+      selectedQuestionIndex
+    );
+
+  if(
+    !Number.isInteger(selectedIndex) ||
+    selectedIndex < CURRENT_QUESTION_INDEX ||
+    !CURRENT_ACTIVITY?.questions?.[selectedIndex] ||
+    String(
+      CURRENT_ACTIVITY.questions[selectedIndex]?.type ||
+      ""
+    ).toLowerCase() !== "mystery"
+  ){
+    return;
+  }
+
+  const stage =
+    document.getElementById(
+      "mysteryStage"
+    );
+
+  const card =
+    document.getElementById(
+      "mysteryQuestionCard"
+    );
+
+  if(
+    !clickedBox ||
+    !stage ||
+    !card ||
+    clickedBox.dataset.opened === "1"
+  ){
+    return;
+  }
+
+  moveSelectedQuestionToCurrent(
+    selectedIndex
+  );
+
+  /*
+    Balloon questions display the configured time first,
+    but the countdown starts only after a balloon is selected.
+  */
+  if(!ACTIVITY_TIMER_INTERVAL){
+    startActivityTimer();
+  }
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  clickedBox.dataset.opened =
+    "1";
+
+  document
+    .querySelectorAll(
+      ".mystery-choice"
+    )
+    .forEach(box=>{
+
+      box.disabled =
+        true;
+
+
+    });
+
+  clickedBox.classList.add(
+    "shaking"
+  );
+
+  playMysteryOpenSound();
+
+  setTimeout(()=>{
+
+    clickedBox.classList.remove(
+      "shaking"
+    );
+
+    clickedBox.classList.add(
+      "opened"
+    );
+
+    const glow =
+      document.createElement(
+        "div"
+      );
+
+    glow.className =
+      "mystery-glow";
+
+    const boxRect =
+      clickedBox.getBoundingClientRect();
+
+    const stageRect =
+      stage.getBoundingClientRect();
+
+    glow.style.left =
+      (
+        boxRect.left -
+        stageRect.left +
+        boxRect.width / 2
+      ) +
+      "px";
+
+    glow.style.top =
+      (
+        boxRect.top -
+        stageRect.top +
+        boxRect.height / 2
+      ) +
+      "px";
+
+    stage.appendChild(
+      glow
+    );
+
+    createMysteryStars(
+      stage
+    );
+
+    setTimeout(()=>{
+      glow.remove();
+    },1000);
+
+  },430);
+
+  setTimeout(()=>{
+
+    clickedBox.classList.add(
+      "hidden"
+    );
+
+    /*
+      The selected question is shown by itself.
+      Remove the top duplicate title and hide all boxes.
+    */
+    document
+      .getElementById(
+        "gameQuestion"
+      )
+      .textContent = "";
+
+    stage.classList.add(
+      "reveal-active"
+    );
+
+    card.innerHTML = `
+      <div class="mystery-question-text">
+        ${esc(
+          question.text ||
+          "Choose the correct answer."
+        )}
+      </div>
+
+      ${buildRevealedQuestionMedia(question)}
+
+      <div class="mystery-options">
+
+        ${(question.answers || [])
+          .map((answer,index)=>`
+            <button
+              class="student-answer mystery-option"
+              type="button"
+              onclick="chooseMysteryAnswer(${index},this)">
+
+              ${
+                answer.image
+                  ? `<img src="${esc(answer.image)}" alt="">`
+                  : ""
+              }
+
+              <div>
+                ${esc(answer.text || "")}
+              </div>
+
+            </button>
+          `)
+          .join("")}
+
+      </div>
+    `;
+
+    card.classList.remove(
+      "hidden"
+    );
+
+    requestAnimationFrame(()=>{
+      card.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    });
+
+  },930);
+
+}
+
+function chooseMysteryAnswer(
+  answerIndex,
+  clickedButton
+){
+
+  if(ANSWER_LOCKED){
+    return;
+  }
+
+  const question =
+    CURRENT_ACTIVITY
+      .questions[
+        CURRENT_QUESTION_INDEX
+      ];
+
+  const selected =
+    question.answers[
+      answerIndex
+    ];
+
+  const buttons = [
+    ...document.querySelectorAll(
+      ".mystery-option"
+    )
+  ];
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  ANSWER_LOCKED =
+    true;
+
+  buttons.forEach(
+    (button,index)=>{
+
+      button.disabled =
+        true;
+
+      if(
+        question.answers[index]
+          ?.correct
+      ){
+
+        button.classList.add(
+          "correct"
+        );
+
+      }
+
+    }
+  );
+
+  if(selected?.correct){
+
+    CURRENT_SCORE++;
+
+    clickedButton.classList.add(
+      "correct"
+    );
+
+    feedback.textContent =
+      "🎉 Correct Answer! Excellent";
+
+    feedback.className =
+      "feedback good";
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+
+    clickedButton.classList.add(
+      "wrong"
+    );
+
+    feedback.textContent =
+      "❌ Incorrect Answer — See the Correct Answer";
+
+    feedback.className =
+      "feedback bad";
+
+    playWrongSound();
+
+  }
+
+  document
+    .getElementById(
+      "scorePill"
+    )
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  showNextQuestionButton();
+
 }
 
 function chooseAnswer(answerIndex,clickedButton){
@@ -3410,120 +7861,331 @@ function shuffleArray(array){
   return copy;
 }
 
+/* =====================================
+   MATCH QUESTION
+   TEXT → TEXT / IMAGE
+===================================== */
+
 function renderMatchQuestion(
   question,
   answersBox
 ){
+
   answersBox.className =
     "match-game";
 
   const pairs =
     (question.answers || [])
-      .map((item,index)=>({
-        id:index,
-        left:item.text || "",
-        right:
-          item.right ||
-          item.match ||
-          ""
-      }));
+      .map((item,index)=>{
+
+        const left =
+          String(
+            item?.text ||
+            ""
+          ).trim();
+
+        const right =
+          String(
+            item?.right ||
+            item?.match ||
+            ""
+          ).trim();
+
+        const image =
+          getItemImage(item);
+
+        return {
+          left,
+          right,
+          image,
+
+          matchId:
+            `match_${index}`
+        };
+
+      })
+      .filter(pair=>
+        pair.left &&
+        (
+          pair.right ||
+          pair.image
+        )
+      );
+
+  if(
+    pairs.length < 2
+  ){
+
+    answersBox.innerHTML = `
+      <div class="empty">
+        This matching question requires at least two valid pairs.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  /*
+    ننشئ نسخة واحدة من خيارات الطرف المقابل،
+    ثم نخلط ترتيبها.
+  */
 
   const rightOptions =
     shuffleArray(
-      pairs.map(item=>item.right)
+      pairs.map(pair=>({
+        matchId:
+          pair.matchId,
+
+        text:
+          pair.right,
+
+        image:
+          pair.image
+      }))
     );
 
-  answersBox.innerHTML =
-    pairs.map(pair=>`
-      <div class="match-row">
+  answersBox.innerHTML = `
+    <div class="match-image-instruction">
+      Match each item with its correct word or image.
+    </div>
+
+    ${pairs.map(pair=>`
+      <div
+        class="match-row"
+        data-correct-id="${esc(pair.matchId)}">
 
         <div class="match-left">
           ${esc(pair.left)}
         </div>
 
-        <select
-          class="match-select"
-          data-correct="${esc(pair.right)}">
+        <div class="match-image-options">
 
-          <option value="">
-            Select a match...
-          </option>
+          ${rightOptions.map(option=>`
+            <button
+              class="match-image-option"
+              type="button"
+              data-match-id="${esc(option.matchId)}"
+              onclick="selectMatchImageOption(this)">
 
-          ${
-            rightOptions.map(option=>`
-              <option value="${esc(option)}">
-                ${esc(option)}
-              </option>
-            `).join("")
-          }
+              ${
+                option.image
+                  ? `
+                    <img
+                      src="${esc(option.image)}"
+                      alt="Matching option"
+                      loading="lazy">
+                  `
+                  : ""
+              }
 
-        </select>
+              ${
+                option.text
+                  ? `
+                    <span>
+                      ${esc(option.text)}
+                    </span>
+                  `
+                  : ""
+              }
+
+            </button>
+          `).join("")}
+
+        </div>
 
       </div>
-    `).join("") +
-    `
-      <div class="type-result-actions">
-        <button
-          class="btn btn-primary"
-          type="button"
-          onclick="checkMatchAnswer()">
+    `).join("")}
 
-          <i class="fa-solid fa-check"></i>
-          Check Matches
+    <div class="type-result-actions">
 
-        </button>
-      </div>
-    `;
+      <button
+        class="btn btn-primary"
+        type="button"
+        onclick="checkMatchAnswer()">
+
+        <i class="fa-solid fa-check"></i>
+        Check Matches
+
+      </button>
+
+    </div>
+  `;
+
 }
 
-function checkMatchAnswer(){
-  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+
+/* =====================================
+   SELECT MATCH OPTION
+===================================== */
+
+function selectMatchImageOption(
+  clickedButton
+){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
     return;
   }
 
-  const selects = [
+  const currentRow =
+    clickedButton.closest(
+      ".match-row"
+    );
+
+  if(!currentRow){
+    return;
+  }
+
+  /*
+    كل صف يسمح باختيار خيار واحد فقط.
+  */
+
+  currentRow
+    .querySelectorAll(
+      ".match-image-option"
+    )
+    .forEach(button=>{
+
+      button.classList.remove(
+        "selected"
+      );
+
+    });
+
+  clickedButton.classList.add(
+    "selected"
+  );
+
+}
+
+
+/* =====================================
+   CHECK MATCH ANSWER
+===================================== */
+
+function checkMatchAnswer(){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
+    return;
+  }
+
+  const rows = [
     ...document.querySelectorAll(
-      ".match-select"
+      ".match-row"
     )
   ];
 
-  if(
-    selects.some(
-      select=>!select.value
-    )
-  ){
+  if(!rows.length){
+    return;
+  }
+
+  /*
+    التأكد أن كل صف يحتوي على اختيار.
+  */
+
+  const incompleteRow =
+    rows.find(row=>
+      !row.querySelector(
+        ".match-image-option.selected"
+      )
+    );
+
+  if(incompleteRow){
+
     alert(
       "Complete all matching pairs first."
     );
 
     return;
+
   }
 
   ANSWER_LOCKED = true;
 
-  const allCorrect =
-    selects.every(
-      select=>
-        select.value ===
-        select.dataset.correct
-    );
+  let allCorrect = true;
 
-  selects.forEach(select=>{
-    select.disabled = true;
+  rows.forEach(row=>{
+
+    const correctId =
+      String(
+        row.dataset.correctId ||
+        ""
+      );
+
+    const selectedButton =
+      row.querySelector(
+        ".match-image-option.selected"
+      );
+
+    const selectedId =
+      String(
+        selectedButton
+          ?.dataset
+          ?.matchId ||
+        ""
+      );
 
     const isCorrect =
-      select.value ===
-      select.dataset.correct;
+      selectedId === correctId;
 
-    select.style.borderColor =
-      isCorrect
-        ? "var(--green)"
-        : "var(--red)";
+    if(!isCorrect){
+      allCorrect = false;
+    }
 
-    select.style.background =
-      isCorrect
-        ? "#eafaf4"
-        : "#fff0ee";
+    /*
+      تعطيل جميع خيارات الصف.
+    */
+
+    row
+      .querySelectorAll(
+        ".match-image-option"
+      )
+      .forEach(button=>{
+
+        button.disabled = true;
+
+        const buttonId =
+          String(
+            button.dataset.matchId ||
+            ""
+          );
+
+        if(
+          button === selectedButton
+        ){
+
+          button.classList.add(
+            isCorrect
+              ? "correct"
+              : "wrong"
+          );
+
+        }
+
+        /*
+          إذا كانت الإجابة خاطئة،
+          نظهر الخيار الصحيح في نفس الصف.
+        */
+
+        if(
+          !isCorrect &&
+          buttonId === correctId
+        ){
+
+          button.classList.add(
+            "correct-answer"
+          );
+
+        }
+
+      });
+
   });
 
   const feedback =
@@ -3531,38 +8193,55 @@ function checkMatchAnswer(){
       "feedback"
     );
 
-  feedback.className = "feedback";
+  feedback.className =
+    "feedback";
 
   if(allCorrect){
+
     CURRENT_SCORE++;
 
     feedback.textContent =
       "🎉 All matches are correct!";
 
-    feedback.classList.add("good");
+    feedback.classList.add(
+      "good"
+    );
 
     launchSmallConfetti();
     playCorrectSound();
 
   }else{
-    feedback.textContent =
-      "❌ Some matches are incorrect.";
 
-    feedback.classList.add("bad");
+    feedback.textContent =
+      "❌ Some matches are incorrect. The correct matches are highlighted.";
+
+    feedback.classList.add(
+      "bad"
+    );
 
     playWrongSound();
+
   }
+
+  /*
+    تسجيل نتيجة الفريق الحالي.
+  */
 
   recordCurrentTeamAnswer(
     allCorrect
   );
 
   document
-    .getElementById("scorePill")
+    .getElementById(
+      "scorePill"
+    )
     .textContent =
       `⭐ ${CURRENT_SCORE}`;
 
+  stopActivityTimer();
+
   showNextQuestionButton();
+
 }
 
 function renderOrderQuestion(
@@ -3780,11 +8459,96 @@ function checkOrderAnswer(){
     .getElementById("scorePill")
     .textContent =
       `⭐ ${CURRENT_SCORE}`;
-
+stopActivityTimer();
   showNextQuestionButton();
 }
 
+function resetTimerAfterAnswer(){
+
+  /*
+    إيقاف مؤقت السؤال بعد تسجيل الإجابة.
+  */
+  stopActivityTimer();
+
+  const timerType =
+    CURRENT_ACTIVITY?.timerType ||
+    "open";
+
+  const totalSeconds =
+    Number(
+      CURRENT_ACTIVITY?.timerTotalSeconds ||
+      0
+    );
+
+  const display =
+    document.getElementById(
+      "activityTimerDisplay"
+    );
+
+  if(
+    timerType !== "limited" ||
+    totalSeconds <= 0
+  ){
+
+    ACTIVITY_TIME_LEFT = 0;
+
+    display.textContent =
+      "⏱ Open Time";
+
+    display.style.background =
+      "#17a673";
+
+    return;
+  }
+
+  /*
+    إعادة قيمة الوقت للعرض فقط،
+    من دون استدعاء updateActivityTimerDisplay
+    حتى لا يصدر صوت Tick بعد الإجابة.
+  */
+  ACTIVITY_TIME_LEFT =
+    totalSeconds;
+
+  const minutes =
+    Math.floor(
+      totalSeconds / 60
+    );
+
+  const seconds =
+    totalSeconds % 60;
+
+  display.textContent =
+    "⏱ " +
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+  if(totalSeconds <= 10){
+
+    display.style.background =
+      "#e74c3c";
+
+  }else if(totalSeconds <= 30){
+
+    display.style.background =
+      "#f39c12";
+
+  }else{
+
+    display.style.background =
+      "#164478";
+
+  }
+
+  LAST_TIMER_TICK_SECOND =
+    null;
+
+}
+
 function showNextQuestionButton(){
+  /* إعادة المؤقت مباشرة بعد الإجابة */
+  resetTimerAfterAnswer();
+
   const area =
     document.getElementById(
       "nextQuestionArea"
@@ -3813,7 +8577,81 @@ function showNextQuestionButton(){
   area.classList.remove("hidden");
 }
 
+
+/* =====================================
+   CONTINUE BALLOON / MYSTERY GROUP
+   BEFORE MOVING TO ANOTHER MIXED TYPE
+===================================== */
+
+function moveNextGroupedQuestionToCurrent(
+  groupedType
+){
+
+  if(
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(
+      CURRENT_ACTIVITY.questions
+    )
+  ){
+    return false;
+  }
+
+  const normalizedType =
+    String(
+      groupedType ||
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+  if(
+    normalizedType !== "balloon" &&
+    normalizedType !== "mystery"
+  ){
+    return false;
+  }
+
+  /*
+    CURRENT_QUESTION_INDEX now points to the next
+    unanswered position. Search from this position
+    for another question of the same grouped type.
+  */
+  const nextSameTypeIndex =
+    CURRENT_ACTIVITY.questions
+      .findIndex(
+        (question,index)=>
+          index >= CURRENT_QUESTION_INDEX &&
+          String(
+            question?.type ||
+            ""
+          )
+          .trim()
+          .toLowerCase() ===
+          normalizedType
+      );
+
+  if(
+    nextSameTypeIndex < 0
+  ){
+    return false;
+  }
+
+  /*
+    Bring the remaining balloon/box question to the
+    current position. The displaced mixed question
+    remains available for later.
+  */
+  moveSelectedQuestionToCurrent(
+    nextSameTypeIndex
+  );
+
+  return true;
+}
+
 function nextQuestionManually(){
+
+  clearRandomQuestionTimers();
+
   if(
     !ANSWER_LOCKED ||
     ACTIVITY_FINISHED
@@ -3821,10 +8659,32 @@ function nextQuestionManually(){
     return;
   }
 
+  stopActivityTimer();
+
   document
-    .getElementById("nextQuestionArea")
+    .getElementById(
+      "nextQuestionArea"
+    )
     .classList
-    .add("hidden");
+    .add(
+      "hidden"
+    );
+
+  /*
+    Remember the type that was just answered.
+    In a Mixed activity, Balloon Pop and Mystery Box
+    must finish their remaining grouped items first.
+  */
+  const answeredType =
+    String(
+      CURRENT_ACTIVITY
+        ?.questions
+        ?.[CURRENT_QUESTION_INDEX]
+        ?.type ||
+      ""
+    )
+    .trim()
+    .toLowerCase();
 
   CURRENT_QUESTION_INDEX++;
 
@@ -3832,15 +8692,34 @@ function nextQuestionManually(){
     CURRENT_QUESTION_INDEX <
     CURRENT_ACTIVITY.questions.length
   ){
+
+    /*
+      When another balloon/box question still exists,
+      move it to the current position before rendering.
+      This prevents jumping to MCQ, Match, Wheel, etc.
+    */
+    moveNextGroupedQuestionToCurrent(
+      answeredType
+    );
+
+    ANSWER_LOCKED = false;
+
     renderStudentQuestion();
+    prepareTimerForCurrentQuestion();
+
   }else{
+
     finishActivity(false);
+
   }
+
 }
 
 async function finishActivity(
   finishedByTimeout = false
 ){
+  clearRandomQuestionTimers();
+
   if(ACTIVITY_FINISHED){
     return;
   }
@@ -3933,9 +8812,21 @@ async function finishActivity(
     .textContent = stars;
 
   if(winningTeam){
+
     message =
-      `🏆 Winning Team: ${winningTeam.name} — ` +
-      `${winningTeam.correct} correct answers`;
+      RACE_MODE_ACTIVE
+        ? (
+            `🏁 Race Winner: ${winningTeam.name} — ` +
+            `${Number(
+              winningTeam.racePosition ||
+              0
+            )}/${RACE_TOTAL_STEPS} steps`
+          )
+        : (
+            `🏆 Winning Team: ${winningTeam.name} — ` +
+            `${winningTeam.correct} correct answers`
+          );
+
   }
 
   document
@@ -3997,26 +8888,28 @@ async function finishActivity(
                 ""
               ),
 
-        studentId:
-          CURRENT_STUDENT?.id ||
-          CURRENT_STUDENT_IQAMA,
-
-        studentIqama:
-          CURRENT_STUDENT_IQAMA,
-
-        studentName:
-          getStudentName(
-            CURRENT_STUDENT
-          ),
-
         participantRole:
-          "student",
+          getActorData().role,
 
         participantUsername:
           getActorData().username,
 
         participantId:
           getActorData().id,
+
+        studentId:
+          ACTIVITY_STUDENT_DOC_ID ||
+          getActorData().id ||
+          "",
+
+        studentIqama:
+          ACTIVITY_STUDENT_IQAMA ||
+          getActorData().iqama ||
+          "",
+
+        studentName:
+          getActorData().name ||
+          "",
 
         participantName:
           getActorData().name,
@@ -4150,7 +9043,8 @@ async function finishActivity(
             finishedByTimeout
           ),
 
-        anonymous:false,
+        anonymous:
+          getActorData().role === "guest",
 
         createdAt:
           firebase
@@ -4217,6 +9111,8 @@ async function finishActivity(
 }
 
 function restartGame(){
+  clearRandomQuestionTimers();
+  clearWheelState();
   if(!CURRENT_ACTIVITY){
     return;
   }
@@ -4234,8 +9130,11 @@ function restartGame(){
   TEAMS = TEAMS.map(team=>({
     ...team,
     correct:0,
-    answered:0
+    answered:0,
+    racePosition:0
   }));
+
+  resetRaceGame();
 
   document
     .getElementById("resultArea")
@@ -4261,7 +9160,7 @@ function restartGame(){
 
   recordActivityUsageStart();
 
-  startActivityTimer();
+  prepareTimerForCurrentQuestion();
   renderStudentQuestion();
 
   window.scrollTo({
@@ -4271,6 +9170,8 @@ function restartGame(){
 }
 
 async function backToActivities(){
+  clearRandomQuestionTimers();
+  clearWheelState();
   stopActivityTimer();
 
   if(
@@ -4297,6 +9198,11 @@ async function backToActivities(){
       "gameQuestionVideo"
     );
 
+  const youtube =
+    document.getElementById(
+      "gameQuestionYouTube"
+    );
+
   const audio =
     document.getElementById(
       "gameQuestionAudio"
@@ -4304,6 +9210,15 @@ async function backToActivities(){
 
   video.pause();
   audio.pause();
+
+  /*
+    إزالة رابط iframe توقف فيديو YouTube
+    فور الرجوع إلى قائمة الأنشطة.
+  */
+  if(youtube){
+    youtube.removeAttribute("src");
+    youtube.classList.add("hidden");
+  }
 
   CURRENT_ACTIVITY = null;
   CURRENT_COURSE = null;
@@ -4350,7 +9265,191 @@ async function backToActivities(){
     behavior:"smooth"
   });
 }
+function getSharedAudioContext(){
 
+  const AudioContextClass =
+    window.AudioContext ||
+    window.webkitAudioContext;
+
+  if(!AudioContextClass){
+    return null;
+  }
+
+  if(!SHARED_AUDIO_CONTEXT){
+
+    SHARED_AUDIO_CONTEXT =
+      new AudioContextClass();
+
+  }
+
+  if(
+    SHARED_AUDIO_CONTEXT.state ===
+    "suspended"
+  ){
+
+    SHARED_AUDIO_CONTEXT
+      .resume()
+      .catch(()=>{});
+
+  }
+
+  return SHARED_AUDIO_CONTEXT;
+
+}
+function playRandomMoveSound(){
+
+  try{
+
+    const now =
+      performance.now();
+
+    if(
+      now -
+      LAST_RANDOM_MOVE_SOUND_TIME <
+      70
+    ){
+      return;
+    }
+
+    LAST_RANDOM_MOVE_SOUND_TIME =
+      now;
+
+    const audioContext =
+      getSharedAudioContext();
+
+    if(!audioContext){
+      return;
+    }
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    oscillator.type =
+      "square";
+
+    oscillator.frequency.value =
+      500 +
+      Math.floor(
+        Math.random() * 220
+      );
+
+    const startTime =
+      audioContext.currentTime;
+
+    const endTime =
+      startTime + 0.035;
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      startTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.045,
+      startTime + 0.005
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      endTime
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+    oscillator.start(startTime);
+
+    oscillator.stop(endTime);
+
+    oscillator.onended = ()=>{
+
+      oscillator.disconnect();
+
+      gain.disconnect();
+
+    };
+
+  }catch(error){
+
+    console.warn(
+      "Random movement sound could not play:",
+      error
+    );
+
+  }
+
+}
+function playTimerTickSound(){
+
+  try{
+
+    const audioContext =
+      getSharedAudioContext();
+
+    if(!audioContext){
+      return;
+    }
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    /*
+      square يعطي صوت Tick واضح.
+      يمكنك تغييره إلى sine إذا أردت صوتًا أنعم.
+    */
+    oscillator.type = "square";
+
+    oscillator.frequency.value = 850;
+
+    const startTime =
+      audioContext.currentTime;
+
+    const endTime =
+      startTime + 0.07;
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      startTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.12,
+      startTime + 0.01
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      endTime
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+    oscillator.start(startTime);
+    oscillator.stop(endTime);
+
+  }catch(error){
+
+    console.warn(
+      "Timer sound could not play:",
+      error
+    );
+
+  }
+
+}
 function playCorrectSound(){
   playToneSequence([
     {
@@ -4388,16 +9487,12 @@ function playWrongSound(){
 
 function playToneSequence(tones){
   try{
-    const AudioContextClass =
-      window.AudioContext ||
-      window.webkitAudioContext;
+    const audioContext =
+      getSharedAudioContext();
 
-    if(!AudioContextClass){
+    if(!audioContext){
       return;
     }
-
-    const audioContext =
-      new AudioContextClass();
 
     const startTime =
       audioContext.currentTime;
@@ -4524,6 +9619,15 @@ window.addEventListener(
   "pagehide",
   ()=>{
     stopActivityTimer();
+    clearRandomQuestionTimers();
+    clearWheelState();
+
+    if(
+      SHARED_AUDIO_CONTEXT &&
+      SHARED_AUDIO_CONTEXT.state === "running"
+    ){
+      SHARED_AUDIO_CONTEXT.suspend().catch(()=>{});
+    }
   }
 );
 
@@ -4573,10 +9677,7 @@ window.addEventListener(
       from the parent page/iframe wrapper.
     */
 
-    if(
-      CURRENT_STUDENT &&
-      CURRENT_STUDENT_IQAMA
-    ){
+    if(ACTIVITY_STUDENT_IQAMA && ACTIVITY_STUDENT_MAIN){
       loadStudentActivities();
     }
   }
@@ -4585,34 +9686,8 @@ window.addEventListener(
 window.addEventListener(
   "DOMContentLoaded",
   async()=>{
-
-    const savedIqama =
-      String(
-        localStorage.getItem(
-          "studentActivityIqama"
-        ) ||
-        localStorage.getItem(
-          "studentID"
-        ) ||
-        localStorage.getItem(
-          "student_iqama"
-        ) ||
-        ""
-      ).trim();
-
-    if(savedIqama){
-
-      document
-        .getElementById(
-          "studentIqamaInput"
-        )
-        .value =
-          savedIqama;
-
-      await loginActivityStudent();
-
-    }
-
+    updateActivityStudentUI(false);
+    await autoLoginActivityStudent();
   }
 );
 </script>
