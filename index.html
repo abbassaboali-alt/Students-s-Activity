@@ -9701,5 +9701,701 @@ window.addEventListener("storage", event=>{
 
 </script>
 
+
+<style>
+.live-individual-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:999px;
+  background:#e8faf2;
+  color:#08744f;
+  font-size:12px;
+  font-weight:900;
+}
+.live-individual-note{
+  margin:0 0 16px;
+  padding:12px 14px;
+  border:1px solid #bde6d5;
+  border-radius:15px;
+  background:#f1fff9;
+  color:#08744f;
+  text-align:center;
+  font-weight:800;
+}
+</style>
+
+<script>
+(function(){
+
+  const LIVE_SESSIONS_COLLECTION =
+    "FunActivityLiveSessions";
+
+  let ACTIVE_INDIVIDUAL_SESSIONS = [];
+  let CURRENT_LIVE_SESSION_ID = "";
+  let LIVE_SESSIONS_UNSUBSCRIBE = null;
+  let PUBLISH_PROGRESS_TIMER = null;
+
+  const originalStartActivity =
+    window.startActivity;
+
+  const originalRecordCurrentTeamAnswer =
+    window.recordCurrentTeamAnswer;
+
+  const originalFinishActivity =
+    window.finishActivity;
+
+  function safe(value){
+    return String(value ?? "").trim();
+  }
+
+  function getStudentParticipantDocId(){
+
+    const raw =
+      safe(
+        ACTIVITY_STUDENT_DOC_ID ||
+        ACTIVITY_STUDENT_IQAMA ||
+        "student"
+      );
+
+    return raw.replace(
+      /[^A-Za-z0-9_-]/g,
+      "_"
+    );
+  }
+
+  function getActiveSessionFor(
+    activityId,
+    courseId
+  ){
+    return ACTIVE_INDIVIDUAL_SESSIONS
+      .find(session=>
+        safe(session.activityId) ===
+          safe(activityId) &&
+        safe(session.courseId) ===
+          safe(courseId) &&
+        session.status === "active" &&
+        session.mode === "individual"
+      ) || null;
+  }
+
+  async function fetchActiveIndividualSessions(){
+
+    const snap =
+      await db
+        .collection(
+          LIVE_SESSIONS_COLLECTION
+        )
+        .where(
+          "status",
+          "==",
+          "active"
+        )
+        .get();
+
+    ACTIVE_INDIVIDUAL_SESSIONS =
+      snap.docs
+        .map(doc=>({
+          id:doc.id,
+          ...doc.data()
+        }))
+        .filter(session=>
+          session.mode === "individual"
+        );
+  }
+
+  function startLiveSessionsListener(){
+
+    if(LIVE_SESSIONS_UNSUBSCRIBE){
+      return;
+    }
+
+    LIVE_SESSIONS_UNSUBSCRIBE =
+      db
+        .collection(
+          LIVE_SESSIONS_COLLECTION
+        )
+        .where(
+          "status",
+          "==",
+          "active"
+        )
+        .onSnapshot(
+          snapshot=>{
+
+            ACTIVE_INDIVIDUAL_SESSIONS =
+              snapshot.docs
+                .map(doc=>({
+                  id:doc.id,
+                  ...doc.data()
+                }))
+                .filter(session=>
+                  session.mode ===
+                  "individual"
+                );
+
+            if(
+              ACTIVITY_STUDENT_IQAMA &&
+              ACTIVITY_STUDENT_MAIN
+            ){
+              renderOnlyActiveIndividualActivities();
+            }
+          },
+          error=>{
+            console.error(
+              "Live sessions listener:",
+              error
+            );
+          }
+        );
+  }
+
+  window.loadStudentActivities =
+    async function(){
+
+      if(
+        !ACTIVITY_STUDENT_IQAMA ||
+        !ACTIVITY_STUDENT_MAIN
+      ){
+        updateActivityStudentUI(false);
+        return;
+      }
+
+      const requestId =
+        ++ACTIVITIES_LOAD_REQUEST_ID;
+
+      const box =
+        document.getElementById(
+          "openActivitiesBox"
+        );
+
+      box.className = "empty";
+      box.textContent =
+        "Checking activities opened by the trainer...";
+
+      try{
+
+        await Promise.all([
+          loadOpenCourses(),
+          loadActivitiesData(),
+          fetchActiveIndividualSessions()
+        ]);
+
+        if(
+          requestId !==
+          ACTIVITIES_LOAD_REQUEST_ID
+        ){
+          return;
+        }
+
+        setupActorPanel();
+        startLiveSessionsListener();
+        renderOnlyActiveIndividualActivities();
+
+      }catch(error){
+        console.error(error);
+
+        box.className = "empty";
+        box.textContent =
+          "Unable to load active Individual activities.";
+      }
+    };
+
+  window.renderOnlyActiveIndividualActivities =
+    function(){
+
+      const box =
+        document.getElementById(
+          "openActivitiesBox"
+        );
+
+      if(!box){
+        return;
+      }
+
+      const available =
+        ACTIVE_INDIVIDUAL_SESSIONS
+          .map(session=>{
+
+            const activity =
+              ACTIVITIES_CACHE.find(
+                item=>
+                  item.id ===
+                  session.activityId
+              );
+
+            const course =
+              OPEN_COURSES_CACHE.find(
+                item=>
+                  item.id ===
+                  session.courseId
+              ) ||
+              (
+                activity
+                  ? findCourseForActivity(
+                      activity
+                    )
+                  : null
+              );
+
+            return {
+              session,
+              activity,
+              course
+            };
+          })
+          .filter(item=>
+            item.activity &&
+            item.course &&
+            Array.isArray(
+              item.activity.questions
+            ) &&
+            item.activity.questions.length > 0
+          );
+
+      if(!available.length){
+        box.className = "empty";
+        box.innerHTML = `
+          <i class="fa-solid fa-mobile-screen-button"
+             style="font-size:34px;color:var(--blue);margin-bottom:10px"></i>
+          <div>
+            No Individual activity has been opened by a trainer yet.
+          </div>
+          <small style="display:block;margin-top:7px">
+            Any Individual activity opened by an admin or trainer appears here. Team activities remain on the trainer screen.
+          </small>
+        `;
+        return;
+      }
+
+      box.className =
+        "open-activity-list";
+
+      box.innerHTML =
+        available.map(({
+          session,
+          activity,
+          course
+        })=>{
+
+          const questionCount =
+            activity.questions.length;
+
+          const timerText =
+            activity.timerType ===
+            "limited"
+              ? formatConfiguredTime(
+                  Number(
+                    activity
+                      .timerTotalSeconds ||
+                    0
+                  )
+                )
+              : "Open Time";
+
+          return `
+            <article
+              class="open-activity-card"
+              data-types="${esc(
+                getActivityGameTypes(
+                  activity
+                ).join(",")
+              )}"
+              data-search="${esc([
+                activity.title || "",
+                activity.description || "",
+                getCourseName(course),
+                getTrainer(
+                  course,
+                  activity
+                ),
+                getBranch(
+                  course,
+                  activity
+                ),
+                getSection(
+                  course,
+                  activity
+                )
+              ].join(" ").toLowerCase())}">
+
+              <div class="activity-card-head">
+                <div class="game-type-list">
+                  ${renderActivityGameBadges(activity)}
+                </div>
+
+                <div class="live-individual-badge">
+                  <i class="fa-solid fa-signal"></i>
+                  Live Individual
+                </div>
+              </div>
+
+              <h3>
+                ${esc(
+                  activity.title ||
+                  "Interactive Activity"
+                )}
+              </h3>
+
+              <p style="color:var(--muted);min-height:44px">
+                ${esc(
+                  activity.description ||
+                  "Educational and recreational activity"
+                )}
+              </p>
+
+              <div class="activity-meta">
+                <span class="mini">
+                  <i class="fa-solid fa-book"></i>
+                  ${esc(
+                    getCourseName(course)
+                  )}
+                </span>
+
+                <span class="mini">
+                  <i class="fa-solid fa-user-tie"></i>
+                  ${esc(
+                    getTrainer(
+                      course,
+                      activity
+                    )
+                  )}
+                </span>
+
+                <span class="mini">
+                  <i class="fa-solid fa-circle-question"></i>
+                  ${questionCount}
+                  Questions
+                </span>
+
+                <span class="mini">
+                  <i class="fa-solid fa-clock"></i>
+                  ${esc(timerText)}
+                </span>
+              </div>
+
+              <button
+                class="btn btn-primary"
+                type="button"
+                onclick="startLiveIndividualActivity(
+                  '${esc(session.id)}',
+                  '${esc(activity.id)}',
+                  '${esc(course.id)}'
+                )">
+
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                Start on Mobile
+              </button>
+            </article>
+          `;
+        }).join("");
+
+      if(
+        typeof filterActivityCards ===
+        "function"
+      ){
+        filterActivityCards();
+      }
+    };
+
+  window.startLiveIndividualActivity =
+    async function(
+      sessionId,
+      activityId,
+      courseId
+    ){
+
+      const session =
+        ACTIVE_INDIVIDUAL_SESSIONS
+          .find(item=>
+            item.id === sessionId &&
+            item.status === "active" &&
+            item.mode === "individual"
+          );
+
+      if(!session){
+        alert(
+          "This Individual activity is no longer active."
+        );
+
+        await loadStudentActivities();
+        return;
+      }
+
+      CURRENT_LIVE_SESSION_ID =
+        sessionId;
+
+      await publishLiveStudentProgress(
+        "started",
+        true
+      );
+
+      originalStartActivity(
+        activityId,
+        courseId
+      );
+    };
+
+  window.startActivity =
+    function(activityId,courseId){
+
+      const session =
+        getActiveSessionFor(
+          activityId,
+          courseId
+        );
+
+      if(!session){
+        alert(
+          "The trainer has not opened this activity in Individual mode."
+        );
+        return;
+      }
+
+      startLiveIndividualActivity(
+        session.id,
+        activityId,
+        courseId
+      );
+    };
+
+  async function publishLiveStudentProgress(
+    status="playing",
+    force=false
+  ){
+
+    if(!CURRENT_LIVE_SESSION_ID){
+      return;
+    }
+
+    if(PUBLISH_PROGRESS_TIMER){
+      clearTimeout(
+        PUBLISH_PROGRESS_TIMER
+      );
+      PUBLISH_PROGRESS_TIMER = null;
+    }
+
+    const execute = async ()=>{
+
+      const participant =
+        Array.isArray(TEAMS)
+          ? TEAMS[0]
+          : null;
+
+      const total =
+        Number(
+          CURRENT_ACTIVITY
+            ?.questions
+            ?.length ||
+          0
+        );
+
+      const answered =
+        Number(
+          participant?.answered ||
+          Math.min(
+            total,
+            CURRENT_QUESTION_INDEX
+          ) ||
+          0
+        );
+
+      const correct =
+        Number(
+          participant?.correct ||
+          CURRENT_SCORE ||
+          0
+        );
+
+      const progressPercent =
+        total
+          ? Math.min(
+              100,
+              Math.round(
+                (
+                  Math.max(
+                    answered,
+                    status === "completed"
+                      ? total
+                      : 0
+                  ) /
+                  total
+                ) * 100
+              )
+            )
+          : 0;
+
+      const scorePercent =
+        total
+          ? Math.round(
+              (
+                correct /
+                total
+              ) * 100
+            )
+          : 0;
+
+      try{
+
+        await db
+          .collection(
+            LIVE_SESSIONS_COLLECTION
+          )
+          .doc(
+            CURRENT_LIVE_SESSION_ID
+          )
+          .collection("participants")
+          .doc(
+            getStudentParticipantDocId()
+          )
+          .set({
+            sessionId:
+              CURRENT_LIVE_SESSION_ID,
+
+            activityId:
+              CURRENT_ACTIVITY?.id ||
+              "",
+
+            activityTitle:
+              CURRENT_ACTIVITY?.title ||
+              "",
+
+            courseId:
+              CURRENT_COURSE?.id ||
+              "",
+
+            courseName:
+              CURRENT_COURSE
+                ? getCourseName(
+                    CURRENT_COURSE
+                  )
+                : "",
+
+            studentId:
+              ACTIVITY_STUDENT_DOC_ID ||
+              "",
+
+            studentIqama:
+              ACTIVITY_STUDENT_IQAMA ||
+              "",
+
+            studentName:
+              getLoggedActivityStudentName(),
+
+            status,
+
+            currentQuestion:
+              Math.min(
+                total,
+                CURRENT_QUESTION_INDEX +
+                (
+                  status === "completed"
+                    ? 1
+                    : 0
+                )
+              ),
+
+            answered,
+            correct,
+            totalQuestions:total,
+            progressPercent,
+            scorePercent,
+
+            updatedAt:
+              firebase
+                .firestore
+                .FieldValue
+                .serverTimestamp(),
+
+            ...(
+              status === "started"
+                ? {
+                    startedAt:
+                      firebase
+                        .firestore
+                        .FieldValue
+                        .serverTimestamp()
+                  }
+                : {}
+            ),
+
+            ...(
+              status === "completed"
+                ? {
+                    completedAt:
+                      firebase
+                        .firestore
+                        .FieldValue
+                        .serverTimestamp()
+                  }
+                : {}
+            )
+          },{
+            merge:true
+          });
+
+      }catch(error){
+        console.warn(
+          "Unable to publish live progress:",
+          error
+        );
+      }
+    };
+
+    if(force){
+      await execute();
+    }else{
+      PUBLISH_PROGRESS_TIMER =
+        setTimeout(
+          execute,
+          180
+        );
+    }
+  }
+
+  window.publishLiveStudentProgress =
+    publishLiveStudentProgress;
+
+  window.recordCurrentTeamAnswer =
+    function(
+      isCorrect,
+      raceSteps=1
+    ){
+
+      const result =
+        originalRecordCurrentTeamAnswer(
+          isCorrect,
+          raceSteps
+        );
+
+      publishLiveStudentProgress(
+        "playing"
+      );
+
+      return result;
+    };
+
+  window.finishActivity =
+    async function(
+      finishedByTimeout=false
+    ){
+
+      const result =
+        await originalFinishActivity(
+          finishedByTimeout
+        );
+
+      await publishLiveStudentProgress(
+        "completed",
+        true
+      );
+
+      return result;
+    };
+
+})();
+</script>
+
 </body>
 </html>
