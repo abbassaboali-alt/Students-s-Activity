@@ -3160,7 +3160,18 @@ async function logoutActivityStudent(){
   localStorage.removeItem("student_iqama");
   localStorage.removeItem("studentLoginDate");
   localStorage.setItem("studentLoggedOut","true");
+if(
+  window.parent !== window
+){
 
+  window.parent.postMessage(
+    {
+      type:"PRUDLE_STUDENT_LOGOUT"
+    },
+    "https://www.prudle-education.com"
+  );
+
+}
   ACTIVITY_STUDENT_DOCS = [];
   ACTIVITY_STUDENT_MAIN = null;
   ACTIVITY_STUDENT_DOC_ID = "";
@@ -3194,42 +3205,32 @@ function isCourseAssignedToLoggedStudent(course){
 async function autoLoginActivityStudent(){
   const params = new URLSearchParams(window.location.search);
 
-  /* رقم الطالب القادم من الرابط أو من صفحة الـ iframe */
   const urlStudentId = normalizeStudentIqama(
     params.get("studentID") ||
     params.get("student_iqama") ||
     ""
   );
 
-  /* رقم الطالب المحفوظ من تسجيل الدخول السابق */
   const storedStudentId = normalizeStudentIqama(
     localStorage.getItem("student_iqama") ||
     localStorage.getItem("studentID") ||
     ""
   );
 
-  /* لا نمنع الدخول المحفوظ إلا بعد تسجيل خروج يدوي */
+  const loginDate = String(localStorage.getItem("studentLoginDate") || "");
   const loggedOut = localStorage.getItem("studentLoggedOut") === "true";
 
-  /* الأولوية دائمًا للرقم المرسل في الرابط */
-  const candidate = urlStudentId || (!loggedOut ? storedStudentId : "");
+  const candidate = urlStudentId || (
+    !loggedOut &&
+    loginDate === new Date().toDateString()
+      ? storedStudentId
+      : ""
+  );
 
-  if(!candidate || candidate.length < 10){
-    ACTIVITY_STUDENT_DOCS = [];
-    ACTIVITY_STUDENT_MAIN = null;
-    ACTIVITY_STUDENT_DOC_ID = "";
-    ACTIVITY_STUDENT_IQAMA = "";
-    ACTIVITY_STUDENT_COURSE_IDS = [];
-
+  if(!candidate){
     updateActivityStudentUI(false);
     return;
   }
-
-  /* حفظ الرقم القادم من البوابة قبل التحقق لتوحيد مفاتيح الدخول */
-  localStorage.setItem("studentID",candidate);
-  localStorage.setItem("student_iqama",candidate);
-  localStorage.setItem("studentLoginDate",new Date().toDateString());
-  localStorage.removeItem("studentLoggedOut");
 
   const input = document.getElementById("studentIqamaInput");
   if(input) input.value = candidate;
@@ -9642,16 +9643,144 @@ window.addEventListener(
 
 window.addEventListener(
   "message",
-  event=>{
+  async event=>{
+
+    const allowedOrigins = [
+      "https://www.prudle-education.com",
+      "https://prudle-education.com"
+    ];
+
+    if(
+      !allowedOrigins.includes(
+        event.origin
+      )
+    ){
+      return;
+    }
 
     const data =
       event.data || {};
 
+    /* =====================================
+       STUDENT AUTHENTICATION
+    ===================================== */
+
     if(
-      data.type !== "PRUDLE_AUTH"
+      data.type ===
+      "PRUDLE_STUDENT_AUTH"
     ){
+
+      const studentID =
+        normalizeStudentIqama(
+          data.studentID ||
+          data.student_iqama ||
+          ""
+        );
+
+      if(!studentID){
+        return;
+      }
+
+      localStorage.setItem(
+        "studentID",
+        studentID
+      );
+
+      localStorage.setItem(
+        "student_iqama",
+        studentID
+      );
+
+      localStorage.setItem(
+        "studentLoginDate",
+        data.studentLoginDate ||
+        new Date().toDateString()
+      );
+
+      localStorage.removeItem(
+        "studentLoggedOut"
+      );
+
+      const input =
+        document.getElementById(
+          "studentIqamaInput"
+        );
+
+      if(input){
+        input.value = studentID;
+      }
+
+      /*
+        لا نكرر تسجيل الدخول إذا كان
+        الطالب نفسه مسجلًا بالفعل.
+      */
+
+      if(
+        ACTIVITY_STUDENT_IQAMA === studentID &&
+        ACTIVITY_STUDENT_MAIN
+      ){
+
+        updateActivityStudentUI(true);
+        await loadStudentActivities();
+        return;
+
+      }
+
+      await loginActivityStudent();
+
       return;
+
     }
+
+    /* =====================================
+       STAFF AUTHENTICATION
+    ===================================== */
+
+    if(
+      data.type ===
+      "PRUDLE_AUTH"
+    ){
+
+      if(data.username){
+
+        localStorage.setItem(
+          "username",
+          String(data.username)
+        );
+
+      }
+
+      if(data.role){
+
+        localStorage.setItem(
+          "role",
+          String(data.role)
+        );
+
+      }
+
+      if(data.loginDate){
+
+        localStorage.setItem(
+          "loginDate",
+          String(data.loginDate)
+        );
+
+      }
+
+      if(
+        ACTIVITY_STUDENT_IQAMA &&
+        ACTIVITY_STUDENT_MAIN
+      ){
+
+        await loadStudentActivities();
+
+      }
+
+    }
+
+  }
+);
 
     if(data.username){
       localStorage.setItem(
@@ -9688,11 +9817,165 @@ window.addEventListener(
 window.addEventListener(
   "DOMContentLoaded",
   async()=>{
+
     updateActivityStudentUI(false);
+
+    /*
+      محاولة استخدام تسجيل دخول محفوظ
+      سابقًا داخل صفحة النشاطات.
+    */
+
     await autoLoginActivityStudent();
+
+    /*
+      إذا لم يصل تسجيل الدخول بعد،
+      نطلبه من لوحة الطالب الأم.
+    */
+
+    if(
+      !ACTIVITY_STUDENT_IQAMA &&
+      window.parent !== window
+    ){
+
+      window.parent.postMessage(
+        {
+          type:"PRUDLE_REQUEST_STUDENT_AUTH"
+        },
+        "*"
+      );
+
+    }
+
   }
 );
 </script>
+<script>
+(function(){
 
+  const ACTIVITY_FRAME_ID = "activityFrame";
+
+  function sendStudentAuthToActivity(){
+
+    const frame =
+      document.getElementById(
+        ACTIVITY_FRAME_ID
+      );
+
+    if(
+      !frame ||
+      !frame.contentWindow
+    ){
+      return;
+    }
+
+    const studentID =
+      String(
+        localStorage.getItem("studentID") ||
+        localStorage.getItem("student_iqama") ||
+        ""
+      )
+      .trim();
+
+    const studentLoginDate =
+      String(
+        localStorage.getItem("studentLoginDate") ||
+        ""
+      );
+
+    const studentLoggedOut =
+      localStorage.getItem("studentLoggedOut") === "true";
+
+    const today =
+      new Date().toDateString();
+
+    if(
+      !studentID ||
+      studentLoggedOut ||
+      studentLoginDate !== today
+    ){
+      return;
+    }
+
+    frame.contentWindow.postMessage(
+      {
+        type:"PRUDLE_STUDENT_AUTH",
+        studentID:studentID,
+        student_iqama:studentID,
+        studentLoginDate:studentLoginDate
+      },
+      "https://abbassaboali-alt.github.io"
+    );
+
+  }
+
+  window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+      const frame =
+        document.getElementById(
+          ACTIVITY_FRAME_ID
+        );
+
+      if(frame){
+
+        frame.addEventListener(
+          "load",
+          function(){
+
+            sendStudentAuthToActivity();
+
+            setTimeout(
+              sendStudentAuthToActivity,
+              500
+            );
+
+          }
+        );
+
+      }
+
+    }
+  );
+
+  window.addEventListener(
+    "message",
+    function(event){
+
+      if(
+        event.origin !==
+        "https://abbassaboali-alt.github.io"
+      ){
+        return;
+      }
+
+      if(
+        event.data?.type ===
+        "PRUDLE_REQUEST_STUDENT_AUTH"
+      ){
+        sendStudentAuthToActivity();
+      }
+
+      if(
+        event.data?.type ===
+        "PRUDLE_STUDENT_LOGOUT"
+      ){
+
+        localStorage.removeItem("studentID");
+        localStorage.removeItem("student_iqama");
+        localStorage.removeItem("studentLoginDate");
+
+        localStorage.setItem(
+          "studentLoggedOut",
+          "true"
+        );
+
+      }
+
+    }
+  );
+
+})();
+</script>
 </body>
 </html>
