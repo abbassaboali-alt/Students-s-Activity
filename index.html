@@ -4717,6 +4717,84 @@ function getDefaultTeamName(index){
     );
 }
 
+/* =========================================================
+   DIRECT STUDENT MODE — KAHOOT STYLE
+   The logged-in student enters immediately using their saved name.
+   No team-selection screen is shown. Existing one-team scoring logic
+   is reused so all question types and reports continue to work.
+========================================================= */
+function startStudentActivityDirect(){
+
+  clearRandomQuestionTimers();
+  clearWheelState();
+  stopActivityTimer();
+
+  const studentName = String(
+    ACTIVITY_STUDENT_MAIN?.name ||
+    ACTIVITY_STUDENT_MAIN?.studentName ||
+    ACTIVITY_STUDENT_MAIN?.Name ||
+    ACTIVITY_STUDENT_IQAMA ||
+    "Student"
+  ).trim();
+
+  TEAM_COUNT = 1;
+  CURRENT_TEAM_INDEX = 0;
+
+  TEAMS = [{
+    id: ACTIVITY_STUDENT_DOC_ID || ACTIVITY_STUDENT_IQAMA || "student_1",
+    letter: "S",
+    name: studentName,
+    correct: 0,
+    answered: 0,
+    assigned: Array.isArray(CURRENT_ACTIVITY?.questions)
+      ? CURRENT_ACTIVITY.questions.length
+      : 0,
+    racePosition: 0
+  }];
+
+  CURRENT_QUESTION_INDEX = 0;
+  CURRENT_SCORE = 0;
+  ANSWER_LOCKED = false;
+  ACTIVITY_FINISHED = false;
+  ACTIVITY_TIME_LEFT = 0;
+  CURRENT_ORDER_SELECTION = [];
+  CURRENT_USAGE_ID = "";
+
+  document.getElementById("studentStart")?.classList.add("hidden");
+  document.getElementById("teamSetupArea")?.classList.add("hidden");
+  document.getElementById("resultArea")?.classList.add("hidden");
+  document.getElementById("playArea")?.classList.remove("hidden");
+
+  const title = document.getElementById("playingActivityTitle");
+  if(title){
+    title.textContent = CURRENT_ACTIVITY?.title || "Interactive Activity";
+  }
+
+  const info = document.getElementById("playingCourseInfo");
+  if(info){
+    info.textContent = [
+      studentName,
+      getCourseName(CURRENT_COURSE),
+      getBranch(CURRENT_COURSE,CURRENT_ACTIVITY),
+      getSection(CURRENT_COURSE,CURRENT_ACTIVITY),
+      getTrainer(CURRENT_COURSE,CURRENT_ACTIVITY)
+    ].filter(Boolean).join(" • ");
+  }
+
+  const banner = document.getElementById("currentTeamBanner");
+  if(banner){
+    banner.textContent = `🎯 ${studentName}`;
+  }
+
+  recordActivityUsageStart();
+  setupRaceGame();
+  renderLiveTeamBoard();
+  renderStudentQuestion();
+  prepareTimerForCurrentQuestion();
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function prepareTeamSetup(){
 
   clearRandomQuestionTimers();
@@ -5042,12 +5120,12 @@ function renderCurrentTeam(){
 
   if(!team){
     banner.textContent =
-      "Current Team";
+      "Current Student";
     return;
   }
 
   banner.textContent =
-    `🎯 ${team.name}'s Question`;
+    `🎯 ${team.name}`;
 }
 
 function renderLiveTeamBoard(){
@@ -5252,7 +5330,7 @@ function startActivity(activityId,courseId){
     return;
   }
 
-  prepareTeamSetup();
+  startStudentActivityDirect();
 }
 
 function startActivityTimer(){
@@ -8849,8 +8927,9 @@ async function finishActivity(
             )}/${RACE_TOTAL_STEPS} steps`
           )
         : (
-            `🏆 Winning Team: ${winningTeam.name} — ` +
-            `${winningTeam.correct} correct answers`
+            TEAM_COUNT === 1
+              ? `🏆 ${winningTeam.name} — ${winningTeam.correct} correct answers`
+              : `🏆 Winning Team: ${winningTeam.name} — ${winningTeam.correct} correct answers`
           );
 
   }
