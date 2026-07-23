@@ -9766,16 +9766,25 @@ window.addEventListener("storage", event=>{
     activityId,
     courseId
   ){
+
+    const requiredCourseId =
+      safe(courseId);
+
+    if(
+      !requiredCourseId ||
+      !ACTIVITY_STUDENT_COURSE_IDS.includes(
+        requiredCourseId
+      )
+    ){
+      return null;
+    }
+
     return ACTIVE_INDIVIDUAL_SESSIONS
       .find(session=>
         safe(session.activityId) ===
           safe(activityId) &&
-        (
-          !safe(courseId) ||
-          !safe(session.courseId) ||
-          safe(session.courseId) ===
-            safe(courseId)
-        ) &&
+        safe(session.courseId) ===
+          requiredCourseId &&
         session.status === "active" &&
         session.mode === "individual" &&
         session.studentVisible !== false
@@ -9953,6 +9962,11 @@ window.addEventListener("storage", event=>{
           .filter(item=>
             item.activity &&
             item.course &&
+            isCourseAssignedToLoggedStudent(
+              item.course
+            ) &&
+            safe(item.session.courseId) ===
+              safe(item.course.id) &&
             Array.isArray(
               item.activity.questions
             ) &&
@@ -10116,7 +10130,15 @@ window.addEventListener("storage", event=>{
           .find(item=>
             item.id === sessionId &&
             item.status === "active" &&
-            item.mode === "individual"
+            item.mode === "individual" &&
+            item.studentVisible !== false &&
+            safe(item.activityId) ===
+              safe(activityId) &&
+            safe(item.courseId) ===
+              safe(courseId) &&
+            ACTIVITY_STUDENT_COURSE_IDS.includes(
+              safe(item.courseId)
+            )
           );
 
       if(!session){
