@@ -3160,18 +3160,17 @@ async function logoutActivityStudent(){
   localStorage.removeItem("student_iqama");
   localStorage.removeItem("studentLoginDate");
   localStorage.setItem("studentLoggedOut","true");
-if(
-  window.parent !== window
-){
 
-  window.parent.postMessage(
-    {
-      type:"PRUDLE_STUDENT_LOGOUT"
-    },
-    "https://www.prudle-education.com"
-  );
+  /* مزامنة تسجيل الخروج مع صفحة لوحة الطالب الأم */
+  if(window.parent !== window){
+    window.parent.postMessage(
+      {
+        type:"PRUDLE_STUDENT_LOGOUT"
+      },
+      "*"
+    );
+  }
 
-}
   ACTIVITY_STUDENT_DOCS = [];
   ACTIVITY_STUDENT_MAIN = null;
   ACTIVITY_STUDENT_DOC_ID = "";
@@ -9645,29 +9644,32 @@ window.addEventListener(
   "message",
   async event=>{
 
+    const data =
+      event.data || {};
+
     const allowedOrigins = [
       "https://www.prudle-education.com",
       "https://prudle-education.com"
     ];
 
+    /*
+      نقبل الرسائل الموثوقة من موقع Prudle فقط.
+      وفي المعاينة المحلية نسمح بنفس أصل الصفحة.
+    */
     if(
-      !allowedOrigins.includes(
-        event.origin
-      )
+      event.origin &&
+      event.origin !== window.location.origin &&
+      !allowedOrigins.includes(event.origin)
     ){
       return;
     }
-
-    const data =
-      event.data || {};
 
     /* =====================================
        STUDENT AUTHENTICATION
     ===================================== */
 
     if(
-      data.type ===
-      "PRUDLE_STUDENT_AUTH"
+      data.type === "PRUDLE_STUDENT_AUTH"
     ){
 
       const studentID =
@@ -9678,6 +9680,20 @@ window.addEventListener(
         );
 
       if(!studentID){
+        return;
+      }
+
+      const receivedLoginDate =
+        String(
+          data.studentLoginDate ||
+          new Date().toDateString()
+        );
+
+      /* لا نقبل جلسة قديمة */
+      if(
+        receivedLoginDate !==
+        new Date().toDateString()
+      ){
         return;
       }
 
@@ -9693,8 +9709,7 @@ window.addEventListener(
 
       localStorage.setItem(
         "studentLoginDate",
-        data.studentLoginDate ||
-        new Date().toDateString()
+        receivedLoginDate
       );
 
       localStorage.removeItem(
@@ -9710,26 +9725,17 @@ window.addEventListener(
         input.value = studentID;
       }
 
-      /*
-        لا نكرر تسجيل الدخول إذا كان
-        الطالب نفسه مسجلًا بالفعل.
-      */
-
       if(
         ACTIVITY_STUDENT_IQAMA === studentID &&
         ACTIVITY_STUDENT_MAIN
       ){
-
         updateActivityStudentUI(true);
         await loadStudentActivities();
         return;
-
       }
 
       await loginActivityStudent();
-
       return;
-
     }
 
     /* =====================================
@@ -9737,79 +9743,36 @@ window.addEventListener(
     ===================================== */
 
     if(
-      data.type ===
-      "PRUDLE_AUTH"
+      data.type === "PRUDLE_AUTH"
     ){
 
       if(data.username){
-
         localStorage.setItem(
           "username",
           String(data.username)
         );
-
       }
 
       if(data.role){
-
         localStorage.setItem(
           "role",
           String(data.role)
         );
-
       }
 
       if(data.loginDate){
-
         localStorage.setItem(
           "loginDate",
           String(data.loginDate)
         );
-
       }
 
       if(
         ACTIVITY_STUDENT_IQAMA &&
         ACTIVITY_STUDENT_MAIN
       ){
-
         await loadStudentActivities();
-
       }
-
-    }
-
-  }
-);
-
-    if(data.username){
-      localStorage.setItem(
-        "username",
-        String(data.username)
-      );
-    }
-
-    if(data.role){
-      localStorage.setItem(
-        "role",
-        String(data.role)
-      );
-    }
-
-    if(data.loginDate){
-      localStorage.setItem(
-        "loginDate",
-        String(data.loginDate)
-      );
-    }
-
-    /*
-      Reload courses after authentication arrives
-      from the parent page/iframe wrapper.
-    */
-
-    if(ACTIVITY_STUDENT_IQAMA && ACTIVITY_STUDENT_MAIN){
-      loadStudentActivities();
     }
   }
 );
@@ -9820,162 +9783,27 @@ window.addEventListener(
 
     updateActivityStudentUI(false);
 
-    /*
-      محاولة استخدام تسجيل دخول محفوظ
-      سابقًا داخل صفحة النشاطات.
-    */
-
+    /* محاولة الدخول من التخزين المحلي أو رابط الصفحة */
     await autoLoginActivityStudent();
 
     /*
-      إذا لم يصل تسجيل الدخول بعد،
-      نطلبه من لوحة الطالب الأم.
+      عند فتح الصفحة داخل iframe نطلب جلسة الطالب
+      من لوحة الطالب الأم، حتى لا يكتب هويته مرة أخرى.
     */
-
     if(
       !ACTIVITY_STUDENT_IQAMA &&
       window.parent !== window
     ){
-
       window.parent.postMessage(
         {
           type:"PRUDLE_REQUEST_STUDENT_AUTH"
         },
         "*"
       );
-
     }
-
   }
 );
 </script>
-<script>
-(function(){
 
-  const ACTIVITY_FRAME_ID = "activityFrame";
-
-  function sendStudentAuthToActivity(){
-
-    const frame =
-      document.getElementById(
-        ACTIVITY_FRAME_ID
-      );
-
-    if(
-      !frame ||
-      !frame.contentWindow
-    ){
-      return;
-    }
-
-    const studentID =
-      String(
-        localStorage.getItem("studentID") ||
-        localStorage.getItem("student_iqama") ||
-        ""
-      )
-      .trim();
-
-    const studentLoginDate =
-      String(
-        localStorage.getItem("studentLoginDate") ||
-        ""
-      );
-
-    const studentLoggedOut =
-      localStorage.getItem("studentLoggedOut") === "true";
-
-    const today =
-      new Date().toDateString();
-
-    if(
-      !studentID ||
-      studentLoggedOut ||
-      studentLoginDate !== today
-    ){
-      return;
-    }
-
-    frame.contentWindow.postMessage(
-      {
-        type:"PRUDLE_STUDENT_AUTH",
-        studentID:studentID,
-        student_iqama:studentID,
-        studentLoginDate:studentLoginDate
-      },
-      "https://abbassaboali-alt.github.io"
-    );
-
-  }
-
-  window.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-      const frame =
-        document.getElementById(
-          ACTIVITY_FRAME_ID
-        );
-
-      if(frame){
-
-        frame.addEventListener(
-          "load",
-          function(){
-
-            sendStudentAuthToActivity();
-
-            setTimeout(
-              sendStudentAuthToActivity,
-              500
-            );
-
-          }
-        );
-
-      }
-
-    }
-  );
-
-  window.addEventListener(
-    "message",
-    function(event){
-
-      if(
-        event.origin !==
-        "https://abbassaboali-alt.github.io"
-      ){
-        return;
-      }
-
-      if(
-        event.data?.type ===
-        "PRUDLE_REQUEST_STUDENT_AUTH"
-      ){
-        sendStudentAuthToActivity();
-      }
-
-      if(
-        event.data?.type ===
-        "PRUDLE_STUDENT_LOGOUT"
-      ){
-
-        localStorage.removeItem("studentID");
-        localStorage.removeItem("student_iqama");
-        localStorage.removeItem("studentLoginDate");
-
-        localStorage.setItem(
-          "studentLoggedOut",
-          "true"
-        );
-
-      }
-
-    }
-  );
-
-})();
-</script>
 </body>
 </html>
