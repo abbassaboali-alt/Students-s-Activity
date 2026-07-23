@@ -9777,7 +9777,8 @@ window.addEventListener("storage", event=>{
             safe(courseId)
         ) &&
         session.status === "active" &&
-        session.mode === "individual"
+        session.mode === "individual" &&
+        session.studentVisible !== false
       ) || null;
   }
 
@@ -9802,7 +9803,8 @@ window.addEventListener("storage", event=>{
           ...doc.data()
         }))
         .filter(session=>
-          session.mode === "individual"
+          session.mode === "individual" &&
+          session.studentVisible !== false
         );
   }
 
@@ -9833,7 +9835,9 @@ window.addEventListener("storage", event=>{
                 }))
                 .filter(session=>
                   session.mode ===
-                  "individual"
+                    "individual" &&
+                  session.studentVisible !==
+                    false
                 );
 
             if(
