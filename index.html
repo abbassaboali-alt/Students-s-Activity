@@ -2486,63 +2486,13 @@ button{font-family:inherit;cursor:pointer}
   </section>
 
 
-  <section id="teamSetupArea" class="panel team-setup hidden">
-
-    <div class="team-setup-head">
-      <div class="icon">👥</div>
-      <h2 style="margin:0">Choose Teams / Groups</h2>
-      <p style="color:var(--muted);margin:7px 0 0">
-        Questions are distributed automatically in order:
-        Team A, Team B, Team C, then back to Team A.
-      </p>
-    </div>
-
-    <div class="team-count-row">
-
-      <div>
-        <label>Number of Teams / Groups</label>
-
-        <select id="teamCountSelect" onchange="renderTeamNameInputs()">
-          <option value="1">1 Team</option>
-          <option value="2">2 Teams</option>
-          <option value="3">3 Teams</option>
-          <option value="4">4 Teams</option>
-          <option value="5">5 Teams</option>
-          <option value="6">6 Teams</option>
-        </select>
-      </div>
-
-      <div style="
-        padding:11px 13px;
-        border:1px solid var(--border);
-        border-radius:12px;
-        background:#f7fafc;
-        color:var(--muted);
-        font-size:13px;
-        font-weight:700;
-      ">
-        You may keep the automatic names Team A, Team B, Team C,
-        or write your own group names.
-      </div>
-
-    </div>
-
-    <div id="teamNamesGrid" class="team-names-grid"></div>
-
-    <div class="actions" style="justify-content:center;margin-top:20px">
-
-      <button class="btn btn-primary" type="button" onclick="confirmTeamSetup()">
-        <i class="fa-solid fa-play"></i>
-        Start Team Activity
-      </button>
-
-      <button class="btn btn-light" type="button" onclick="cancelTeamSetup()">
-        <i class="fa-solid fa-arrow-left"></i>
-        Back
-      </button>
-
-    </div>
-
+  
+  <!-- Individual student mode: no Teams / Groups selection screen -->
+  <section id="teamSetupArea" class="hidden" aria-hidden="true">
+    <select id="teamCountSelect" class="hidden">
+      <option value="1">1 Student</option>
+    </select>
+    <div id="teamNamesGrid" class="hidden"></div>
   </section>
 
   <section id="playArea" class="play-shell hidden">
@@ -2588,7 +2538,7 @@ button{font-family:inherit;cursor:pointer}
         </div>
 
         <div class="race-board-note">
-          Every correct answer moves the current team forward.
+          Every correct answer moves the student forward.
         </div>
 
       </div>
@@ -4717,82 +4667,14 @@ function getDefaultTeamName(index){
     );
 }
 
-/* =========================================================
-   DIRECT STUDENT MODE — KAHOOT STYLE
-   The logged-in student enters immediately using their saved name.
-   No team-selection screen is shown. Existing one-team scoring logic
-   is reused so all question types and reports continue to work.
-========================================================= */
-function startStudentActivityDirect(){
-
-  clearRandomQuestionTimers();
-  clearWheelState();
-  stopActivityTimer();
-
-  const studentName = String(
+function getLoggedActivityStudentName(){
+  return String(
     ACTIVITY_STUDENT_MAIN?.name ||
     ACTIVITY_STUDENT_MAIN?.studentName ||
     ACTIVITY_STUDENT_MAIN?.Name ||
-    ACTIVITY_STUDENT_IQAMA ||
+    getActorData()?.name ||
     "Student"
-  ).trim();
-
-  TEAM_COUNT = 1;
-  CURRENT_TEAM_INDEX = 0;
-
-  TEAMS = [{
-    id: ACTIVITY_STUDENT_DOC_ID || ACTIVITY_STUDENT_IQAMA || "student_1",
-    letter: "S",
-    name: studentName,
-    correct: 0,
-    answered: 0,
-    assigned: Array.isArray(CURRENT_ACTIVITY?.questions)
-      ? CURRENT_ACTIVITY.questions.length
-      : 0,
-    racePosition: 0
-  }];
-
-  CURRENT_QUESTION_INDEX = 0;
-  CURRENT_SCORE = 0;
-  ANSWER_LOCKED = false;
-  ACTIVITY_FINISHED = false;
-  ACTIVITY_TIME_LEFT = 0;
-  CURRENT_ORDER_SELECTION = [];
-  CURRENT_USAGE_ID = "";
-
-  document.getElementById("studentStart")?.classList.add("hidden");
-  document.getElementById("teamSetupArea")?.classList.add("hidden");
-  document.getElementById("resultArea")?.classList.add("hidden");
-  document.getElementById("playArea")?.classList.remove("hidden");
-
-  const title = document.getElementById("playingActivityTitle");
-  if(title){
-    title.textContent = CURRENT_ACTIVITY?.title || "Interactive Activity";
-  }
-
-  const info = document.getElementById("playingCourseInfo");
-  if(info){
-    info.textContent = [
-      studentName,
-      getCourseName(CURRENT_COURSE),
-      getBranch(CURRENT_COURSE,CURRENT_ACTIVITY),
-      getSection(CURRENT_COURSE,CURRENT_ACTIVITY),
-      getTrainer(CURRENT_COURSE,CURRENT_ACTIVITY)
-    ].filter(Boolean).join(" • ");
-  }
-
-  const banner = document.getElementById("currentTeamBanner");
-  if(banner){
-    banner.textContent = `🎯 ${studentName}`;
-  }
-
-  recordActivityUsageStart();
-  setupRaceGame();
-  renderLiveTeamBoard();
-  renderStudentQuestion();
-  prepareTimerForCurrentQuestion();
-
-  window.scrollTo({top:0,behavior:"smooth"});
+  ).trim() || "Student";
 }
 
 function prepareTeamSetup(){
@@ -4801,55 +4683,126 @@ function prepareTeamSetup(){
   clearWheelState();
   stopActivityTimer();
 
+  if(
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions) ||
+    !CURRENT_ACTIVITY.questions.length
+  ){
+    alert("This activity does not contain questions.");
+    return;
+  }
+
+  const studentName =
+    getLoggedActivityStudentName();
+
+  /*
+    Individual Kahoot-style mode:
+    the logged-in student is the only participant.
+    No team-selection screen is shown.
+  */
   TEAM_COUNT = 1;
-  TEAMS = [];
+
+  TEAMS = [{
+    id:
+      "student_" +
+      String(
+        ACTIVITY_STUDENT_DOC_ID ||
+        ACTIVITY_STUDENT_IQAMA ||
+        "participant"
+      ),
+
+    letter:"",
+
+    name:studentName,
+
+    correct:0,
+    answered:0,
+
+    assigned:
+      CURRENT_ACTIVITY.questions.length,
+
+    racePosition:0,
+
+    participantType:"student",
+
+    studentId:
+      ACTIVITY_STUDENT_DOC_ID ||
+      "",
+
+    studentIqama:
+      ACTIVITY_STUDENT_IQAMA ||
+      ""
+  }];
+
+  CURRENT_QUESTION_INDEX = 0;
+  CURRENT_SCORE = 0;
   CURRENT_TEAM_INDEX = 0;
+  ANSWER_LOCKED = false;
+  ACTIVITY_FINISHED = false;
+  ACTIVITY_TIME_LEFT = 0;
+  CURRENT_ORDER_SELECTION = [];
+  CURRENT_USAGE_ID = "";
 
   RACE_MODE_ACTIVE = false;
   RACE_TOTAL_STEPS = 1;
 
   document
-    .getElementById("raceBoard")
-    ?.classList
-    .add("hidden");
-
-  const raceLanes =
-    document.getElementById(
-      "raceLanes"
-    );
-
-  if(raceLanes){
-    raceLanes.innerHTML = "";
-  }
-
-  const select =
-    document.getElementById(
-      "teamCountSelect"
-    );
-
-  select.value = "1";
-
-  renderTeamNameInputs();
-
-  document
     .getElementById("studentStart")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("playArea")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("resultArea")
-    .classList
+    ?.classList
     .add("hidden");
 
   document
     .getElementById("teamSetupArea")
-    .classList
+    ?.classList
+    .add("hidden");
+
+  document
+    .getElementById("resultArea")
+    ?.classList
+    .add("hidden");
+
+  document
+    .getElementById("teamResultsBox")
+    ?.classList
+    .add("hidden");
+
+  document
+    .getElementById("playArea")
+    ?.classList
     .remove("hidden");
+
+  document
+    .getElementById("playingActivityTitle")
+    .textContent =
+      CURRENT_ACTIVITY.title ||
+      "Interactive Activity";
+
+  document
+    .getElementById("playingCourseInfo")
+    .textContent = [
+      studentName,
+      getCourseName(CURRENT_COURSE),
+      getBranch(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      ),
+      getSection(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      ),
+      getTrainer(
+        CURRENT_COURSE,
+        CURRENT_ACTIVITY
+      )
+    ]
+    .filter(Boolean)
+    .join(" • ");
+
+  recordActivityUsageStart();
+
+  setupRaceGame();
+  renderStudentQuestion();
+  prepareTimerForCurrentQuestion();
 
   window.scrollTo({
     top:0,
@@ -4911,157 +4864,7 @@ function renderTeamNameInputs(){
 }
 
 function confirmTeamSetup(){
-
-  /*
-    اختيار الدورة غير إلزامي.
-    يكفي وجود النشاط حتى يبدأ اللعب في Practice Mode.
-  */
-  if(!CURRENT_ACTIVITY){
-    alert("The activity is unavailable.");
-    return;
-  }
-
-  TEAM_COUNT =
-    Math.max(
-      1,
-      Math.min(
-        6,
-        Number(
-          document
-            .getElementById(
-              "teamCountSelect"
-            )
-            .value ||
-          1
-        )
-      )
-    );
-
-  const inputs = [
-    ...document.querySelectorAll(
-      ".team-name-input"
-    )
-  ];
-
-  const names =
-    inputs.map(
-      (input,index)=>
-        input.value.trim() ||
-        getDefaultTeamName(index)
-    );
-
-  const normalized =
-    names.map(name=>clean(name));
-
-  if(
-    new Set(normalized).size !==
-    normalized.length
-  ){
-    alert(
-      "Each team must have a different name."
-    );
-    return;
-  }
-
-  TEAMS = names.map(
-    (name,index)=>({
-      id:
-        "team_" +
-        String.fromCharCode(65 + index),
-
-      letter:
-        String.fromCharCode(65 + index),
-
-      name,
-      correct:0,
-      answered:0,
-      assigned:0,
-      racePosition:0
-    })
-  );
-
-  /*
-    Calculate how many questions are assigned
-    to every team using round-robin distribution.
-  */
-
-  CURRENT_ACTIVITY.questions.forEach(
-    (_,questionIndex)=>{
-
-      const teamIndex =
-        questionIndex %
-        TEAM_COUNT;
-
-      TEAMS[teamIndex].assigned++;
-    }
-  );
-
-  CURRENT_QUESTION_INDEX = 0;
-  CURRENT_SCORE = 0;
-  CURRENT_TEAM_INDEX = 0;
-  ANSWER_LOCKED = false;
-  ACTIVITY_FINISHED = false;
-  ACTIVITY_TIME_LEFT = 0;
-  CURRENT_ORDER_SELECTION = [];
-  CURRENT_USAGE_ID = "";
-
-  document
-    .getElementById("teamSetupArea")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("resultArea")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("playArea")
-    .classList
-    .remove("hidden");
-
-  document
-    .getElementById("playingActivityTitle")
-    .textContent =
-      CURRENT_ACTIVITY.title ||
-      "Interactive Activity";
-
-  document
-    .getElementById("playingCourseInfo")
-    .textContent = [
-      getCourseName(CURRENT_COURSE),
-      getBranch(
-        CURRENT_COURSE,
-        CURRENT_ACTIVITY
-      ),
-      getSection(
-        CURRENT_COURSE,
-        CURRENT_ACTIVITY
-      ),
-      getTrainer(
-        CURRENT_COURSE,
-        CURRENT_ACTIVITY
-      ),
-      TEAM_COUNT +
-        (
-          TEAM_COUNT === 1
-            ? " Team"
-            : " Teams"
-        )
-    ]
-    .filter(Boolean)
-    .join(" • ");
-
-recordActivityUsageStart();
-
-setupRaceGame();
-renderStudentQuestion();
-prepareTimerForCurrentQuestion();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  prepareTeamSetup();
 }
 
 function cancelTeamSetup(){
@@ -5110,22 +4913,20 @@ function recordCurrentTeamAnswer(
 
 function renderCurrentTeam(){
 
-  const team =
-    getCurrentTeam();
+  const studentName =
+    getLoggedActivityStudentName();
 
   const banner =
     document.getElementById(
       "currentTeamBanner"
     );
 
-  if(!team){
-    banner.textContent =
-      "Current Student";
+  if(!banner){
     return;
   }
 
   banner.textContent =
-    `🎯 ${team.name}`;
+    `🎯 ${studentName}`;
 }
 
 function renderLiveTeamBoard(){
@@ -5135,42 +4936,44 @@ function renderLiveTeamBoard(){
       "liveTeamBoard"
     );
 
-  if(!TEAMS.length){
+  if(!box){
+    return;
+  }
+
+  const participant =
+    TEAMS[0] || null;
+
+  if(!participant){
     box.innerHTML = "";
     return;
   }
 
-  const activeIndex =
-    CURRENT_QUESTION_INDEX %
-    TEAMS.length;
+  box.innerHTML = `
+    <div class="live-team-item active">
+      <strong>
+        <i class="fa-solid fa-user-graduate"></i>
+        ${esc(getLoggedActivityStudentName())}
+      </strong>
 
-  box.innerHTML =
-    TEAMS.map((team,index)=>`
-      <div class="
-        live-team-item
-        ${index === activeIndex ? "active" : ""}
-      ">
-        <strong>
-          ${esc(team.name)}
-        </strong>
-
-        <span>
-          ✅ ${team.correct}
-          &nbsp; | &nbsp;
-          Answered ${team.answered}/${team.assigned}
-          ${
-            RACE_MODE_ACTIVE
-              ? `&nbsp; | &nbsp; 🏁 ${
-                  Number(
-                    team.racePosition ||
-                    0
-                  )
-                }/${RACE_TOTAL_STEPS}`
-              : ""
-          }
-        </span>
-      </div>
-    `).join("");
+      <span>
+        ✅ ${Number(participant.correct || 0)}
+        &nbsp; | &nbsp;
+        Answered
+        ${Number(participant.answered || 0)}/
+        ${Number(participant.assigned || 0)}
+        ${
+          RACE_MODE_ACTIVE
+            ? `&nbsp; | &nbsp; 🏁 ${
+                Number(
+                  participant.racePosition ||
+                  0
+                )
+              }/${RACE_TOTAL_STEPS}`
+            : ""
+        }
+      </span>
+    </div>
+  `;
 }
 
 function getRankedTeams(){
@@ -5229,59 +5032,15 @@ function renderTeamResults(){
       "teamRanking"
     );
 
-  if(!TEAMS.length){
+  if(box){
     box.classList.add("hidden");
-    ranking.innerHTML = "";
-    return null;
   }
 
-  const ranked =
-    getRankedTeams();
+  if(ranking){
+    ranking.innerHTML = "";
+  }
 
-  const winner =
-    ranked[0] || null;
-
-  box.classList.remove("hidden");
-
-  ranking.innerHTML =
-    ranked.map((team,index)=>`
-      <div class="
-        team-rank-row
-        ${index === 0 ? "winner" : ""}
-      ">
-        <div class="team-rank-number">
-          ${
-            index === 0
-              ? "🏆"
-              : index + 1
-          }
-        </div>
-
-        <div class="team-rank-name">
-          ${esc(team.name)}
-        </div>
-
-        <div class="team-rank-score">
-          ${
-            RACE_MODE_ACTIVE
-              ? `🏁 ${
-                  Number(
-                    team.racePosition ||
-                    0
-                  )
-                }/${RACE_TOTAL_STEPS}`
-              : `${team.correct} Correct`
-          }
-        </div>
-
-        <div class="team-rank-accuracy">
-          ${team.accuracy}%
-          • Answered ${team.answered}/${team.assigned}
-        </div>
-      </div>
-    `).join("");
-
-  return winner;
+  return TEAMS[0] || null;
 }
 
 function startActivity(activityId,courseId){
@@ -5330,7 +5089,7 @@ function startActivity(activityId,courseId){
     return;
   }
 
-  startStudentActivityDirect();
+  prepareTeamSetup();
 }
 
 function startActivityTimer(){
@@ -5571,11 +5330,7 @@ function renderStudentQuestion(){
     .getElementById("questionNumber")
     .textContent =
       `Question ${CURRENT_QUESTION_INDEX + 1} of ${questions.length}` +
-      (
-        getCurrentTeam()
-          ? ` — ${getCurrentTeam().name}`
-          : ""
-      );
+      ` — ${getLoggedActivityStudentName()}`;
 
   document
     .getElementById("gameQuestion")
@@ -8915,22 +8670,14 @@ async function finishActivity(
     .getElementById("finalStars")
     .textContent = stars;
 
-  if(winningTeam){
+  if(winningTeam && RACE_MODE_ACTIVE){
 
     message =
-      RACE_MODE_ACTIVE
-        ? (
-            `🏁 Race Winner: ${winningTeam.name} — ` +
-            `${Number(
-              winningTeam.racePosition ||
-              0
-            )}/${RACE_TOTAL_STEPS} steps`
-          )
-        : (
-            TEAM_COUNT === 1
-              ? `🏆 ${winningTeam.name} — ${winningTeam.correct} correct answers`
-              : `🏆 Winning Team: ${winningTeam.name} — ${winningTeam.correct} correct answers`
-          );
+      `🏁 ${getLoggedActivityStudentName()} reached ` +
+      `${Number(
+        winningTeam.racePosition ||
+        0
+      )}/${RACE_TOTAL_STEPS} steps`;
 
   }
 
@@ -9091,8 +8838,10 @@ async function finishActivity(
         total,
         percent,
 
-        teamMode:true,
-        teamCount:TEAM_COUNT,
+        teamMode:false,
+        individualMode:true,
+        participantType:"student",
+        teamCount:1,
 
         teams:getRankedTeams().map(
           team=>({
@@ -9151,6 +8900,34 @@ async function finishActivity(
         anonymous:
           getActorData().role === "guest",
 
+        correctAnswers:
+          CURRENT_SCORE,
+
+        totalAnswers:
+          total,
+
+        accuracy:
+          percent,
+
+        participationCount:
+          1,
+
+        rankingStudentName:
+          getLoggedActivityStudentName(),
+
+        rankingStudentIqama:
+          ACTIVITY_STUDENT_IQAMA ||
+          "",
+
+        rankingCourseId:
+          CURRENT_COURSE?.id ||
+          "",
+
+        rankingCourseName:
+          getCourseName(
+            CURRENT_COURSE
+          ),
+
         createdAt:
           firebase
             .firestore
@@ -9165,8 +8942,10 @@ async function finishActivity(
         total,
         percent,
 
-        teamMode:true,
-        teamCount:TEAM_COUNT,
+        teamMode:false,
+        individualMode:true,
+        participantType:"student",
+        teamCount:1,
 
         teams:getRankedTeams().map(
           team=>({
