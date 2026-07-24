@@ -76,6 +76,369 @@ img, video, canvas{
   max-width:100% !important;
   height:auto !important;
 }
+
+/* =====================================
+   DICE ADVENTURE — TEAM / STUDENT MODE
+===================================== */
+.dice-adventure-board{
+  margin:0 0 16px;
+  padding:17px;
+  border:2px solid #9b59b6;
+  border-radius:20px;
+  background:linear-gradient(135deg,#f8effd,#fff);
+  box-shadow:0 10px 25px rgba(72,35,95,.10);
+}
+.extra-game-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:13px;
+}
+.extra-game-title{
+  color:var(--blue);
+  font-size:18px;
+  font-weight:900;
+}
+.extra-game-status{
+  padding:7px 11px;
+  border-radius:999px;
+  background:#edf4fa;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:900;
+}
+.dice-team-list{
+  display:grid;
+  gap:12px;
+}
+.dice-team-row{
+  padding:11px;
+  border:1px solid #decfe8;
+  border-radius:15px;
+  background:#fff;
+}
+.dice-team-row.active{
+  border:2px solid #9b59b6;
+  box-shadow:0 0 0 3px rgba(155,89,182,.10);
+}
+.dice-team-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:9px;
+  margin-bottom:8px;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:900;
+}
+.dice-mini-track{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:4px;
+}
+.dice-mini-cell{
+  position:relative;
+  min-height:30px;
+  display:grid;
+  place-items:center;
+  border:1px solid #dfd4e7;
+  border-radius:7px;
+  background:#faf7fc;
+  color:#6c3483;
+  font-size:9px;
+  font-weight:900;
+}
+.dice-mini-cell.forward{background:#eafaf4;color:#12835b}
+.dice-mini-cell.back{background:#fff0ee;color:#c0392b}
+.dice-mini-cell.treasure{background:#fff8d9;color:#765500}
+.dice-mini-cell.trap{background:#eef0f2;color:#374151}
+.dice-mini-cell.current{
+  border-color:#8e44ad;
+  background:#f0e2f7;
+  box-shadow:0 0 0 2px rgba(142,68,173,.14);
+}
+.dice-mini-player{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:20px;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.18));
+}
+.dice-action-line{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:13px;
+}
+.dice-display{
+  width:61px;
+  height:61px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(135deg,#8e44ad,#5b2c6f);
+  color:#fff;
+  font-size:34px;
+  box-shadow:0 9px 18px rgba(72,35,95,.22);
+}
+.dice-display.rolling{animation:diceModeRoll .7s ease}
+.dice-mode-message{
+  flex:1;
+  min-width:220px;
+  min-height:43px;
+  padding:10px 12px;
+  border:1px solid #dfd1e8;
+  border-radius:12px;
+  background:#fff;
+  color:#5b2c6f;
+  text-align:center;
+  font-size:13px;
+  font-weight:900;
+}
+@keyframes diceModeRoll{
+  0%{transform:rotate(0) scale(1)}
+  40%{transform:rotate(170deg) scale(1.18)}
+  75%{transform:rotate(300deg) scale(.92)}
+  100%{transform:rotate(360deg) scale(1)}
+}
+
+/* =====================================
+   SWORD BATTLE — TEAM / STUDENT MODE
+===================================== */
+.sword-battle-board{
+  margin:0 0 16px;
+  padding:17px;
+  border:2px solid #e67e22;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff4e7,#fff);
+  box-shadow:0 10px 25px rgba(120,60,10,.10);
+}
+.battle-team-list{
+  display:grid;
+  gap:12px;
+}
+.battle-team-card{
+  display:grid;
+  grid-template-columns:minmax(120px,1fr) auto minmax(120px,1fr);
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  border:1px solid #f0c999;
+  border-radius:16px;
+  background:#fff;
+}
+.battle-team-card.active{
+  border:2px solid var(--gold);
+  background:#fffaf0;
+}
+.battle-side{text-align:center}
+.battle-character{
+  font-size:52px;
+  line-height:1;
+  filter:drop-shadow(0 5px 4px rgba(0,0,0,.18));
+}
+.battle-character.attacking{animation:battleModeAttack .55s ease}
+.battle-character.hit{animation:battleModeHit .55s ease}
+.battle-name{
+  margin:6px 0;
+  color:var(--blue);
+  font-size:12px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.battle-vs{
+  color:#c0392b;
+  font-size:20px;
+  font-weight:900;
+}
+.battle-hp-label{
+  display:flex;
+  justify-content:space-between;
+  gap:7px;
+  margin-bottom:4px;
+  font-size:10px;
+  font-weight:900;
+}
+.battle-hp-track{
+  height:13px;
+  overflow:hidden;
+  border:1px solid #d1d5db;
+  border-radius:999px;
+  background:#e5e7eb;
+}
+.battle-hp-bar{
+  height:100%;
+  background:linear-gradient(90deg,#17a673,#65d6aa);
+  transition:width .4s ease;
+}
+.battle-hp-bar.warning{background:linear-gradient(90deg,#f39c12,#f4b942)}
+.battle-hp-bar.danger{background:linear-gradient(90deg,#c0392b,#e74c3c)}
+.battle-mode-message{
+  margin-top:13px;
+  min-height:43px;
+  padding:10px 12px;
+  border:1px solid #f0c999;
+  border-radius:12px;
+  background:#fff;
+  color:#8a4b08;
+  text-align:center;
+  font-size:13px;
+  font-weight:900;
+}
+@keyframes battleModeAttack{
+  0%,100%{transform:translateX(0) rotate(0)}
+  50%{transform:translateX(18px) rotate(9deg) scale(1.1)}
+}
+@keyframes battleModeHit{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-8px) rotate(-7deg)}
+  50%{transform:translateX(8px) rotate(7deg)}
+  75%{transform:translateX(-5px) rotate(-4deg)}
+}
+@media(max-width:650px){
+  .dice-mini-track{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .battle-team-card{grid-template-columns:1fr}
+  .battle-vs{transform:rotate(90deg)}
+}
+
+
+/* =====================================
+   SHARED TEAM DICE BOARD
+===================================== */
+.shared-dice-board{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:7px;
+}
+.shared-dice-cell{
+  position:relative;
+  min-height:76px;
+  padding:7px 5px 29px;
+  border:2px solid #d8c6e5;
+  border-radius:13px;
+  background:#fff;
+  color:#6c3483;
+  font-size:11px;
+  font-weight:900;
+  text-align:center;
+}
+.shared-dice-cell.forward{background:#eafaf4;border-color:#8bd5b7;color:#12835b}
+.shared-dice-cell.back{background:#fff0ee;border-color:#f1ada5;color:#c0392b}
+.shared-dice-cell.treasure{background:#fff8d9;border-color:#f4cf58;color:#765500}
+.shared-dice-cell.trap{background:#f3f4f6;border-color:#9ca3af;color:#374151}
+.shared-dice-cell.finish{background:linear-gradient(135deg,#fff7c7,#fff);border-color:var(--gold)}
+.shared-dice-tokens{
+  position:absolute;
+  left:4px;
+  right:4px;
+  bottom:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  flex-wrap:wrap;
+}
+.shared-dice-token{
+  width:23px;
+  height:23px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--blue);
+  color:#fff;
+  border:2px solid #fff;
+  box-shadow:0 3px 7px rgba(0,0,0,.18);
+  font-size:10px;
+  font-weight:900;
+}
+.shared-dice-token.active{
+  outline:3px solid var(--gold);
+  transform:scale(1.1);
+}
+.shared-dice-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:12px 0 0;
+}
+.shared-dice-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #ded1e7;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:900;
+}
+
+/* =====================================
+   TEAM VS TEAM SWORD BATTLE
+===================================== */
+.team-battle-arena{
+  display:grid;
+  gap:12px;
+}
+.team-battle-card{
+  display:grid;
+  grid-template-columns:auto minmax(120px,1fr) auto;
+  align-items:center;
+  gap:11px;
+  padding:12px;
+  border:1px solid #f0c999;
+  border-radius:16px;
+  background:#fff;
+}
+.team-battle-card.active{
+  border:2px solid var(--gold);
+  background:#fffaf0;
+}
+.team-battle-card.eliminated{
+  opacity:.48;
+  filter:grayscale(.8);
+}
+.team-battle-avatar{
+  font-size:43px;
+  line-height:1;
+  filter:drop-shadow(0 5px 4px rgba(0,0,0,.17));
+}
+.team-battle-avatar.attacking{animation:battleModeAttack .55s ease}
+.team-battle-avatar.hit{animation:battleModeHit .55s ease}
+.team-battle-main{min-width:0}
+.team-battle-name{
+  color:var(--blue);
+  font-size:14px;
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.team-battle-state{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+}
+.team-battle-hp{
+  margin-top:7px;
+}
+.team-battle-target{
+  color:#c0392b;
+  font-size:12px;
+  font-weight:900;
+  text-align:center;
+}
+@media(max-width:650px){
+  .shared-dice-board{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .shared-dice-cell{min-height:72px}
+  .team-battle-card{grid-template-columns:auto 1fr}
+  .team-battle-target{grid-column:1/-1}
+}
+
 </style>
 
 <!DOCTYPE html>
@@ -2529,6 +2892,32 @@ button{font-family:inherit;cursor:pointer}
 
     <div id="liveTeamBoard" class="live-team-board"></div>
 
+
+    <div id="diceAdventureBoard" class="dice-adventure-board hidden">
+      <div class="extra-game-head">
+        <div class="extra-game-title">🎲 Dice Adventure</div>
+        <div id="diceAdventureStatus" class="extra-game-status">Correct answer rolls the dice</div>
+      </div>
+      <div id="diceTeamList" class="dice-team-list"></div>
+      <div class="dice-action-line">
+        <div id="diceModeDisplay" class="dice-display">🎲</div>
+        <div id="diceModeMessage" class="dice-mode-message">
+          Answer correctly to roll the dice.
+        </div>
+      </div>
+    </div>
+
+    <div id="swordBattleBoard" class="sword-battle-board hidden">
+      <div class="extra-game-head">
+        <div class="extra-game-title">⚔️ Sword Battle</div>
+        <div id="swordBattleStatus" class="extra-game-status">Correct = attack • Wrong = enemy attack</div>
+      </div>
+      <div id="battleTeamList" class="battle-team-list"></div>
+      <div id="battleModeMessage" class="battle-mode-message">
+        The current participant battles an enemy.
+      </div>
+    </div>
+
     <div id="raceBoard" class="race-board hidden">
 
       <div class="race-board-head">
@@ -2692,6 +3081,14 @@ let TEAM_COUNT = 1;
 let TEAMS = [];
 let CURRENT_TEAM_INDEX = 0;
 
+
+let DICE_MODE_ACTIVE = false;
+let DICE_BOARD_SIZE = 24;
+let DICE_MODE_ROLLING = false;
+
+let SWORD_BATTLE_ACTIVE = false;
+let SWORD_BATTLE_FINISHED = false;
+
 let RACE_MODE_ACTIVE = false;
 let RACE_TOTAL_STEPS = 1;
 let RACE_CAR_ICONS = [
@@ -2715,6 +3112,1112 @@ let ACTIVITY_LOGIN_LOADING = false;
 
 /* Prevent older overlapping Firebase loads from overwriting newer results. */
 let ACTIVITIES_LOAD_REQUEST_ID = 0;
+
+
+/* =====================================
+   DICE ADVENTURE + SWORD BATTLE SUPPORT
+===================================== */
+
+function isDiceMode(){
+  return getActivityGameMode() === "dice";
+}
+
+function isSwordBattleMode(){
+  return getActivityGameMode() === "battle";
+}
+
+function getDiceSpecial(position){
+
+  const specials = {
+    5:{type:"forward",icon:"⬆️",amount:2,message:"Boost! Move forward 2 squares."},
+    8:{type:"trap",icon:"🕳️",amount:-2,message:"Trap! Move back 2 squares."},
+    12:{type:"treasure",icon:"💎",amount:0,message:"Treasure found!"},
+    16:{type:"forward",icon:"🚀",amount:3,message:"Rocket boost! Move forward 3 squares."},
+    19:{type:"back",icon:"⬅️",amount:-3,message:"Wrong path! Move back 3 squares."},
+    22:{type:"treasure",icon:"👑",amount:0,message:"Golden treasure found!"}
+  };
+
+  return specials[position] || null;
+}
+
+
+/* =====================================
+   SHARED TEAM DICE + TEAM BATTLE OVERRIDE
+===================================== */
+
+function getTeamShortLabel(team,index){
+
+  const name =
+    String(team?.name || `Team ${index + 1}`)
+      .trim();
+
+  const words =
+    name.split(/\s+/).filter(Boolean);
+
+  if(words.length >= 2){
+    return (
+      words[0][0] +
+      words[1][0]
+    ).toUpperCase();
+  }
+
+  return name
+    .slice(0,2)
+    .toUpperCase();
+}
+
+function renderDiceMode(){
+
+  if(!DICE_MODE_ACTIVE){
+    return;
+  }
+
+  const box =
+    document.getElementById("diceTeamList");
+
+  if(!box){
+    return;
+  }
+
+  const currentTeam =
+    getCurrentTeam();
+
+  box.className =
+    "shared-dice-board";
+
+  box.innerHTML =
+    Array.from(
+      {length:DICE_BOARD_SIZE},
+      (_,index)=>{
+
+        const square =
+          index + 1;
+
+        const special =
+          getDiceSpecial(square);
+
+        const classes = [
+          "shared-dice-cell"
+        ];
+
+        if(special){
+          classes.push(special.type);
+        }
+
+        if(square === DICE_BOARD_SIZE){
+          classes.push("finish");
+        }
+
+        const teamsHere =
+          TEAMS
+            .map((team,teamIndex)=>({
+              team,
+              teamIndex
+            }))
+            .filter(item=>
+              Number(
+                item.team.dicePosition || 1
+              ) === square
+            );
+
+        return `
+          <div class="${classes.join(" ")}">
+
+            <div>
+              ${
+                square === DICE_BOARD_SIZE
+                  ? "🏆 Finish"
+                  : special
+                    ? special.icon
+                    : square
+              }
+            </div>
+
+            <div class="shared-dice-tokens">
+              ${
+                teamsHere.map(item=>`
+                  <span
+                    class="shared-dice-token ${
+                      currentTeam?.id === item.team.id
+                        ? "active"
+                        : ""
+                    }"
+                    title="${esc(item.team.name)}">
+                    ${esc(getTeamShortLabel(item.team,item.teamIndex))}
+                  </span>
+                `).join("")
+              }
+            </div>
+
+          </div>
+        `;
+
+      }
+    ).join("");
+
+  const legend =
+    document.createElement("div");
+
+  legend.className =
+    "shared-dice-legend";
+
+  legend.innerHTML =
+    TEAMS.map((team,index)=>`
+      <span>
+        <b>${esc(getTeamShortLabel(team,index))}</b>
+        ${esc(team.name)}
+        — ${Number(team.dicePosition || 1)}/${DICE_BOARD_SIZE}
+        ${Number(team.diceTreasures || 0) ? ` • 💎 ${Number(team.diceTreasures || 0)}` : ""}
+      </span>
+    `).join("");
+
+  box.insertAdjacentElement(
+    "afterend",
+    legend
+  );
+
+  const oldLegends =
+    box.parentElement
+      ?.querySelectorAll(
+        ".shared-dice-legend"
+      ) || [];
+
+  oldLegends.forEach((item,index)=>{
+    if(index < oldLegends.length - 1){
+      item.remove();
+    }
+  });
+
+  const status =
+    document.getElementById(
+      "diceAdventureStatus"
+    );
+
+  if(status){
+
+    status.textContent =
+      currentTeam
+        ? `Current turn: ${currentTeam.name}`
+        : "Shared team board";
+
+  }
+}
+
+function getAliveBattleTeams(){
+
+  return TEAMS.filter(team=>
+    Number(team.playerHp ?? 100) > 0
+  );
+}
+
+function getNextAliveOpponent(
+  attacker
+){
+
+  const alive =
+    getAliveBattleTeams();
+
+  if(alive.length <= 1){
+    return null;
+  }
+
+  const attackerIndex =
+    TEAMS.findIndex(
+      team=>team.id === attacker.id
+    );
+
+  for(
+    let step = 1;
+    step <= TEAMS.length;
+    step++
+  ){
+
+    const candidate =
+      TEAMS[
+        (
+          attackerIndex +
+          step
+        ) %
+        TEAMS.length
+      ];
+
+    if(
+      candidate.id !== attacker.id &&
+      Number(candidate.playerHp ?? 100) > 0
+    ){
+      return candidate;
+    }
+
+  }
+
+  return null;
+}
+
+function renderSwordBattleMode(){
+
+  if(!SWORD_BATTLE_ACTIVE){
+    return;
+  }
+
+  const box =
+    document.getElementById(
+      "battleTeamList"
+    );
+
+  if(!box){
+    return;
+  }
+
+  box.className =
+    "team-battle-arena";
+
+  const currentTeam =
+    getCurrentTeam();
+
+  box.innerHTML =
+    TEAMS.map((team,index)=>{
+
+      const hp =
+        Math.max(
+          0,
+          Number(team.playerHp ?? 100)
+        );
+
+      const eliminated =
+        hp <= 0;
+
+      const target =
+        eliminated
+          ? null
+          : getNextAliveOpponent(team);
+
+      return `
+        <div class="team-battle-card ${
+          currentTeam?.id === team.id
+            ? "active"
+            : ""
+        } ${
+          eliminated
+            ? "eliminated"
+            : ""
+        }">
+
+          <div
+            id="battleTeamAvatar_${index}"
+            class="team-battle-avatar">
+            ${eliminated ? "💀" : "🛡️"}
+          </div>
+
+          <div class="team-battle-main">
+
+            <div class="team-battle-name">
+              ${esc(team.name)}
+            </div>
+
+            <div class="team-battle-state">
+              ${
+                eliminated
+                  ? "Eliminated"
+                  : currentTeam?.id === team.id
+                    ? "Current attacker"
+                    : "Waiting"
+              }
+            </div>
+
+            <div class="team-battle-hp">
+
+              <div class="battle-hp-label">
+                <span>HP</span>
+                <span>${hp}/100</span>
+              </div>
+
+              <div class="battle-hp-track">
+                <div
+                  class="battle-hp-bar ${hpClass(hp)}"
+                  style="width:${hp}%">
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="team-battle-target">
+            ${
+              target
+                ? `⚔️ Target: ${esc(target.name)}`
+                : eliminated
+                  ? "Out"
+                  : "🏆 Last Team"
+            }
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+  const alive =
+    getAliveBattleTeams();
+
+  const status =
+    document.getElementById(
+      "swordBattleStatus"
+    );
+
+  if(status){
+
+    status.textContent =
+      alive.length > 1
+        ? `${alive.length} teams remaining`
+        : alive.length === 1
+          ? `Winner: ${alive[0].name}`
+          : "Battle finished";
+
+  }
+}
+
+function animateTeamBattle(
+  attacker,
+  target
+){
+
+  const attackerIndex =
+    TEAMS.findIndex(
+      team=>team.id === attacker.id
+    );
+
+  const targetIndex =
+    TEAMS.findIndex(
+      team=>team.id === target.id
+    );
+
+  const attackerElement =
+    document.getElementById(
+      `battleTeamAvatar_${attackerIndex}`
+    );
+
+  const targetElement =
+    document.getElementById(
+      `battleTeamAvatar_${targetIndex}`
+    );
+
+  attackerElement
+    ?.classList
+    .remove("attacking");
+
+  targetElement
+    ?.classList
+    .remove("hit");
+
+  if(attackerElement){
+    void attackerElement.offsetWidth;
+    attackerElement
+      .classList
+      .add("attacking");
+  }
+
+  if(targetElement){
+    void targetElement.offsetWidth;
+    targetElement
+      .classList
+      .add("hit");
+  }
+}
+
+function processSwordBattleAnswer(
+  isCorrect
+){
+
+  if(
+    !SWORD_BATTLE_ACTIVE ||
+    SWORD_BATTLE_FINISHED
+  ){
+    return;
+  }
+
+  let attacker =
+    getCurrentTeam();
+
+  if(
+    !attacker ||
+    Number(attacker.playerHp ?? 100) <= 0
+  ){
+
+    const alive =
+      getAliveBattleTeams();
+
+    attacker =
+      alive[0] || null;
+
+  }
+
+  if(!attacker){
+    return;
+  }
+
+  const target =
+    getNextAliveOpponent(attacker);
+
+  const message =
+    document.getElementById(
+      "battleModeMessage"
+    );
+
+  if(!target){
+
+    SWORD_BATTLE_FINISHED = true;
+
+    if(message){
+      message.textContent =
+        `🏆 ${attacker.name} is the last team standing!`;
+    }
+
+    renderSwordBattleMode();
+    return;
+  }
+
+  if(isCorrect){
+
+    const damage =
+      Math.floor(
+        Math.random() * 11
+      ) + 15;
+
+    target.playerHp =
+      Math.max(
+        0,
+        Number(target.playerHp ?? 100) -
+        damage
+      );
+
+    renderSwordBattleMode();
+    animateTeamBattle(
+      attacker,
+      target
+    );
+
+    if(message){
+
+      message.textContent =
+        target.playerHp <= 0
+          ? `💥 ${attacker.name} eliminated ${target.name}!`
+          : `⚔️ ${attacker.name} dealt ${damage} damage to ${target.name}.`;
+
+    }
+
+  }else{
+
+    const counterDamage =
+      Math.floor(
+        Math.random() * 9
+      ) + 12;
+
+    attacker.playerHp =
+      Math.max(
+        0,
+        Number(attacker.playerHp ?? 100) -
+        counterDamage
+      );
+
+    renderSwordBattleMode();
+    animateTeamBattle(
+      target,
+      attacker
+    );
+
+    if(message){
+
+      message.textContent =
+        attacker.playerHp <= 0
+          ? `💀 ${attacker.name} was eliminated after a wrong answer.`
+          : `💥 Wrong answer! ${target.name} counterattacked ${attacker.name} for ${counterDamage} damage.`;
+
+    }
+
+  }
+
+  const alive =
+    getAliveBattleTeams();
+
+  if(alive.length <= 1){
+
+    SWORD_BATTLE_FINISHED = true;
+
+    if(alive[0]){
+
+      if(message){
+        message.textContent =
+          `🏆 Battle Winner: ${alive[0].name}`;
+      }
+
+      if(
+        typeof launchBigConfetti ===
+        "function"
+      ){
+        launchBigConfetti();
+      }
+
+    }
+
+  }
+
+  renderSwordBattleMode();
+  renderLiveTeamBoard();
+}
+
+function setupDiceAndBattleModes(){
+
+  DICE_MODE_ACTIVE = isDiceMode();
+  SWORD_BATTLE_ACTIVE = isSwordBattleMode();
+  SWORD_BATTLE_FINISHED = false;
+  DICE_MODE_ROLLING = false;
+
+  TEAMS.forEach(team=>{
+
+    team.dicePosition =
+      Number(team.dicePosition || 1);
+
+    team.diceTreasures =
+      Number(team.diceTreasures || 0);
+
+    team.playerHp =
+      Number.isFinite(Number(team.playerHp)) &&
+      Number(team.playerHp) > 0
+        ? Number(team.playerHp)
+        : 100;
+
+    team.enemyHp =
+      Number.isFinite(Number(team.enemyHp))
+        ? Number(team.enemyHp)
+        : 100;
+
+  });
+
+  document
+    .getElementById("diceAdventureBoard")
+    ?.classList
+    .toggle("hidden",!DICE_MODE_ACTIVE);
+
+  document
+    .getElementById("swordBattleBoard")
+    ?.classList
+    .toggle("hidden",!SWORD_BATTLE_ACTIVE);
+
+  renderDiceMode();
+  renderSwordBattleMode();
+}
+
+function resetDiceAndBattleModes(){
+
+  TEAMS.forEach(team=>{
+
+    team.dicePosition = 1;
+    team.diceTreasures = 0;
+    team.playerHp = 100;
+    team.enemyHp = 100;
+
+  });
+
+  SWORD_BATTLE_FINISHED = false;
+  DICE_MODE_ROLLING = false;
+
+  setupDiceAndBattleModes();
+}
+
+function renderDiceMode(){
+
+  if(!DICE_MODE_ACTIVE){
+    return;
+  }
+
+  const box =
+    document.getElementById("diceTeamList");
+
+  if(!box){
+    return;
+  }
+
+  const currentTeam =
+    getCurrentTeam();
+
+  box.innerHTML =
+    TEAMS.map(team=>{
+
+      const position =
+        Math.max(
+          1,
+          Math.min(
+            DICE_BOARD_SIZE,
+            Number(team.dicePosition || 1)
+          )
+        );
+
+      return `
+        <div class="dice-team-row ${
+          currentTeam?.id === team.id
+            ? "active"
+            : ""
+        }">
+
+          <div class="dice-team-label">
+            <span>${esc(team.name)}</span>
+            <span>
+              ${position}/${DICE_BOARD_SIZE}
+              ${team.diceTreasures ? ` • 💎 ${team.diceTreasures}` : ""}
+            </span>
+          </div>
+
+          <div class="dice-mini-track">
+            ${
+              Array.from(
+                {length:DICE_BOARD_SIZE},
+                (_,index)=>{
+
+                  const square = index + 1;
+                  const special = getDiceSpecial(square);
+                  const classes = ["dice-mini-cell"];
+
+                  if(special){
+                    classes.push(special.type);
+                  }
+
+                  if(square === position){
+                    classes.push("current");
+                  }
+
+                  return `
+                    <div class="${classes.join(" ")}">
+                      ${
+                        special
+                          ? special.icon
+                          : square
+                      }
+
+                      ${
+                        square === position
+                          ? `<span class="dice-mini-player">🧙</span>`
+                          : ""
+                      }
+                    </div>
+                  `;
+
+                }
+              ).join("")
+            }
+          </div>
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+function rollDiceForCurrentTeam(){
+
+  if(
+    !DICE_MODE_ACTIVE ||
+    DICE_MODE_ROLLING
+  ){
+    return;
+  }
+
+  const team = getCurrentTeam();
+
+  if(!team){
+    return;
+  }
+
+  DICE_MODE_ROLLING = true;
+
+  const display =
+    document.getElementById("diceModeDisplay");
+
+  const message =
+    document.getElementById("diceModeMessage");
+
+  const faces = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+
+  display?.classList.add("rolling");
+
+  if(message){
+    message.textContent =
+      `🎲 ${team.name} is rolling...`;
+  }
+
+  let count = 0;
+
+  const preview =
+    setInterval(()=>{
+
+      if(display){
+        display.textContent =
+          faces[
+            Math.floor(
+              Math.random() * 6
+            )
+          ];
+      }
+
+      count++;
+
+      if(count >= 8){
+        clearInterval(preview);
+      }
+
+    },75);
+
+  setTimeout(()=>{
+
+    clearInterval(preview);
+
+    const rolled =
+      Math.floor(
+        Math.random() * 6
+      ) + 1;
+
+    display?.classList.remove("rolling");
+
+    if(display){
+      display.textContent =
+        faces[rolled - 1];
+    }
+
+    team.dicePosition =
+      Math.min(
+        DICE_BOARD_SIZE,
+        Number(team.dicePosition || 1) +
+        rolled
+      );
+
+    let resultMessage =
+      `🎲 ${team.name} rolled ${rolled} and moved ${rolled} squares.`;
+
+    const special =
+      getDiceSpecial(
+        team.dicePosition
+      );
+
+    if(special){
+
+      if(special.type === "treasure"){
+
+        team.diceTreasures =
+          Number(team.diceTreasures || 0) + 1;
+
+        resultMessage =
+          `${special.icon} ${team.name}: ${special.message}`;
+
+        if(typeof launchSmallConfetti === "function"){
+          launchSmallConfetti();
+        }
+
+      }else{
+
+        team.dicePosition =
+          Math.max(
+            1,
+            Math.min(
+              DICE_BOARD_SIZE,
+              team.dicePosition +
+              special.amount
+            )
+          );
+
+        resultMessage =
+          `${special.icon} ${team.name}: ${special.message}`;
+
+      }
+
+    }
+
+    if(team.dicePosition >= DICE_BOARD_SIZE){
+
+      team.dicePosition = DICE_BOARD_SIZE;
+
+      resultMessage =
+        `🏆 ${team.name} reached the final square and won the Dice Adventure!`;
+
+      if(typeof launchBigConfetti === "function"){
+        launchBigConfetti();
+      }
+
+      setTimeout(()=>{
+
+        if(!ACTIVITY_FINISHED){
+          finishActivity();
+        }
+
+      },900);
+
+    }
+
+    if(message){
+      message.textContent =
+        resultMessage;
+    }
+
+    renderDiceMode();
+    renderLiveTeamBoard();
+
+    DICE_MODE_ROLLING = false;
+
+  },720);
+}
+
+function hpClass(hp){
+
+  if(hp <= 25){
+    return "danger";
+  }
+
+  if(hp <= 50){
+    return "warning";
+  }
+
+  return "";
+}
+
+function renderSwordBattleMode(){
+
+  if(!SWORD_BATTLE_ACTIVE){
+    return;
+  }
+
+  const box =
+    document.getElementById("battleTeamList");
+
+  if(!box){
+    return;
+  }
+
+  const currentTeam =
+    getCurrentTeam();
+
+  box.innerHTML =
+    TEAMS.map((team,index)=>{
+
+      const playerHp =
+        Math.max(
+          0,
+          Number(team.playerHp ?? 100)
+        );
+
+      const enemyHp =
+        Math.max(
+          0,
+          Number(team.enemyHp ?? 100)
+        );
+
+      return `
+        <div class="battle-team-card ${
+          currentTeam?.id === team.id
+            ? "active"
+            : ""
+        }">
+
+          <div class="battle-side">
+            <div
+              id="battlePlayer_${index}"
+              class="battle-character">
+              🛡️
+            </div>
+
+            <div class="battle-name">
+              ${esc(team.name)}
+            </div>
+
+            <div class="battle-hp-label">
+              <span>HP</span>
+              <span>${playerHp}/100</span>
+            </div>
+
+            <div class="battle-hp-track">
+              <div
+                class="battle-hp-bar ${hpClass(playerHp)}"
+                style="width:${playerHp}%">
+              </div>
+            </div>
+          </div>
+
+          <div class="battle-vs">VS</div>
+
+          <div class="battle-side">
+            <div
+              id="battleEnemy_${index}"
+              class="battle-character">
+              👹
+            </div>
+
+            <div class="battle-name">
+              Enemy
+            </div>
+
+            <div class="battle-hp-label">
+              <span>HP</span>
+              <span>${enemyHp}/100</span>
+            </div>
+
+            <div class="battle-hp-track">
+              <div
+                class="battle-hp-bar ${hpClass(enemyHp)}"
+                style="width:${enemyHp}%">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+function animateBattleForTeam(
+  team,
+  playerAttacks
+){
+
+  const index =
+    TEAMS.findIndex(
+      item=>item.id === team.id
+    );
+
+  if(index < 0){
+    return;
+  }
+
+  const attacker =
+    document.getElementById(
+      playerAttacks
+        ? `battlePlayer_${index}`
+        : `battleEnemy_${index}`
+    );
+
+  const target =
+    document.getElementById(
+      playerAttacks
+        ? `battleEnemy_${index}`
+        : `battlePlayer_${index}`
+    );
+
+  attacker?.classList.remove("attacking");
+  target?.classList.remove("hit");
+
+  if(attacker){
+    void attacker.offsetWidth;
+    attacker.classList.add("attacking");
+  }
+
+  if(target){
+    void target.offsetWidth;
+    target.classList.add("hit");
+  }
+}
+
+function processSwordBattleAnswer(
+  isCorrect
+){
+
+  if(
+    !SWORD_BATTLE_ACTIVE ||
+    SWORD_BATTLE_FINISHED
+  ){
+    return;
+  }
+
+  const team = getCurrentTeam();
+
+  if(!team){
+    return;
+  }
+
+  const message =
+    document.getElementById("battleModeMessage");
+
+  if(isCorrect){
+
+    const damage =
+      Math.floor(
+        Math.random() * 11
+      ) + 15;
+
+    team.enemyHp =
+      Math.max(
+        0,
+        Number(team.enemyHp ?? 100) -
+        damage
+      );
+
+    renderSwordBattleMode();
+    animateBattleForTeam(team,true);
+
+    if(message){
+      message.textContent =
+        `⚔️ ${team.name} dealt ${damage} damage.`;
+    }
+
+    if(team.enemyHp <= 0){
+
+      if(message){
+        message.textContent =
+          `🏆 ${team.name} defeated the enemy!`;
+      }
+
+      if(typeof launchBigConfetti === "function"){
+        launchBigConfetti();
+      }
+
+    }
+
+  }else{
+
+    const damage =
+      Math.floor(
+        Math.random() * 9
+      ) + 12;
+
+    team.playerHp =
+      Math.max(
+        0,
+        Number(team.playerHp ?? 100) -
+        damage
+      );
+
+    renderSwordBattleMode();
+    animateBattleForTeam(team,false);
+
+    if(message){
+      message.textContent =
+        `💥 Wrong answer! ${team.name} lost ${damage} HP.`;
+    }
+
+  }
+
+  renderLiveTeamBoard();
+
+  SWORD_BATTLE_FINISHED =
+    TEAMS.every(
+      item=>
+        Number(item.enemyHp || 0) <= 0 ||
+        Number(item.playerHp || 0) <= 0
+    );
+}
+
+function processExtraGameAnswer(
+  isCorrect
+){
+
+  if(
+    isCorrect &&
+    DICE_MODE_ACTIVE
+  ){
+    rollDiceForCurrentTeam();
+  }
+
+  if(SWORD_BATTLE_ACTIVE){
+    processSwordBattleAnswer(isCorrect);
+  }
+}
 
 function getActivityGameMode(){
 
@@ -4722,6 +6225,10 @@ function prepareTeamSetup(){
       CURRENT_ACTIVITY.questions.length,
 
     racePosition:0,
+      dicePosition:1,
+      diceTreasures:0,
+      playerHp:100,
+      enemyHp:100,
 
     participantType:"student",
 
@@ -4745,6 +6252,21 @@ function prepareTeamSetup(){
 
   RACE_MODE_ACTIVE = false;
   RACE_TOTAL_STEPS = 1;
+
+  DICE_MODE_ACTIVE = false;
+  SWORD_BATTLE_ACTIVE = false;
+  SWORD_BATTLE_FINISHED = false;
+  DICE_MODE_ROLLING = false;
+
+  document
+    .getElementById("diceAdventureBoard")
+    ?.classList
+    .add("hidden");
+
+  document
+    .getElementById("swordBattleBoard")
+    ?.classList
+    .add("hidden");
 
   document
     .getElementById("studentStart")
@@ -4801,6 +6323,7 @@ function prepareTeamSetup(){
   recordActivityUsageStart();
 
   setupRaceGame();
+  setupDiceAndBattleModes();
   renderStudentQuestion();
   prepareTimerForCurrentQuestion();
 
@@ -4907,6 +6430,10 @@ function recordCurrentTeamAnswer(
     );
 
   }
+
+  processExtraGameAnswer(
+    Boolean(isCorrect)
+  );
 
   renderLiveTeamBoard();
 }
@@ -8682,6 +10209,52 @@ async function finishActivity(
     .getElementById("resultMessage")
     .textContent = message;
 
+  
+  if(DICE_MODE_ACTIVE){
+
+    const diceWinner =
+      [...TEAMS]
+        .sort((a,b)=>
+          Number(b.dicePosition || 1) -
+          Number(a.dicePosition || 1) ||
+          Number(b.diceTreasures || 0) -
+          Number(a.diceTreasures || 0)
+        )[0];
+
+    if(diceWinner){
+
+      document
+        .getElementById("resultMessage")
+        .textContent =
+          `🎲 Dice Winner: ${diceWinner.name} — ` +
+          `${Number(diceWinner.dicePosition || 1)}/${DICE_BOARD_SIZE} squares, ` +
+          `${Number(diceWinner.diceTreasures || 0)} treasure(s).`;
+
+    }
+
+  }
+
+  if(SWORD_BATTLE_ACTIVE){
+
+    const battleWinner =
+      [...TEAMS]
+        .sort((a,b)=>
+          Number(b.playerHp || 0) -
+          Number(a.playerHp || 0)
+        )[0];
+
+    if(battleWinner){
+
+      document
+        .getElementById("resultMessage")
+        .textContent =
+          `⚔️ Team Battle Winner: ${battleWinner.name} — ` +
+          `${Number(battleWinner.playerHp || 0)} HP remaining.`;
+
+    }
+
+  }
+
   launchBigConfetti();
 
   /*
@@ -9012,10 +10585,15 @@ function restartGame(){
     ...team,
     correct:0,
     answered:0,
-    racePosition:0
+    racePosition:0,
+      dicePosition:1,
+      diceTreasures:0,
+      playerHp:100,
+      enemyHp:100
   }));
 
   resetRaceGame();
+  resetDiceAndBattleModes();
 
   document
     .getElementById("resultArea")
