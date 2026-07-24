@@ -2822,6 +2822,7 @@ button{font-family:inherit;cursor:pointer}
             <option value="random">🖼️ Random Image</option>
             <option value="balloon">🎈 Balloon Pop</option>
             <option value="mystery">🎁 Mystery Box</option>
+            <option value="bomb">💣 Bomb Defuse</option>
             <option value="match">🔗 Matching</option>
             <option value="order">🔀 Ordering</option>
             <option value="mcq">✅ Multiple Choice</option>
@@ -4632,6 +4633,8 @@ async function loginActivityStudent(){
 }
 
 async function logoutActivityStudent(){
+  stopBombTimer();
+
   clearRandomQuestionTimers();
   clearWheelState();
   stopActivityTimer();
@@ -5635,6 +5638,11 @@ function getGameTypeInfo(type){
       icon:"fa-solid fa-gift",
       className:"game-mystery"
     },
+    bomb:{
+      label:"Bomb Defuse",
+      icon:"fa-solid fa-bomb",
+      className:"game-bomb"
+    },
 
     match:{
       label:"Matching",
@@ -6060,6 +6068,404 @@ function formatConfiguredTime(totalSeconds){
     String(seconds).padStart(2,"0")
   );
 }
+
+/* =====================================
+   BOMB DEFUSE — STUDENT PLAYER
+===================================== */
+const BOMB_WIRE_COLORS = [
+  "#ef5350","#42a5f5","#66bb6a","#ffca28",
+  "#ab47bc","#26c6da","#ff7043","#ec407a"
+];
+
+let BOMB_TIMER_HANDLE = null;
+let BOMB_TIME_LEFT = 0;
+let BOMB_SPEED = 1;
+let BOMB_ACTIVE = false;
+let BOMB_CORRECT_CUTS = 0;
+
+const BOMB_SPEED_STEP = .45;
+const BOMB_MAX_SPEED = 4;
+
+function stopBombTimer(){
+  if(BOMB_TIMER_HANDLE){
+    clearTimeout(BOMB_TIMER_HANDLE);
+    BOMB_TIMER_HANDLE = null;
+  }
+  BOMB_ACTIVE = false;
+}
+
+function getBombQuestionSeconds(){
+  const question =
+    CURRENT_ACTIVITY?.questions?.[CURRENT_QUESTION_INDEX] || {};
+
+  return Math.max(
+    10,
+    Number(
+      question.bombSeconds ||
+      question.timerSeconds ||
+      CURRENT_ACTIVITY?.timerTotalSeconds ||
+      30
+    ) || 30
+  );
+}
+
+function formatBombTime(value){
+  const safe = Math.max(0,Math.ceil(Number(value)||0));
+  return (
+    String(Math.floor(safe/60)).padStart(2,"0") +
+    ":" +
+    String(safe%60).padStart(2,"0")
+  );
+}
+
+function getBombQuestionCount(){
+  return Math.max(
+    1,
+    (CURRENT_ACTIVITY?.questions || []).filter(question =>
+      String(question?.type || "")
+        .trim()
+        .toLowerCase() === "bomb"
+    ).length
+  );
+}
+
+function updateBombTimerVisual(){
+  const display = document.getElementById("bombLocalDisplay");
+  const speedValue = document.getElementById("bombSpeedValue");
+  const stage = document.getElementById("bombStage");
+  const device = document.getElementById("bombDevice");
+  const status = document.getElementById("bombStatus");
+
+  if(display){
+    display.textContent = formatBombTime(BOMB_TIME_LEFT);
+    display.classList.toggle("bomb-critical",BOMB_TIME_LEFT<=5);
+  }
+
+  if(speedValue){
+    const delay = Math.max(180,Math.round(1000/BOMB_SPEED));
+    speedValue.textContent =
+      BOMB_SPEED.toFixed(2) + "× · " + delay + " ms";
+  }
+
+  if(stage){
+    stage.classList.toggle(
+      "bomb-danger",
+      BOMB_TIME_LEFT<=10 || BOMB_SPEED>1
+    );
+  }
+
+  if(device){
+    device.classList.toggle(
+      "bomb-shake",
+      BOMB_TIME_LEFT<=10 || BOMB_SPEED>=1.9
+    );
+  }
+
+  if(status){
+    status.textContent =
+      BOMB_TIME_LEFT<=5
+        ? "🚨 Critical time! Answer now!"
+        : BOMB_TIME_LEFT<=10
+          ? "⚠️ Hurry! The bomb is unstable."
+          : BOMB_SPEED>1
+            ? `⚠️ Countdown speed: ${BOMB_SPEED.toFixed(2)}×`
+            : "Answer correctly to cut a wire.";
+  }
+
+  const topDisplay = document.getElementById("activityTimerDisplay");
+  if(topDisplay){
+    topDisplay.textContent = "💣 " + formatBombTime(BOMB_TIME_LEFT);
+    topDisplay.style.background =
+      BOMB_TIME_LEFT<=10
+        ? "#e74c3c"
+        : BOMB_TIME_LEFT<=20
+          ? "#f39c12"
+          : "#164478";
+  }
+}
+
+function startBombTimer(){
+  stopBombTimer();
+
+  BOMB_TIME_LEFT = getBombQuestionSeconds();
+  BOMB_ACTIVE = true;
+  updateBombTimerVisual();
+
+  function scheduleNextTick(){
+    if(!BOMB_ACTIVE || ANSWER_LOCKED || ACTIVITY_FINISHED){
+      return;
+    }
+
+    const delay = Math.max(180,Math.round(1000/BOMB_SPEED));
+
+    BOMB_TIMER_HANDLE = setTimeout(()=>{
+      if(!BOMB_ACTIVE || ANSWER_LOCKED || ACTIVITY_FINISHED){
+        return;
+      }
+
+      // Always one number at a time; speed comes from shorter delay.
+      BOMB_TIME_LEFT = Math.max(0,BOMB_TIME_LEFT-1);
+      updateBombTimerVisual();
+
+      if(typeof playTimerTickSound === "function"){
+        playTimerTickSound();
+      }
+
+      if(BOMB_TIME_LEFT<=0){
+        explodeStudentBomb();
+        return;
+      }
+
+      scheduleNextTick();
+    },delay);
+  }
+
+  scheduleNextTick();
+}
+
+function addBombCutSpark(){
+  const stage = document.getElementById("bombStage");
+  if(!stage) return;
+
+  const spark = document.createElement("div");
+  spark.className = "bomb-spark";
+  spark.textContent = "⚡✂️";
+  stage.appendChild(spark);
+
+  setTimeout(()=>spark.remove(),750);
+}
+
+function showStudentBombExplosion(){
+  const stage = document.getElementById("bombStage");
+  if(!stage) return;
+
+  stage.classList.add("bomb-exploded");
+
+  const overlay = document.createElement("div");
+  overlay.className = "bomb-explosion-overlay";
+  overlay.textContent = "💥";
+  stage.appendChild(overlay);
+}
+
+function showStudentBombDefused(){
+  const stage = document.getElementById("bombStage");
+  if(!stage) return;
+
+  stage.classList.add("bomb-success");
+
+  const overlay = document.createElement("div");
+  overlay.className = "bomb-defused-overlay";
+  overlay.innerHTML = "✅ BOMB DEFUSED! 🎉";
+  stage.appendChild(overlay);
+
+  if(typeof createConfetti === "function"){
+    createConfetti();
+  }
+}
+
+function explodeStudentBomb(){
+  if(!BOMB_ACTIVE || ANSWER_LOCKED) return;
+
+  stopBombTimer();
+  ANSWER_LOCKED = true;
+  showStudentBombExplosion();
+
+  const feedback = document.getElementById("feedback");
+  if(feedback){
+    feedback.textContent = "💥 Time is over! The bomb exploded.";
+    feedback.className = "feedback bad";
+  }
+
+  if(typeof playWrongSound === "function"){
+    playWrongSound();
+  }
+
+  setTimeout(()=>finishActivity(true),1400);
+}
+
+function renderBombDevice(question,answersBox){
+  stopBombTimer();
+
+  answersBox.className = "bomb-game";
+
+  const totalWires = getBombQuestionCount();
+
+  const wires = Array.from(
+    {length:totalWires},
+    (_,index)=>`
+      <div
+        class="bomb-wire ${index<BOMB_CORRECT_CUTS ? "cut" : ""}"
+        style="--wire-color:${
+          BOMB_WIRE_COLORS[index % BOMB_WIRE_COLORS.length]
+        }">
+      </div>
+    `
+  ).join("");
+
+  const stage = document.createElement("div");
+  stage.className = "bomb-stage";
+  stage.id = "bombStage";
+
+  stage.innerHTML = `
+    <div class="bomb-device bomb-device-compact" id="bombDevice">
+
+      <div class="bomb-visual-column">
+        <div class="bomb-fuse">
+          <span class="bomb-fuse-spark">⚡</span>
+        </div>
+        <div class="bomb-icon">💣</div>
+      </div>
+
+      <div class="bomb-timer-column">
+        <div class="bomb-title">
+          ${esc(getLoggedActivityStudentName())}'s Bomb
+        </div>
+
+        <div class="bomb-screen" id="bombLocalDisplay">
+          ${formatBombTime(getBombQuestionSeconds())}
+        </div>
+
+        <div class="bomb-speed-meter">
+          Countdown speed:
+          <span id="bombSpeedValue" class="bomb-speed-value">
+            ${BOMB_SPEED.toFixed(2)}×
+          </span>
+        </div>
+
+        <div class="bomb-wires">${wires}</div>
+
+        <div class="bomb-status" id="bombStatus">
+          Answer correctly to cut a wire.
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  answersBox.appendChild(stage);
+
+  const answerGrid = document.createElement("div");
+  answerGrid.className = "bomb-answer-grid";
+
+  (question.answers || []).forEach((answer,index)=>{
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "student-answer";
+
+    button.innerHTML = `
+      ${
+        getItemImage(answer)
+          ? `<img src="${esc(getItemImage(answer))}" alt="">`
+          : ""
+      }
+      ${answer.text ? `<span>${esc(answer.text)}</span>` : ""}
+    `;
+
+    button.onclick = ()=>{
+      chooseStudentBombAnswer(
+        answer,
+        button,
+        index,
+        answerGrid
+      );
+    };
+
+    answerGrid.appendChild(button);
+  });
+
+  answersBox.appendChild(answerGrid);
+
+  stopActivityTimer();
+  startBombTimer();
+}
+
+function chooseStudentBombAnswer(
+  answer,
+  button,
+  index,
+  answerGrid
+){
+  if(ANSWER_LOCKED || !BOMB_ACTIVE) return;
+
+  ANSWER_LOCKED = true;
+  stopBombTimer();
+
+  const correct = Boolean(answer.correct);
+  const buttons = [...answerGrid.querySelectorAll(".student-answer")];
+
+  buttons.forEach((item,itemIndex)=>{
+    item.disabled = true;
+    if(itemIndex===index){
+      item.classList.add(correct ? "correct" : "wrong");
+    }
+  });
+
+  recordCurrentTeamAnswer(correct);
+
+  const feedback = document.getElementById("feedback");
+
+  if(correct){
+    CURRENT_SCORE++;
+    BOMB_CORRECT_CUTS++;
+
+    document.getElementById("scorePill").textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+    addBombCutSpark();
+
+    document
+      .querySelector("#bombStage .bomb-wire:not(.cut)")
+      ?.classList
+      .add("cut");
+
+    feedback.textContent = "✂️ Correct! One wire was cut.";
+    feedback.className = "feedback good";
+
+    if(typeof playCorrectSound === "function"){
+      playCorrectSound();
+    }
+
+    if(BOMB_CORRECT_CUTS>=getBombQuestionCount()){
+      showStudentBombDefused();
+      setTimeout(()=>finishActivity(false),1400);
+      return;
+    }
+
+  }else{
+    BOMB_SPEED = Math.min(
+      BOMB_MAX_SPEED,
+      BOMB_SPEED + BOMB_SPEED_STEP
+    );
+
+    feedback.textContent =
+      `⚠️ Wrong answer! The countdown is now ${BOMB_SPEED.toFixed(2)}× faster.`;
+
+    feedback.className = "feedback bad";
+
+    if(typeof playWrongSound === "function"){
+      playWrongSound();
+    }
+  }
+
+  // Continue forward only. No repeated questions.
+  setTimeout(()=>{
+    CURRENT_QUESTION_INDEX++;
+
+    if(
+      CURRENT_QUESTION_INDEX >=
+      CURRENT_ACTIVITY.questions.length
+    ){
+      finishActivity(false);
+      return;
+    }
+
+    ANSWER_LOCKED = false;
+    renderStudentQuestion();
+    prepareTimerForCurrentQuestion();
+
+  },correct ? 1150 : 1300);
+}
+
 function prepareTimerForCurrentQuestion(){
 
   stopActivityTimer();
@@ -6080,7 +6486,8 @@ function prepareTimerForCurrentQuestion(){
     type === "random" ||
     type === "wheel" ||
     type === "balloon" ||
-    type === "mystery"
+    type === "mystery" ||
+    type === "bomb"
   ){
 
     if(type === "random"){
@@ -6089,6 +6496,10 @@ function prepareTimerForCurrentQuestion(){
 
     if(type === "wheel"){
       WHEEL_TIMER_STARTED = false;
+    }
+
+    if(type === "bomb"){
+      return;
     }
 
     const timerType =
@@ -6249,6 +6660,12 @@ function prepareTeamSetup(){
   ACTIVITY_TIME_LEFT = 0;
   CURRENT_ORDER_SELECTION = [];
   CURRENT_USAGE_ID = "";
+
+  stopBombTimer();
+  BOMB_TIME_LEFT = 0;
+  BOMB_SPEED = 1;
+  BOMB_ACTIVE = false;
+  BOMB_CORRECT_CUTS = 0;
 
   RACE_MODE_ACTIVE = false;
   RACE_TOTAL_STEPS = 1;
@@ -6571,6 +6988,8 @@ function renderTeamResults(){
 }
 
 function startActivity(activityId,courseId){
+  stopBombTimer();
+
   stopActivityTimer();
 
   CURRENT_ACTIVITY =
@@ -7036,6 +7455,22 @@ function renderStudentQuestion(){
     );
 
   answersBox.innerHTML = "";
+
+  if(
+    String(type)
+      .trim()
+      .toLowerCase() ===
+    "bomb"
+  ){
+    document
+      .getElementById("gameQuestion")
+      .textContent =
+        question.text ||
+        "Answer correctly to cut a wire and defuse the bomb!";
+
+    renderBombDevice(question,answersBox);
+    return;
+  }
 
   if(type === "match"){
     renderMatchQuestion(
@@ -10101,6 +10536,8 @@ function nextQuestionManually(){
 async function finishActivity(
   finishedByTimeout = false
 ){
+  stopBombTimer();
+
   clearRandomQuestionTimers();
 
   if(ACTIVITY_FINISHED){
@@ -10629,6 +11066,8 @@ function restartGame(){
 }
 
 async function backToActivities(){
+  stopBombTimer();
+
   clearRandomQuestionTimers();
   clearWheelState();
   stopActivityTimer();
@@ -11299,6 +11738,158 @@ window.addEventListener("storage", event=>{
   text-align:center;
   font-weight:800;
 }
+
+/* =====================================
+   REALISTIC BOMB DEFUSE — STUDENT MODE
+===================================== */
+.game-bomb{
+  color:#8b1e1e;
+  background:#ffe8e6;
+  border-color:#f3aaa5;
+}
+.bomb-device{
+  width:min(620px,100%);
+}
+.bomb-device-compact{
+  display:grid;
+  grid-template-columns:110px minmax(0,1fr);
+  gap:15px;
+  align-items:center;
+}
+.bomb-visual-column{
+  display:grid;
+  place-items:center;
+  gap:6px;
+}
+.bomb-timer-column{min-width:0}
+.bomb-device-compact .bomb-icon{
+  font-size:78px;
+  animation:bombStudentBeat .8s ease-in-out infinite;
+}
+.bomb-device-compact .bomb-screen{
+  min-height:48px;
+  margin:0 0 9px;
+  padding:5px 9px;
+  font-size:clamp(21px,4.5vw,33px);
+}
+.bomb-speed-meter{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  margin-top:8px;
+  padding:6px 9px;
+  border-radius:10px;
+  background:rgba(0,0,0,.28);
+  font-size:12px;
+  font-weight:900;
+}
+.bomb-speed-value{color:#ffd66b}
+.bomb-fuse{
+  position:relative;
+  width:70px;
+  height:18px;
+  margin:0 auto;
+}
+.bomb-fuse::before{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:8px;
+  width:52px;
+  height:4px;
+  border-radius:999px;
+  background:#8d6e63;
+  transform:rotate(-12deg);
+}
+.bomb-fuse-spark{
+  position:absolute;
+  right:0;
+  top:-5px;
+  font-size:23px;
+  animation:bombFuseSpark .3s infinite alternate;
+}
+.bomb-screen.bomb-critical{
+  animation:bombCriticalBlink .2s steps(2,end) infinite;
+}
+.bomb-device.bomb-shake{
+  animation:bombStudentShake .3s linear infinite;
+}
+.bomb-spark{
+  position:absolute;
+  left:50%;
+  top:62%;
+  z-index:20;
+  font-size:40px;
+  pointer-events:none;
+  animation:bombSparkFly .7s ease forwards;
+}
+.bomb-explosion-overlay{
+  position:absolute;
+  inset:0;
+  z-index:30;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle,#fff6a8 0 8%,#ffb300 18%,#f4511e 36%,#b71c1c 58%,rgba(20,0,0,.94) 78%);
+  font-size:clamp(80px,18vw,170px);
+  animation:bombOverlayExplosion 1.05s ease forwards;
+}
+.bomb-defused-overlay{
+  position:absolute;
+  inset:0;
+  z-index:30;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(5,52,37,.95);
+  color:#fff;
+  font-size:clamp(25px,6vw,50px);
+  font-weight:900;
+  animation:bombDefusedReveal .7s ease forwards;
+}
+@keyframes bombStudentBeat{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+}
+@keyframes bombStudentShake{
+  0%,100%{transform:translate(0,0) rotate(0)}
+  20%{transform:translate(-4px,2px) rotate(-.6deg)}
+  40%{transform:translate(4px,-2px) rotate(.6deg)}
+  60%{transform:translate(-3px,-1px) rotate(-.4deg)}
+  80%{transform:translate(3px,1px) rotate(.4deg)}
+}
+@keyframes bombFuseSpark{
+  from{transform:scale(.8) rotate(-10deg);filter:brightness(.9)}
+  to{transform:scale(1.22) rotate(12deg);filter:brightness(1.5)}
+}
+@keyframes bombCriticalBlink{
+  0%,48%{background:#4b0000;color:#ff1744}
+  49%,100%{background:#ff1744;color:#fff}
+}
+@keyframes bombSparkFly{
+  0%{transform:translate(-50%,-50%) scale(.3) rotate(0);opacity:0}
+  35%{opacity:1}
+  100%{transform:translate(-50%,-145%) scale(1.5) rotate(180deg);opacity:0}
+}
+@keyframes bombOverlayExplosion{
+  0%{opacity:0;transform:scale(.35)}
+  30%{opacity:1;transform:scale(1.08)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes bombDefusedReveal{
+  from{opacity:0;transform:scale(.85)}
+  to{opacity:1;transform:scale(1)}
+}
+@media(max-width:650px){
+  .bomb-device-compact{
+    grid-template-columns:88px minmax(0,1fr);
+    gap:9px;
+  }
+  .bomb-device-compact .bomb-icon{font-size:59px}
+  .bomb-device-compact .bomb-screen{font-size:24px}
+}
+
 </style>
 
 <script>
