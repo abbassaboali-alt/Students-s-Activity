@@ -6280,6 +6280,9 @@ function explodeStudentBomb(){
     playWrongSound();
   }
 
+  /* احتساب انتهاء الوقت كإجابة خاطئة للفريق/الطالب الحالي. */
+  recordCurrentTeamAnswer(false);
+
   setTimeout(()=>finishActivity(true),1400);
 }
 
@@ -9033,7 +9036,10 @@ function chooseBalloonAnswer(
   clickedButton
 ){
 
-  if(ANSWER_LOCKED){
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
     return;
   }
 
@@ -9048,6 +9054,11 @@ function chooseBalloonAnswer(
       answerIndex
     ];
 
+  const isCorrect =
+    Boolean(
+      selected?.correct
+    );
+
   const buttons = [
     ...document.querySelectorAll(
       ".balloon-option"
@@ -9059,30 +9070,26 @@ function chooseBalloonAnswer(
       "feedback"
     );
 
-  ANSWER_LOCKED =
-    true;
+  ANSWER_LOCKED = true;
 
   buttons.forEach(
     (button,index)=>{
 
-      button.disabled =
-        true;
+      button.disabled = true;
 
       if(
         question.answers[index]
           ?.correct
       ){
-
         button.classList.add(
           "correct"
         );
-
       }
 
     }
   );
 
-  if(selected?.correct){
+  if(isCorrect){
 
     CURRENT_SCORE++;
 
@@ -9115,13 +9122,25 @@ function chooseBalloonAnswer(
 
   }
 
-  document
-    .getElementById(
-      "scorePill"
-    )
-    .textContent =
-      `⭐ ${CURRENT_SCORE}`;
+  /*
+    تسجيل الإجابة للفريق/الطالب الحالي مرة واحدة.
+    الصحيحة تزيد Correct وAnswered، والخاطئة تزيد Answered فقط.
+  */
+  recordCurrentTeamAnswer(
+    isCorrect
+  );
 
+  const scorePill =
+    document.getElementById(
+      "scorePill"
+    );
+
+  if(scorePill){
+    scorePill.textContent =
+      `⭐ ${CURRENT_SCORE}`;
+  }
+
+  stopActivityTimer();
   showNextQuestionButton();
 
 }
@@ -9491,7 +9510,10 @@ function chooseMysteryAnswer(
   clickedButton
 ){
 
-  if(ANSWER_LOCKED){
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED
+  ){
     return;
   }
 
@@ -9506,6 +9528,11 @@ function chooseMysteryAnswer(
       answerIndex
     ];
 
+  const isCorrect =
+    Boolean(
+      selected?.correct
+    );
+
   const buttons = [
     ...document.querySelectorAll(
       ".mystery-option"
@@ -9517,30 +9544,26 @@ function chooseMysteryAnswer(
       "feedback"
     );
 
-  ANSWER_LOCKED =
-    true;
+  ANSWER_LOCKED = true;
 
   buttons.forEach(
     (button,index)=>{
 
-      button.disabled =
-        true;
+      button.disabled = true;
 
       if(
         question.answers[index]
           ?.correct
       ){
-
         button.classList.add(
           "correct"
         );
-
       }
 
     }
   );
 
-  if(selected?.correct){
+  if(isCorrect){
 
     CURRENT_SCORE++;
 
@@ -9573,13 +9596,25 @@ function chooseMysteryAnswer(
 
   }
 
-  document
-    .getElementById(
-      "scorePill"
-    )
-    .textContent =
-      `⭐ ${CURRENT_SCORE}`;
+  /*
+    تسجيل الإجابة للفريق/الطالب الحالي مرة واحدة.
+    الصحيحة تزيد Correct وAnswered، والخاطئة تزيد Answered فقط.
+  */
+  recordCurrentTeamAnswer(
+    isCorrect
+  );
 
+  const scorePill =
+    document.getElementById(
+      "scorePill"
+    );
+
+  if(scorePill){
+    scorePill.textContent =
+      `⭐ ${CURRENT_SCORE}`;
+  }
+
+  stopActivityTimer();
   showNextQuestionButton();
 
 }
