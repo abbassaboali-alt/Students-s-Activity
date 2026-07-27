@@ -6450,23 +6450,12 @@ function chooseStudentBombAnswer(
     }
   }
 
-  // Continue forward only. No repeated questions.
-  setTimeout(()=>{
-    CURRENT_QUESTION_INDEX++;
-
-    if(
-      CURRENT_QUESTION_INDEX >=
-      CURRENT_ACTIVITY.questions.length
-    ){
-      finishActivity(false);
-      return;
-    }
-
-    ANSWER_LOCKED = false;
-    renderStudentQuestion();
-    prepareTimerForCurrentQuestion();
-
-  },correct ? 1150 : 1300);
+  /*
+    Do not move automatically after answering a Bomb question.
+    Keep the result visible and wait for the same
+    Next Question button used by the other question types.
+  */
+  showNextQuestionButton();
 }
 
 function prepareTimerForCurrentQuestion(){
