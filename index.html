@@ -6967,6 +6967,60 @@ function getRankedTeams(){
     );
 }
 
+/*
+  Returns every team tied for first place.
+
+  Tie rules use the same competitive values used by
+  getRankedTeams(), while ignoring the alphabetical
+  name fallback because a team name must never break
+  a genuine score tie.
+*/
+function getWinningTeams(){
+
+  const ranked =
+    getRankedTeams();
+
+  if(!ranked.length){
+    return [];
+  }
+
+  const first =
+    ranked[0];
+
+  return ranked.filter(team=>{
+
+    const sameRacePosition =
+      !RACE_MODE_ACTIVE ||
+      Number(team.racePosition || 0) ===
+      Number(first.racePosition || 0);
+
+    const sameCorrect =
+      Number(team.correct || 0) ===
+      Number(first.correct || 0);
+
+    const sameAccuracy =
+      Number(team.accuracy || 0) ===
+      Number(first.accuracy || 0);
+
+    const sameAnswered =
+      Number(team.answered || 0) ===
+      Number(first.answered || 0);
+
+    return (
+      sameRacePosition &&
+      sameCorrect &&
+      sameAccuracy &&
+      sameAnswered
+    );
+  });
+}
+
+function getWinningTeamNames(){
+  return getWinningTeams()
+    .map(team=>String(team.name || "").trim())
+    .filter(Boolean);
+}
+
 function renderTeamResults(){
 
   const box =
@@ -10618,8 +10672,31 @@ async function finishActivity(
         )
       : 0;
 
+  /*
+    renderTeamResults() remains responsible for displaying
+    the ranking. The winning teams are calculated separately
+    so a genuine first-place tie is preserved.
+  */
+  renderTeamResults();
+
+  const winningTeams =
+    getWinningTeams();
+
   const winningTeam =
-    renderTeamResults();
+    winningTeams[0] || null;
+
+  const winningTeamIds =
+    winningTeams
+      .map(team=>team.id || "")
+      .filter(Boolean);
+
+  const winningTeamNames =
+    winningTeams
+      .map(team=>String(team.name || "").trim())
+      .filter(Boolean);
+
+  const isWinningTie =
+    winningTeams.length > 1;
 
   document
     .getElementById("progressBar")
@@ -10668,8 +10745,17 @@ async function finishActivity(
 
   if(winningTeam && RACE_MODE_ACTIVE){
 
+    const raceWinnerLabel =
+      winningTeamNames.length
+        ? winningTeamNames.join(" & ")
+        : getLoggedActivityStudentName();
+
     message =
-      `🏁 ${getLoggedActivityStudentName()} reached ` +
+      `🏁 ${
+        isWinningTie
+          ? "Race Winners"
+          : "Race Winner"
+      }: ${raceWinnerLabel} — ` +
       `${Number(
         winningTeam.racePosition ||
         0
@@ -10897,11 +10983,35 @@ async function finishActivity(
           })
         ),
 
+        /*
+          Legacy single-winner fields are kept so older
+          reports continue to work.
+        */
         winningTeamId:
           winningTeam?.id || "",
 
         winningTeamName:
           winningTeam?.name || "",
+
+        /*
+          New fields preserve every first-place winner.
+        */
+        winningTeamIds,
+        winningTeamNames,
+        winningTeams:winningTeams.map(
+          team=>({
+            id:team.id || "",
+            letter:team.letter || "",
+            name:team.name || "",
+            correct:Number(team.correct || 0),
+            answered:Number(team.answered || 0),
+            assigned:Number(team.assigned || 0),
+            accuracy:Number(team.accuracy || 0),
+            racePosition:Number(team.racePosition || 0)
+          })
+        ),
+
+        isWinningTie,
 
         winningTeamCorrect:
           Number(
@@ -11000,12 +11110,43 @@ async function finishActivity(
           })
         ),
 
+        /*
+          Keep the original field for compatibility.
+        */
+        winningTeamId:
+          winningTeam?.id || "",
+
         winningTeamName:
           winningTeam?.name || "",
+
+        /*
+          Preserve all tied winners in the usage record.
+        */
+        winningTeamIds,
+        winningTeamNames,
+        winningTeams:winningTeams.map(
+          team=>({
+            id:team.id || "",
+            letter:team.letter || "",
+            name:team.name || "",
+            correct:Number(team.correct || 0),
+            answered:Number(team.answered || 0),
+            assigned:Number(team.assigned || 0),
+            accuracy:Number(team.accuracy || 0),
+            racePosition:Number(team.racePosition || 0)
+          })
+        ),
+
+        isWinningTie,
 
         winningTeamCorrect:
           Number(
             winningTeam?.correct || 0
+          ),
+
+        winningTeamAccuracy:
+          Number(
+            winningTeam?.accuracy || 0
           ),
 
         finishedByTimeout:
