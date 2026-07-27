@@ -10646,19 +10646,22 @@ async function finishActivity(
     "hidden"
   );
 
+  const rankedTeamsForTotals =
+    getRankedTeams();
+
+  const finalCorrect =
+    rankedTeamsForTotals.length
+      ? rankedTeamsForTotals.reduce((s,t)=>s+(Number(t.correct)||0),0)
+      : (Number(CURRENT_SCORE)||0);
+
   const total =
-    CURRENT_ACTIVITY
-      ?.questions
-      ?.length || 0;
+    rankedTeamsForTotals.length
+      ? rankedTeamsForTotals.reduce((s,t)=>s+(Number(t.answered)||0),0)
+      : (CURRENT_ACTIVITY?.questions?.length||0);
 
   const percent =
-    total > 0
-      ? Math.round(
-          (
-            CURRENT_SCORE /
-            total
-          ) * 100
-        )
+    total>0
+      ? Math.round((finalCorrect/total)*100)
       : 0;
 
   /*
@@ -10706,7 +10709,7 @@ async function finishActivity(
   document
     .getElementById("finalScore")
     .textContent =
-      `${CURRENT_SCORE} / ${total}`;
+      `${finalCorrect} / ${total}`;
 
   document
     .getElementById("finalPercent")
