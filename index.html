@@ -12313,6 +12313,9 @@ window.addEventListener("storage", event=>{
   const originalFinishActivity =
     window.finishActivity;
 
+  const originalRestartGame =
+    window.restartGame;
+
   function safe(value){
     return String(value ?? "").trim();
   }
@@ -12331,6 +12334,159 @@ window.addEventListener("storage", event=>{
       "_"
     );
   }
+
+  function getCurrentParticipantRef(
+    sessionId=CURRENT_LIVE_SESSION_ID
+  ){
+
+    if(!sessionId){
+      return null;
+    }
+
+    return db
+      .collection(
+        LIVE_SESSIONS_COLLECTION
+      )
+      .doc(sessionId)
+      .collection("participants")
+      .doc(
+        getStudentParticipantDocId()
+      );
+  }
+
+
+  /*
+    A completed activity cannot be opened again unless the trainer
+    has set retakeAllowed=true for this exact student and session.
+    The permission is consumed once when the new attempt begins.
+  */
+  async function claimStudentAttemptPermission(
+    sessionId
+  ){
+
+    const participantRef =
+      getCurrentParticipantRef(
+        sessionId
+      );
+
+    if(!participantRef){
+      return {
+        allowed:false,
+        reason:"missing"
+      };
+    }
+
+    return db.runTransaction(
+      async transaction=>{
+
+        const snap =
+          await transaction.get(
+            participantRef
+          );
+
+        if(!snap.exists){
+
+          transaction.set(
+            participantRef,
+            {
+              status:"started",
+              retakeAllowed:false,
+              attemptNumber:1,
+              startedAt:
+                firebase
+                  .firestore
+                  .FieldValue
+                  .serverTimestamp(),
+              updatedAt:
+                firebase
+                  .firestore
+                  .FieldValue
+                  .serverTimestamp()
+            },
+            {
+              merge:true
+            }
+          );
+
+          return {
+            allowed:true,
+            isRetake:false
+          };
+        }
+
+        const data =
+          snap.data() || {};
+
+        const completed =
+          data.status ===
+          "completed";
+
+        if(
+          completed &&
+          data.retakeAllowed !== true
+        ){
+          return {
+            allowed:false,
+            reason:"completed"
+          };
+        }
+
+        if(
+          completed &&
+          data.retakeAllowed === true
+        ){
+
+          transaction.set(
+            participantRef,
+            {
+              status:"started",
+              retakeAllowed:false,
+              retakeUsedAt:
+                firebase
+                  .firestore
+                  .FieldValue
+                  .serverTimestamp(),
+              attemptNumber:
+                Number(
+                  data.attemptNumber ||
+                  1
+                ) + 1,
+              currentQuestion:0,
+              answered:0,
+              correct:0,
+              progressPercent:0,
+              scorePercent:0,
+              startedAt:
+                firebase
+                  .firestore
+                  .FieldValue
+                  .serverTimestamp(),
+              updatedAt:
+                firebase
+                  .firestore
+                  .FieldValue
+                  .serverTimestamp()
+            },
+            {
+              merge:true
+            }
+          );
+
+          return {
+            allowed:true,
+            isRetake:true
+          };
+        }
+
+        return {
+          allowed:true,
+          isRetake:false
+        };
+      }
+    );
+  }
+
+
 
   function getActiveSessionFor(
     activityId,
@@ -12723,6 +12879,41 @@ window.addEventListener("storage", event=>{
       CURRENT_LIVE_SESSION_ID =
         sessionId;
 
+      let attemptPermission;
+
+      try{
+
+        attemptPermission =
+          await claimStudentAttemptPermission(
+            sessionId
+          );
+
+      }catch(error){
+
+        console.error(
+          "Unable to verify activity attempt:",
+          error
+        );
+
+        alert(
+          "Unable to verify whether this activity can be started."
+        );
+
+        CURRENT_LIVE_SESSION_ID = "";
+        return;
+      }
+
+      if(!attemptPermission.allowed){
+
+        CURRENT_LIVE_SESSION_ID = "";
+
+        alert(
+          "You have already completed this activity. Ask your trainer to allow a retake."
+        );
+
+        return;
+      }
+
       await publishLiveStudentProgress(
         "started",
         true
@@ -12882,6 +13073,14 @@ window.addEventListener("storage", event=>{
 
             status,
 
+            ...(
+              status === "completed"
+                ? {
+                    retakeAllowed:false
+                  }
+                : {}
+            ),
+
             currentQuestion:
               Math.min(
                 total,
@@ -12972,6 +13171,63 @@ window.addEventListener("storage", event=>{
 
       return result;
     };
+
+  /*
+    The result-page restart button is also protected.
+    It only works after the trainer grants a new one-time permission.
+  */
+  window.restartGame =
+    async function(){
+
+      if(
+        !CURRENT_LIVE_SESSION_ID
+      ){
+
+        alert(
+          "Return to the activity list and ask your trainer to allow a retake."
+        );
+
+        return;
+      }
+
+      let permission;
+
+      try{
+
+        permission =
+          await claimStudentAttemptPermission(
+            CURRENT_LIVE_SESSION_ID
+          );
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          "Unable to verify retake permission."
+        );
+
+        return;
+      }
+
+      if(!permission.allowed){
+
+        alert(
+          "You have already completed this activity. Ask your trainer to allow a retake."
+        );
+
+        return;
+      }
+
+      originalRestartGame();
+
+      await publishLiveStudentProgress(
+        "started",
+        true
+      );
+    };
+
+
 
   window.finishActivity =
     async function(
