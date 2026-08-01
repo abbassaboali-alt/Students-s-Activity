@@ -6878,6 +6878,15 @@ function getCurrentTeam(){
   return TEAMS[CURRENT_TEAM_INDEX];
 }
 
+function getStableQuestionId(question, index = CURRENT_QUESTION_INDEX){
+  return String(
+    question?.questionId ||
+    question?.id ||
+    question?.uid ||
+    `question-${Number(index) + 1}`
+  ).trim();
+}
+
 function getCorrectAnswerForReview(question){
   if(!question) return "";
 
@@ -6941,14 +6950,34 @@ function captureStudentAnswer(isCorrect){
   const question = CURRENT_ACTIVITY?.questions?.[CURRENT_QUESTION_INDEX];
   if(!question) return;
 
-  STUDENT_ANSWER_LOG.push({
+  const questionId = getStableQuestionId(
+    question,
+    CURRENT_QUESTION_INDEX
+  );
+
+  const savedAnswer = {
+    questionId,
     questionNumber: CURRENT_QUESTION_INDEX + 1,
     type: String(question.type || "mcq"),
     question: String(question.text || question.question || "Question").trim(),
+    questionText: String(question.text || question.question || "Question").trim(),
     studentAnswer: getSelectedAnswerForReview(question),
+    participantAnswer: getSelectedAnswerForReview(question),
     correctAnswer: getCorrectAnswerForReview(question),
-    correct: Boolean(isCorrect)
-  });
+    expectedAnswer: getCorrectAnswerForReview(question),
+    correct: Boolean(isCorrect),
+    isCorrect: Boolean(isCorrect)
+  };
+
+  const existingIndex = STUDENT_ANSWER_LOG.findIndex(
+    item => String(item?.questionId || "") === questionId
+  );
+
+  if(existingIndex >= 0){
+    STUDENT_ANSWER_LOG[existingIndex] = savedAnswer;
+  }else{
+    STUDENT_ANSWER_LOG.push(savedAnswer);
+  }
 }
 
 function renderStudentAnswerReview(){
@@ -11242,13 +11271,16 @@ async function finishActivity(
             CURRENT_COURSE
           ),
 
-        studentAnswers: STUDENT_ANSWER_LOG.map(item=>({
-          questionNumber:item.questionNumber,
-          type:item.type,
-          question:item.question,
-          studentAnswer:item.studentAnswer,
-          correctAnswer:item.correctAnswer,
-          correct:Boolean(item.correct)
+        studentAnswers: STUDENT_ANSWER_LOG.map(item=>({ ...item })),
+
+        answerLog: STUDENT_ANSWER_LOG.map(item=>({ ...item })),
+
+        questionsSnapshot: (CURRENT_ACTIVITY?.questions || []).map((question,index)=>({
+          questionId:getStableQuestionId(question,index),
+          questionNumber:index + 1,
+          type:String(question?.type || "mcq"),
+          question:String(question?.text || question?.question || "Question").trim(),
+          correctAnswer:getCorrectAnswerForReview(question)
         })),
 
         createdAt:
@@ -11281,13 +11313,16 @@ async function finishActivity(
           })
         ),
 
-        studentAnswers: STUDENT_ANSWER_LOG.map(item=>({
-          questionNumber:item.questionNumber,
-          type:item.type,
-          question:item.question,
-          studentAnswer:item.studentAnswer,
-          correctAnswer:item.correctAnswer,
-          correct:Boolean(item.correct)
+        studentAnswers: STUDENT_ANSWER_LOG.map(item=>({ ...item })),
+
+        answerLog: STUDENT_ANSWER_LOG.map(item=>({ ...item })),
+
+        questionsSnapshot: (CURRENT_ACTIVITY?.questions || []).map((question,index)=>({
+          questionId:getStableQuestionId(question,index),
+          questionNumber:index + 1,
+          type:String(question?.type || "mcq"),
+          question:String(question?.text || question?.question || "Question").trim(),
+          correctAnswer:getCorrectAnswerForReview(question)
         })),
 
         /*
