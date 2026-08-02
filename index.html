@@ -6923,11 +6923,16 @@ function getSelectedAnswerForReview(question){
       .join(" → ");
   }
 
+  /*
+    مهم: نبحث أولاً عن الخيار الخاطئ الذي ضغطه الطالب.
+    لأن الكود يضيف class="correct" إلى الإجابة الصحيحة بعد الاختيار،
+    ولو بحثنا عن correct أولاً فسيتم عرض الإجابة الصحيحة مكان إجابة الطالب.
+  */
   const selectedButton = document.querySelector(
-    ".student-answer.correct, .student-answer.wrong, " +
-    ".match-image-option.selected, .match-image-option.correct, .match-image-option.wrong, " +
-    ".balloon-option.correct, .balloon-option.wrong, " +
-    ".mystery-option.correct, .mystery-option.wrong"
+    ".student-answer.wrong, .student-answer.correct, " +
+    ".match-image-option.wrong, .match-image-option.selected, .match-image-option.correct, " +
+    ".balloon-option.wrong, .balloon-option.correct, " +
+    ".mystery-option.wrong, .mystery-option.correct"
   );
 
   if(selectedButton){
