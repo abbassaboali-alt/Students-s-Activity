@@ -3100,6 +3100,9 @@ let CURRENT_COURSE = null;
 let CURRENT_QUESTION_INDEX = 0;
 let CURRENT_SCORE = 0;
 let STUDENT_ANSWER_LOG = [];
+
+/* يحفظ نص الخيار الذي اختاره الطالب فعليًا قبل تغيير ألوان الأزرار */
+let CURRENT_SELECTED_ANSWER_FOR_REVIEW = "";
 let ANSWER_LOCKED = false;
 let CURRENT_ORDER_SELECTION = [];
 
@@ -6455,6 +6458,16 @@ function chooseStudentBombAnswer(
   stopBombTimer();
 
   const correct = Boolean(answer.correct);
+
+  CURRENT_SELECTED_ANSWER_FOR_REVIEW = String(
+    answer?.text ??
+    answer?.right ??
+    button?.dataset?.answerText ??
+    button?.innerText ??
+    button?.textContent ??
+    ""
+  ).trim();
+
   const buttons = [...answerGrid.querySelectorAll(".student-answer")];
 
   buttons.forEach((item,itemIndex)=>{
@@ -6708,6 +6721,7 @@ function prepareTeamSetup(){
   CURRENT_QUESTION_INDEX = 0;
   CURRENT_SCORE = 0;
   STUDENT_ANSWER_LOG = [];
+  CURRENT_SELECTED_ANSWER_FOR_REVIEW = "";
   CURRENT_TEAM_INDEX = 0;
   ANSWER_LOCKED = false;
   ACTIVITY_FINISHED = false;
@@ -6916,6 +6930,15 @@ function getCorrectAnswerForReview(question){
 function getSelectedAnswerForReview(question){
   const type = String(question?.type || "mcq").toLowerCase();
 
+  /* المصدر الأساسي: النص الذي تم حفظه لحظة ضغط الطالب على الخيار */
+  const explicitSelectedAnswer = String(
+    CURRENT_SELECTED_ANSWER_FOR_REVIEW || ""
+  ).trim();
+
+  if(explicitSelectedAnswer){
+    return explicitSelectedAnswer;
+  }
+
   if(type === "order"){
     return CURRENT_ORDER_SELECTION
       .map(item=>String(item?.text || "").trim())
@@ -6960,14 +6983,21 @@ function captureStudentAnswer(isCorrect){
     CURRENT_QUESTION_INDEX
   );
 
+  const selectedAnswerText =
+    getSelectedAnswerForReview(question);
+
   const savedAnswer = {
     questionId,
     questionNumber: CURRENT_QUESTION_INDEX + 1,
     type: String(question.type || "mcq"),
     question: String(question.text || question.question || "Question").trim(),
     questionText: String(question.text || question.question || "Question").trim(),
-    studentAnswer: getSelectedAnswerForReview(question),
-    participantAnswer: getSelectedAnswerForReview(question),
+    studentAnswer: selectedAnswerText,
+    participantAnswer: selectedAnswerText,
+    clickedAnswer: selectedAnswerText,
+    chosenAnswer: selectedAnswerText,
+    selectedAnswer: selectedAnswerText,
+    selectedOptionText: selectedAnswerText,
     correctAnswer: getCorrectAnswerForReview(question),
     expectedAnswer: getCorrectAnswerForReview(question),
     correct: Boolean(isCorrect),
@@ -6983,6 +7013,9 @@ function captureStudentAnswer(isCorrect){
   }else{
     STUDENT_ANSWER_LOG.push(savedAnswer);
   }
+
+  /* منع انتقال إجابة السؤال السابق إلى السؤال التالي */
+  CURRENT_SELECTED_ANSWER_FOR_REVIEW = "";
 }
 
 function renderStudentAnswerReview(){
@@ -9879,6 +9912,16 @@ function chooseAnswer(answerIndex,clickedButton){
 
   const selected =
     question.answers[answerIndex];
+
+  /* حفظ نفس الخيار الذي ضغط عليه الطالب، صحيحًا كان أو خاطئًا */
+  CURRENT_SELECTED_ANSWER_FOR_REVIEW = String(
+    selected?.text ??
+    selected?.right ??
+    clickedButton?.dataset?.answerText ??
+    clickedButton?.innerText ??
+    clickedButton?.textContent ??
+    ""
+  ).trim();
 
   const buttons = [
     ...document.querySelectorAll(
