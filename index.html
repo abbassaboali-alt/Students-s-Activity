@@ -495,6 +495,10 @@ img, video, canvas{
   .student-answer-review-grid{grid-template-columns:1fr}
 }
 
+
+/* Sudden Death: eliminated teams */
+.live-team-item.bomb-eliminated,
+.live-team-item.eliminated{opacity:.42;filter:grayscale(1);text-decoration:line-through;}
 </style>
 
 <!DOCTYPE html>
@@ -3120,6 +3124,10 @@ let WHEEL_ROTATION = 0;
 let WHEEL_POINTS_MULTIPLIER = 1;
 let WHEEL_STOP_TIMEOUT = null;
 let WHEEL_TIMER_STARTED = false;
+let WHEEL_ANIMATION_FRAME = null;
+let WHEEL_LAST_FRAME_TIME = 0;
+let WHEEL_SPEED_DEG_PER_SECOND = 520;
+let WHEEL_IS_DECELERATING = false;
 
 /*
   يمنع تكرار صوت حركة الصور بسرعة زائدة جدًا.
@@ -6327,27 +6335,70 @@ function showStudentBombDefused(){
   }
 }
 
+function getActiveSuddenDeathTeams(){
+  return TEAMS.filter(team=>!team.bombEliminated);
+}
+
+function getSuddenDeathWinner(){
+  const active=getActiveSuddenDeathTeams();
+  return TEAMS.length>1 && active.length===1 ? active[0] : null;
+}
+
 function explodeStudentBomb(){
   if(!BOMB_ACTIVE || ANSWER_LOCKED) return;
 
   stopBombTimer();
-  ANSWER_LOCKED = true;
+  ANSWER_LOCKED=true;
   showStudentBombExplosion();
 
-  const feedback = document.getElementById("feedback");
+  const explodedTeam=getCurrentTeam();
+  if(explodedTeam){
+    explodedTeam.bombEliminated=true;
+    explodedTeam.bombExploded=true;
+  }
+
+  const feedback=document.getElementById("feedback");
   if(feedback){
-    feedback.textContent = "💥 Time is over! The bomb exploded.";
-    feedback.className = "feedback bad";
+    feedback.textContent=explodedTeam
+      ? `💥 ${explodedTeam.name} is eliminated from the competition!`
+      : "💥 Time is over! The bomb exploded.";
+    feedback.className="feedback bad";
   }
 
-  if(typeof playWrongSound === "function"){
-    playWrongSound();
-  }
-
-  /* احتساب انتهاء الوقت كإجابة خاطئة للفريق/الطالب الحالي. */
+  if(typeof playWrongSound==="function") playWrongSound();
   recordCurrentTeamAnswer(false);
+  renderLiveTeamBoard();
 
-  setTimeout(()=>finishActivity(true),1400);
+  const winner=getSuddenDeathWinner();
+  if(winner){
+    setTimeout(()=>{
+      const finalFeedback=document.getElementById("feedback");
+      if(finalFeedback){
+        finalFeedback.textContent=`🏆 ${winner.name} wins! All other teams were eliminated.`;
+        finalFeedback.className="feedback good";
+      }
+      if(typeof createConfetti==="function") createConfetti();
+      setTimeout(()=>finishActivity(false),1500);
+    },1100);
+    return;
+  }
+
+  if(TEAMS.length<=1){
+    setTimeout(()=>finishActivity(true),1400);
+    return;
+  }
+
+  /* تخطي الفرق المقصاة والانتقال إلى أول فريق ما زال في المنافسة. */
+  setTimeout(()=>{
+    ANSWER_LOCKED=false;
+    const maxAttempts=Math.max(TEAMS.length,1);
+    for(let i=0;i<maxAttempts;i++){
+      CURRENT_QUESTION_INDEX++;
+      const next=getCurrentTeam();
+      if(next && !next.bombEliminated) break;
+    }
+    renderCurrentQuestion();
+  },1400);
 }
 
 function renderBombDevice(question,answersBox){
@@ -8248,6 +8299,7 @@ function clearWheelState(){
   }
 
   WHEEL_IS_SPINNING = false;
+  WHEEL_IS_DECELERATING = false;
   WHEEL_SELECTED_INDEX = -1;
   WHEEL_POINTS_MULTIPLIER = 1;
 
@@ -8496,62 +8548,70 @@ function showSelectedWheelQuestion(selected){
 }
 
 function spinWheel(){
-  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
-    return;
-  }
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED || WHEEL_IS_DECELERATING) return;
 
-  const items = getWheelItems();
-  if(items.length < 2){
-    alert("This wheel requires at least two sections.");
-    return;
-  }
+  const items=getWheelItems();
+  if(items.length<2){ alert("This wheel requires at least two sections."); return; }
+  const button=document.getElementById("wheelSpinBtn");
+  const disc=document.getElementById("wheelDisc");
+  if(!button||!disc) return;
 
-  const button = document.getElementById("wheelSpinBtn");
-  const disc = document.getElementById("wheelDisc");
-  if(!button || !disc) return;
+  if(!WHEEL_TIMER_STARTED){ WHEEL_TIMER_STARTED=true; startActivityTimer(); }
 
-  if(!WHEEL_TIMER_STARTED){
-    WHEEL_TIMER_STARTED = true;
-    startActivityTimer();
-  }
-
-  /* First click: start an endless rotation. */
   if(!WHEEL_IS_SPINNING){
-    WHEEL_IS_SPINNING = true;
-    WHEEL_SELECTED_INDEX = -1;
-
-    disc.style.transition = "none";
-    disc.style.transform = "";
-    disc.classList.add("wheel-spinning-forever");
-
-    button.innerHTML = `
-      <i class="fa-solid fa-stop"></i>
-      Stop Wheel
-    `;
+    WHEEL_IS_SPINNING=true;
+    WHEEL_SELECTED_INDEX=-1;
+    WHEEL_LAST_FRAME_TIME=0;
+    disc.classList.remove("wheel-spinning-forever");
+    disc.style.transition="none";
+    button.innerHTML='<i class="fa-solid fa-stop"></i> Stop Wheel';
     button.classList.add("wheel-stop-button");
-
     playWheelSpinSound();
+
+    function rotateContinuously(timestamp){
+      if(!WHEEL_IS_SPINNING || WHEEL_IS_DECELERATING) return;
+      if(!WHEEL_LAST_FRAME_TIME) WHEEL_LAST_FRAME_TIME=timestamp;
+      const elapsed=Math.min(40,timestamp-WHEEL_LAST_FRAME_TIME);
+      WHEEL_LAST_FRAME_TIME=timestamp;
+      WHEEL_ROTATION+=(WHEEL_SPEED_DEG_PER_SECOND*elapsed)/1000;
+      disc.style.transform=`rotate(${WHEEL_ROTATION}deg)`;
+      WHEEL_ANIMATION_FRAME=requestAnimationFrame(rotateContinuously);
+    }
+    WHEEL_ANIMATION_FRAME=requestAnimationFrame(rotateContinuously);
     return;
   }
 
-  /* Second click: freeze exactly where the wheel currently is. */
-  const currentAngle = getCurrentWheelRotation(disc);
-  disc.classList.remove("wheel-spinning-forever");
-  disc.style.transition = "none";
-  disc.style.transform = `rotate(${currentAngle}deg)`;
+  WHEEL_IS_SPINNING=false;
+  WHEEL_IS_DECELERATING=true;
+  if(WHEEL_ANIMATION_FRAME) cancelAnimationFrame(WHEEL_ANIMATION_FRAME);
+  WHEEL_ANIMATION_FRAME=null;
+  button.disabled=true;
+  button.innerHTML='<i class="fa-solid fa-hourglass-half"></i> Slowing Down...';
 
-  WHEEL_ROTATION = currentAngle;
-  WHEEL_IS_SPINNING = false;
+  const startRotation=WHEEL_ROTATION;
+  const finalRotation=startRotation+(3+Math.random()*2)*360+Math.random()*360;
+  const duration=3200+Math.random()*900;
+  const startTime=performance.now();
+  const easeOut=t=>1-Math.pow(1-t,5);
 
-  const step = 360 / items.length;
-  const normalizedPointerAngle = (360 - currentAngle) % 360;
-  WHEEL_SELECTED_INDEX = Math.floor(normalizedPointerAngle / step) % items.length;
+  function decelerate(now){
+    const progress=Math.min(1,(now-startTime)/duration);
+    WHEEL_ROTATION=startRotation+(finalRotation-startRotation)*easeOut(progress);
+    disc.style.transform=`rotate(${WHEEL_ROTATION}deg)`;
+    if(progress<1){ WHEEL_ANIMATION_FRAME=requestAnimationFrame(decelerate); return; }
 
-  button.disabled = true;
-  button.innerHTML = `<i class="fa-solid fa-check"></i> Selected`;
-
-  playWheelStopSound();
-  showSelectedWheelQuestion(items[WHEEL_SELECTED_INDEX]);
+    WHEEL_ANIMATION_FRAME=null;
+    WHEEL_IS_DECELERATING=false;
+    const step=360/items.length;
+    const normalized=((WHEEL_ROTATION%360)+360)%360;
+    const pointerAngle=(360-normalized)%360;
+    WHEEL_SELECTED_INDEX=Math.floor(pointerAngle/step)%items.length;
+    button.innerHTML='<i class="fa-solid fa-check"></i> Selected';
+    playWheelStopSound();
+    /* السؤال لا يظهر إلا بعد انتهاء التباطؤ والتوقف الكامل. */
+    setTimeout(()=>showSelectedWheelQuestion(items[WHEEL_SELECTED_INDEX]),250);
+  }
+  WHEEL_ANIMATION_FRAME=requestAnimationFrame(decelerate);
 }
 
 function gradeWheelAnswer(isCorrect){
