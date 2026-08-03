@@ -8257,6 +8257,7 @@ function clearWheelState(){
     );
 
   if(disc){
+    disc.classList.remove("wheel-spinning-forever");
     disc.style.transition = "none";
   }
 }
@@ -8343,6 +8344,7 @@ function renderWheelQuestion(
     ).join(",");
 
   answersBox.innerHTML = `
+    <div id="wheelSelectionScreen" class="wheel-selection-screen">
     <div class="wheel-wrap">
 
       <div class="wheel-pointer">
@@ -8414,273 +8416,142 @@ function renderWheelQuestion(
     </div>
 
     <div
-      id="wheelResult"
-      class="wheel-result-card hidden">
-    </div>
-
-    <div
       class="play-summary-info"
       style="margin-top:13px">
 
       Spin the wheel, let the student complete the selected challenge,
-      then choose Correct or Wrong.
+      then press the wheel again to stop it.
 
+    </div>
+    </div>
+
+    <div
+      id="wheelResult"
+      class="wheel-result-card wheel-question-fullscreen hidden">
     </div>
   `;
 }
 
-function spinWheel(){
+function getCurrentWheelRotation(disc){
+  const transform = getComputedStyle(disc).transform;
+  if(!transform || transform === "none") return 0;
 
-  if(
-    ANSWER_LOCKED ||
-    ACTIVITY_FINISHED ||
-    WHEEL_IS_SPINNING
-  ){
-    return;
+  const values = transform.match(/matrix\(([^)]+)\)/);
+  if(!values) return 0;
+
+  const parts = values[1].split(",").map(Number);
+  const angle = Math.atan2(parts[1],parts[0]) * (180/Math.PI);
+  return (angle + 360) % 360;
+}
+
+function showSelectedWheelQuestion(selected){
+  const selectionScreen = document.getElementById("wheelSelectionScreen");
+  const result = document.getElementById("wheelResult");
+  const correctButton = document.getElementById("wheelCorrectBtn");
+  const wrongButton = document.getElementById("wheelWrongBtn");
+
+  if(selectionScreen){
+    selectionScreen.classList.add("hidden");
   }
 
-  const items =
-    getWheelItems();
+  if(!result) return;
 
-  if(items.length < 2){
+  const doublePoints = clean(selected?.text || "").includes("double points");
+  WHEEL_POINTS_MULTIPLIER = doublePoints ? 2 : 1;
 
-    alert(
-      "This wheel requires at least two sections."
-    );
+  result.innerHTML = `
+    <div class="wheel-fullscreen-inner">
+      <div class="wheel-result-category">
+        ${doublePoints ? "✨" : "🎯"}
+        ${esc(selected?.text || "Selected Challenge")}
+        ${doublePoints ? " — 2 Points" : ""}
+      </div>
 
-    return;
-  }
+      ${selected?.image ? `
+        <img src="${esc(selected.image)}" alt="Wheel challenge">
+      ` : ""}
 
-  /*
-    يبدأ المؤقت عند أول دوران فقط.
-    Spin Again لا يعيد المؤقت.
-  */
-  if(!WHEEL_TIMER_STARTED){
+      <div class="wheel-result-question">
+        ${esc(
+          selected?.right ||
+          selected?.challenge ||
+          selected?.question ||
+          "Complete the selected challenge."
+        )}
+      </div>
 
-    WHEEL_TIMER_STARTED = true;
-
-    startActivityTimer();
-
-  }
-
-  WHEEL_IS_SPINNING = true;
-
-  const button =
-    document.getElementById(
-      "wheelSpinBtn"
-    );
-
-  const disc =
-    document.getElementById(
-      "wheelDisc"
-    );
-
-  const correctButton =
-    document.getElementById(
-      "wheelCorrectBtn"
-    );
-
-  const wrongButton =
-    document.getElementById(
-      "wheelWrongBtn"
-    );
-
-  const result =
-    document.getElementById(
-      "wheelResult"
-    );
-
-  if(!button || !disc){
-    WHEEL_IS_SPINNING = false;
-    return;
-  }
-
-  button.disabled = true;
-
-  button.innerHTML = `
-    <i class="fa-solid fa-spinner fa-spin"></i>
-    Spinning...
+      <div class="wheel-fullscreen-actions">
+        <button id="wheelCorrectBtn" class="btn wheel-correct" type="button" onclick="gradeWheelAnswer(true)">
+          <i class="fa-solid fa-check"></i> Correct
+        </button>
+        <button id="wheelWrongBtn" class="btn wheel-wrong" type="button" onclick="gradeWheelAnswer(false)">
+          <i class="fa-solid fa-xmark"></i> Wrong
+        </button>
+      </div>
+    </div>
   `;
 
-  correctButton?.classList.add(
-    "hidden"
-  );
+  result.classList.remove("hidden");
+  result.scrollIntoView({behavior:"smooth",block:"start"});
+}
 
-  wrongButton?.classList.add(
-    "hidden"
-  );
+function spinWheel(){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED){
+    return;
+  }
 
-  result?.classList.add(
-    "hidden"
-  );
+  const items = getWheelItems();
+  if(items.length < 2){
+    alert("This wheel requires at least two sections.");
+    return;
+  }
 
-WHEEL_SELECTED_INDEX =
-  Math.floor(
-    Math.random() *
-    items.length
-  );
+  const button = document.getElementById("wheelSpinBtn");
+  const disc = document.getElementById("wheelDisc");
+  if(!button || !disc) return;
 
-const step =
-  360 / items.length;
+  if(!WHEEL_TIMER_STARTED){
+    WHEEL_TIMER_STARTED = true;
+    startActivityTimer();
+  }
 
-/*
-  زاوية منتصف القطاع المختار.
-*/
-const selectedCenterAngle =
-  WHEEL_SELECTED_INDEX *
-  step +
-  step / 2;
+  /* First click: start an endless rotation. */
+  if(!WHEEL_IS_SPINNING){
+    WHEEL_IS_SPINNING = true;
+    WHEEL_SELECTED_INDEX = -1;
 
-/*
-  موضع دوران العجلة الحالي من 0 إلى 359.
-*/
-const currentRotation =
-  (
-    (
-      WHEEL_ROTATION % 360
-    ) +
-    360
-  ) % 360;
+    disc.style.transition = "none";
+    disc.style.transform = "";
+    disc.classList.add("wheel-spinning-forever");
 
-/*
-  نريد أن يصل منتصف القطاع المختار إلى أعلى العجلة،
-  حيث يوجد السهم عند زاوية 0.
-*/
-const targetRotation =
-  (
-    360 -
-    selectedCenterAngle
-  ) % 360;
+    button.innerHTML = `
+      <i class="fa-solid fa-stop"></i>
+      Stop Wheel
+    `;
+    button.classList.add("wheel-stop-button");
 
-/*
-  مقدار الحركة المطلوبة من الوضع الحالي
-  إلى الوضع الصحيح.
-*/
-const adjustment =
-  (
-    targetRotation -
-    currentRotation +
-    360
-  ) % 360;
+    playWheelSpinSound();
+    return;
+  }
 
-/*
-  أربع دورات كاملة ثم الوصول إلى القطاع المختار.
-*/
-WHEEL_ROTATION +=
-  1440 +
-  adjustment;
+  /* Second click: freeze exactly where the wheel currently is. */
+  const currentAngle = getCurrentWheelRotation(disc);
+  disc.classList.remove("wheel-spinning-forever");
+  disc.style.transition = "none";
+  disc.style.transform = `rotate(${currentAngle}deg)`;
 
-  disc.style.transition =
-  "transform 4.4s cubic-bezier(.12,.72,.12,1)";
+  WHEEL_ROTATION = currentAngle;
+  WHEEL_IS_SPINNING = false;
 
-  requestAnimationFrame(()=>{
+  const step = 360 / items.length;
+  const normalizedPointerAngle = (360 - currentAngle) % 360;
+  WHEEL_SELECTED_INDEX = Math.floor(normalizedPointerAngle / step) % items.length;
 
-    disc.style.transform =
-      `rotate(${WHEEL_ROTATION}deg)`;
+  button.disabled = true;
+  button.innerHTML = `<i class="fa-solid fa-check"></i> Selected`;
 
-  });
-
-  playWheelSpinSound();
-
-  WHEEL_STOP_TIMEOUT =
-    setTimeout(()=>{
-
-      WHEEL_STOP_TIMEOUT = null;
-
-      if(
-        ACTIVITY_FINISHED ||
-        ANSWER_LOCKED
-      ){
-        WHEEL_IS_SPINNING = false;
-        return;
-      }
-
-      WHEEL_IS_SPINNING = false;
-
-      const selected =
-        items[WHEEL_SELECTED_INDEX];
-
-      const doublePoints =
-        clean(
-          selected?.text || ""
-        ).includes(
-          "double points"
-        );
-
-      WHEEL_POINTS_MULTIPLIER =
-        doublePoints
-          ? 2
-          : 1;
-
-      if(result){
-
-        result.innerHTML = `
-          <div class="wheel-result-category">
-
-            ${
-              doublePoints
-                ? "✨"
-                : "🎯"
-            }
-
-            ${esc(
-              selected?.text ||
-              "Selected Challenge"
-            )}
-
-            ${
-              doublePoints
-                ? " — 2 Points"
-                : ""
-            }
-
-          </div>
-
-          <div class="wheel-result-question">
-
-            ${esc(
-              selected?.right ||
-              selected?.challenge ||
-              selected?.question ||
-              "Complete the selected challenge."
-            )}
-
-          </div>
-
-          ${
-            selected?.image
-              ? `
-                <img
-                  src="${esc(selected.image)}"
-                  alt="Wheel challenge">
-              `
-              : ""
-          }
-        `;
-
-        result.classList.remove(
-          "hidden"
-        );
-      }
-
-      correctButton?.classList.remove(
-        "hidden"
-      );
-
-      wrongButton?.classList.remove(
-        "hidden"
-      );
-
-      button.disabled = false;
-
-      button.innerHTML = `
-        <i class="fa-solid fa-rotate-right"></i>
-        Spin Again
-      `;
-
-      playWheelStopSound();
-
-    },4400);
+  playWheelStopSound();
+  showSelectedWheelQuestion(items[WHEEL_SELECTED_INDEX]);
 }
 
 function gradeWheelAnswer(isCorrect){
@@ -12366,6 +12237,151 @@ window.addEventListener("storage", event=>{
   }
   .bomb-device-compact .bomb-icon{font-size:59px}
   .bomb-device-compact .bomb-screen{font-size:24px}
+}
+
+
+
+/* =========================================================
+   PRUDLE UPDATE — COMPACT BOMB + CONTINUOUS WHEEL
+========================================================= */
+
+/* Keep the bomb compact so the question and answers remain visible. */
+.bomb-game{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:12px !important;
+}
+.bomb-stage{
+  min-height:auto !important;
+  padding:8px !important;
+  margin:0 auto 8px !important;
+  width:min(520px,100%) !important;
+  border-radius:16px !important;
+}
+.bomb-device-compact{
+  width:100% !important;
+  grid-template-columns:62px minmax(0,1fr) !important;
+  gap:9px !important;
+  padding:8px 10px !important;
+  border-radius:14px !important;
+}
+.bomb-device-compact .bomb-icon{
+  font-size:43px !important;
+}
+.bomb-device-compact .bomb-fuse{
+  width:45px !important;
+  height:12px !important;
+}
+.bomb-device-compact .bomb-fuse::before{
+  width:34px !important;
+}
+.bomb-device-compact .bomb-fuse-spark{
+  font-size:16px !important;
+}
+.bomb-device-compact .bomb-title{
+  font-size:12px !important;
+  margin-bottom:3px !important;
+}
+.bomb-device-compact .bomb-screen{
+  min-height:34px !important;
+  margin:0 0 5px !important;
+  padding:2px 7px !important;
+  font-size:21px !important;
+}
+.bomb-device-compact .bomb-speed-meter,
+.bomb-device-compact .bomb-status{
+  font-size:10px !important;
+  margin-top:4px !important;
+  padding:4px 6px !important;
+}
+.bomb-device-compact .bomb-wires{
+  margin-top:5px !important;
+}
+.bomb-answer-grid{
+  width:100% !important;
+  margin-top:0 !important;
+}
+
+/* Wheel rotates forever until the same button is pressed again. */
+.wheel-disc.wheel-spinning-forever{
+  animation:prudleWheelForever 1.05s linear infinite !important;
+  transition:none !important;
+  will-change:transform;
+}
+@keyframes prudleWheelForever{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+.wheel-stop-button{
+  background:#e74c3c !important;
+  color:#fff !important;
+}
+
+/* The selected wheel question replaces the wheel and fills the play area. */
+.wheel-question-fullscreen{
+  width:100% !important;
+  max-width:100% !important;
+  min-height:calc(100vh - 150px) !important;
+  margin:0 !important;
+  padding:clamp(18px,4vw,45px) !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid var(--gold) !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,#fffdf4,#fff) !important;
+  box-shadow:0 18px 45px rgba(22,68,120,.16) !important;
+}
+.wheel-question-fullscreen.hidden{display:none !important}
+.wheel-fullscreen-inner{
+  width:min(1050px,100%);
+  text-align:center;
+}
+.wheel-question-fullscreen .wheel-result-category{
+  font-size:clamp(22px,3vw,38px) !important;
+  margin-bottom:18px;
+}
+.wheel-question-fullscreen .wheel-result-question{
+  font-size:clamp(28px,4.3vw,54px) !important;
+  line-height:1.55 !important;
+  margin:18px auto !important;
+  color:var(--blue);
+  font-weight:900 !important;
+}
+.wheel-question-fullscreen img{
+  display:block;
+  width:min(620px,100%) !important;
+  max-height:45vh !important;
+  object-fit:contain !important;
+  margin:15px auto !important;
+}
+.wheel-fullscreen-actions{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:25px;
+}
+.wheel-fullscreen-actions .btn{
+  min-width:170px;
+  padding:14px 25px;
+  font-size:18px;
+}
+
+@media(max-width:650px){
+  .bomb-device-compact{
+    grid-template-columns:52px minmax(0,1fr) !important;
+  }
+  .bomb-device-compact .bomb-icon{font-size:36px !important}
+  .wheel-wrap{width:min(390px,88vw) !important}
+  .wheel-question-fullscreen{
+    min-height:calc(100vh - 115px) !important;
+    padding:16px 10px !important;
+  }
+  .wheel-fullscreen-actions .btn{
+    width:100%;
+    min-width:0;
+  }
 }
 
 </style>
