@@ -6930,17 +6930,23 @@ function cancelTeamSetup(){
   backToActivities();
 }
 
+function getCompetitionTeams(){
+  return TEAMS.filter(team=>!team.bombEliminated);
+}
+
 function getCurrentTeam(){
 
-  if(!TEAMS.length){
+  const activeTeams=getCompetitionTeams();
+
+  if(!activeTeams.length){
     return null;
   }
 
-  CURRENT_TEAM_INDEX =
-    CURRENT_QUESTION_INDEX %
-    TEAMS.length;
+  CURRENT_TEAM_INDEX=(
+    CURRENT_TEAM_INDEX % activeTeams.length + activeTeams.length
+  ) % activeTeams.length;
 
-  return TEAMS[CURRENT_TEAM_INDEX];
+  return activeTeams[CURRENT_TEAM_INDEX];
 }
 
 function getStableQuestionId(question, index = CURRENT_QUESTION_INDEX){
@@ -7153,54 +7159,37 @@ function renderCurrentTeam(){
 
 function renderLiveTeamBoard(){
 
-  const box =
-    document.getElementById(
-      "liveTeamBoard"
-    );
+  const box=document.getElementById("liveTeamBoard");
+  if(!box) return;
 
-  if(!box){
+  const visibleTeams=getCompetitionTeams();
+  const currentTeam=getCurrentTeam();
+
+  if(!visibleTeams.length){
+    box.innerHTML="";
     return;
   }
 
-  const participant =
-    TEAMS[0] || null;
-
-  if(!participant){
-    box.innerHTML = "";
-    return;
-  }
-
-  box.innerHTML = `
-    <div class="live-team-item active">
+  box.innerHTML=visibleTeams.map(team=>`
+    <div class="live-team-item ${currentTeam && currentTeam.id===team.id ? "active" : ""}">
       <strong>
         <i class="fa-solid fa-user-graduate"></i>
-        ${esc(getLoggedActivityStudentName())}
+        ${esc(team.name || getLoggedActivityStudentName())}
       </strong>
-
       <span>
-        ✅ ${Number(participant.correct || 0)}
-        &nbsp; | &nbsp;
-        Answered
-        ${Number(participant.answered || 0)}/
-        ${Number(participant.assigned || 0)}
-        ${
-          RACE_MODE_ACTIVE
-            ? `&nbsp; | &nbsp; 🏁 ${
-                Number(
-                  participant.racePosition ||
-                  0
-                )
-              }/${RACE_TOTAL_STEPS}`
-            : ""
-        }
+        ✅ ${Number(team.correct || 0)}
+        &nbsp; | &nbsp; Answered
+        ${Number(team.answered || 0)}/${Number(team.assigned || 0)}
+        ${RACE_MODE_ACTIVE ? `&nbsp; | &nbsp; 🏁 ${Number(team.racePosition || 0)}/${RACE_TOTAL_STEPS}` : ""}
       </span>
     </div>
-  `;
+  `).join("");
 }
 
 function getRankedTeams(){
 
-  return [...TEAMS]
+  /* Eliminated teams never appear in winners or final results. */
+  return getCompetitionTeams()
     .map(team=>({
       ...team,
 
