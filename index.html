@@ -1807,6 +1807,173 @@ button{font-family:inherit;cursor:pointer}
 
 
 /* =====================================
+   WHEEL + MULTIPLE CHOICE
+===================================== */
+.wheel-mcq-game{text-align:center}
+.wheel-mcq-instruction{
+  margin:0 auto 12px;
+  color:var(--blue);
+  font-size:16px;
+  font-weight:900;
+  line-height:1.7;
+}
+.wheel-mcq-remaining{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:10px auto 16px;
+}
+.wheel-mcq-number-chip{
+  min-width:38px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#edf4fa;
+  color:var(--blue);
+  font-weight:900;
+  border:1px solid #cbddeb;
+}
+.wheel-mcq-question-card{
+  margin:18px auto 0;
+  max-width:820px;
+  padding:22px;
+  border:2px solid var(--gold);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 16px 35px rgba(22,68,120,.14);
+  animation:wheelMcqReveal .35s ease;
+}
+.wheel-mcq-question-number{font-size:15px;font-weight:900;color:#8a6500;margin-bottom:6px}
+.wheel-mcq-question-text{font-size:24px;line-height:1.6;font-weight:900;color:var(--blue);margin-bottom:16px}
+.wheel-mcq-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wheel-mcq-option{
+  min-height:90px;
+  border:2px solid var(--border);
+  border-radius:17px;
+  background:#fff;
+  padding:13px;
+  font-size:17px;
+  font-weight:900;
+  color:var(--text);
+  transition:.18s;
+}
+.wheel-mcq-option:hover:not(:disabled){transform:translateY(-2px);border-color:var(--blue2)}
+.wheel-mcq-option.correct{border-color:var(--green);background:#eafaf4}
+.wheel-mcq-option.wrong{border-color:var(--red);background:#fff0ee}
+.wheel-mcq-option img{width:100%;height:130px;object-fit:contain;border-radius:10px;margin-bottom:7px;background:#f3f7fb}
+.wheel-mcq-media{margin:0 auto 16px;max-width:620px}
+.wheel-mcq-media img,.wheel-mcq-media video{max-width:100%;max-height:280px;border-radius:14px}
+.wheel-mcq-media audio{width:100%}
+.wheel-mcq-score-panel{
+  margin:16px auto 0;
+  max-width:720px;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:#f8fbfd;
+}
+.wheel-mcq-points-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(120px,180px) auto;
+  gap:10px;
+  align-items:end;
+}
+.wheel-mcq-points-row label{display:block;text-align:left;font-weight:900;font-size:12px;margin-bottom:5px}
+.wheel-mcq-points-row input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:11px 12px;
+  background:#fff;
+  font-family:inherit;
+  font-weight:800;
+}
+.wheel-mcq-current-team{
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  padding:10px 13px;
+  border-radius:12px;
+  background:#fff8dd;
+  color:#765500;
+  font-weight:900;
+  border:1px solid #efd276;
+}
+.wheel-mcq-points-saved{
+  margin-top:10px;
+  color:var(--green);
+  font-weight:900;
+}
+@keyframes wheelMcqReveal{
+  from{opacity:0;transform:translateY(12px) scale(.985)}
+  to{opacity:1;transform:none}
+}
+@media(max-width:650px){
+  .wheel-mcq-options{grid-template-columns:1fr}
+  .wheel-mcq-points-row{grid-template-columns:1fr}
+  .wheel-mcq-question-text{font-size:20px}
+}
+
+/* Realistic Wheel + MCQ behavior */
+.wheel-mcq-wheel-stage{
+  transition:opacity .22s ease,transform .22s ease;
+}
+.wheel-mcq-wheel-stage.hidden-after-selection{
+  display:none!important;
+}
+.wheel-mcq-disc{
+  transition:none;
+  will-change:transform;
+}
+.wheel-mcq-segment-label{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  min-width:48px;
+  height:48px;
+  padding:0 10px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:rgba(255,255,255,.96);
+  color:#164478;
+  border:3px solid rgba(255,255,255,.85);
+  box-shadow:0 5px 14px rgba(0,0,0,.20);
+  font-size:22px;
+  font-weight:900;
+  line-height:1;
+  z-index:4;
+  pointer-events:none;
+  text-shadow:none;
+}
+.wheel-mcq-last-question-note{
+  max-width:760px;
+  margin:8px auto 14px;
+  padding:12px 15px;
+  border-radius:14px;
+  background:#fff8dd;
+  border:1px solid #efd276;
+  color:#765500;
+  font-weight:900;
+}
+.wheel-mcq-cw-actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.wheel-mcq-cw-actions .btn{
+  min-width:150px;
+}
+@media(max-width:650px){
+  .wheel-mcq-segment-label{
+    min-width:40px;
+    height:40px;
+    font-size:18px;
+  }
+}
+
+/* =====================================
    BALLOON POP QUESTION
 ===================================== */
 .balloon-game{
@@ -3132,6 +3299,17 @@ let WHEEL_IS_DECELERATING = false;
 /*
   يمنع تكرار صوت حركة الصور بسرعة زائدة جدًا.
 */
+let WHEEL_MCQ_IS_SPINNING = false;
+let WHEEL_MCQ_SELECTED_QUESTION_INDEX = -1;
+let WHEEL_MCQ_SELECTED_ANSWER_INDEX = -1;
+let WHEEL_MCQ_ROTATION = 0;
+let WHEEL_MCQ_NUMBER_MAP = new Map();
+let WHEEL_MCQ_POINTS_AWARDED = false;
+let WHEEL_MCQ_ANIMATION_FRAME = null;
+let WHEEL_MCQ_LAST_FRAME_TIME = 0;
+let WHEEL_MCQ_SPEED_DEG_PER_SECOND = 900;
+let WHEEL_MCQ_IS_DECELERATING = false;
+
 let LAST_RANDOM_MOVE_SOUND_TIME = 0;
 
 /*
@@ -7308,6 +7486,113 @@ function renderTeamResults(){
   return TEAMS[0] || null;
 }
 
+
+function normalizeQuestionForPracticePlayer(question){
+  const q = question && typeof question === "object"
+    ? {...question}
+    : {};
+
+  q.type = String(q.type || "mcq").trim().toLowerCase();
+
+  q.text = String(
+    q.text ??
+    q.question ??
+    q.q ??
+    ""
+  ).trim();
+
+  q.wheelAnswerMode = String(
+    q.wheelAnswerMode ||
+    q.answerMode ||
+    "mcq"
+  ).trim().toLowerCase();
+
+  q.mediaType = String(
+    q.mediaType ||
+    (
+      q.video ? "video" :
+      q.audio ? "audio" :
+      q.image ? "image" :
+      "none"
+    )
+  ).trim().toLowerCase();
+
+  q.mediaUrl = String(
+    q.mediaUrl ||
+    q.video ||
+    q.audio ||
+    q.image ||
+    ""
+  ).trim();
+
+  if(q.mediaType === "image" && !q.image){
+    q.image = q.mediaUrl;
+  }
+  if(q.mediaType === "video" && !q.video){
+    q.video = q.mediaUrl;
+  }
+  if(q.mediaType === "audio" && !q.audio){
+    q.audio = q.mediaUrl;
+  }
+
+  q.answers = Array.isArray(q.answers)
+    ? q.answers.map(answer=>{
+        const a =
+          answer && typeof answer === "object"
+            ? {...answer}
+            : {text:String(answer ?? "")};
+
+        a.text = String(
+          a.text ??
+          a.label ??
+          a.option ??
+          ""
+        ).trim();
+
+        a.right = String(
+          a.right ??
+          a.match ??
+          ""
+        ).trim();
+
+        a.image = String(
+          a.image ??
+          a.imageUrl ??
+          ""
+        ).trim();
+
+        a.correct = Boolean(
+          a.correct === true ||
+          a.isCorrect === true
+        );
+
+        return a;
+      })
+    : [];
+
+  return q;
+}
+
+function normalizeActivityQuestionsForPracticePlayer(activity){
+  if(!activity || !Array.isArray(activity.questions)){
+    return activity;
+  }
+
+  /*
+    Important:
+    map() preserves the exact Firebase/admin order.
+    Imported Word/PDF/TXT questions that were appended at the end
+    remain at the end in Practice Mode.
+  */
+  activity.questions =
+    activity.questions.map(
+      question=>normalizeQuestionForPracticePlayer(question)
+    );
+
+  return activity;
+}
+
+
 function startActivity(activityId,courseId){
   stopBombTimer();
 
@@ -7331,6 +7616,10 @@ function startActivity(activityId,courseId){
     alert("Unable to open the activity.");
     return;
   }
+
+  normalizeActivityQuestionsForPracticePlayer(
+    CURRENT_ACTIVITY
+  );
 
   if(!ACTIVITY_STUDENT_IQAMA || !ACTIVITY_STUDENT_MAIN){
     alert("Please log in using the student ID first.");
@@ -7563,6 +7852,10 @@ async function finishActivityByTimeout(){
 function renderStudentQuestion(){
   clearRandomQuestionTimers();
   clearWheelState();
+
+  if(typeof resetWheelMcqState === "function"){
+    resetWheelMcqState();
+  }
 
   if(
     !CURRENT_ACTIVITY ||
@@ -7811,6 +8104,14 @@ function renderStudentQuestion(){
 
   if(type === "random"){
     renderRandomImageQuestion(
+      question,
+      answersBox
+    );
+    return;
+  }
+
+  if(type === "wheelmcq"){
+    renderWheelMcqQuestion(
       question,
       answersBox
     );
@@ -8796,6 +9097,827 @@ function playWheelStopSound(){
 }
 
 
+
+function buildWheelMcqMedia(question){
+  const mediaType = question?.mediaType ||
+    (question?.video ? "video" : question?.audio ? "audio" : question?.image ? "image" : "none");
+  const mediaUrl = question?.mediaUrl || question?.video || question?.audio || question?.image || "";
+  if(!mediaUrl) return "";
+
+  if(mediaType === "image"){
+    return `<div class="wheel-mcq-media"><img src="${esc(mediaUrl)}" alt=""></div>`;
+  }
+  if(mediaType === "audio"){
+    return `<div class="wheel-mcq-media"><audio controls src="${esc(mediaUrl)}"></audio></div>`;
+  }
+  if(mediaType === "video"){
+    const embed = toYouTubeEmbedUrl(mediaUrl);
+    if(embed){
+      return `<div class="wheel-mcq-media"><iframe class="question-youtube" src="${esc(embed)}" allowfullscreen></iframe></div>`;
+    }
+    return `<div class="wheel-mcq-media"><video controls src="${esc(mediaUrl)}"></video></div>`;
+  }
+  return "";
+}
+
+function stopWheelMcqAnimation(){
+  if(WHEEL_MCQ_ANIMATION_FRAME){
+    cancelAnimationFrame(WHEEL_MCQ_ANIMATION_FRAME);
+    WHEEL_MCQ_ANIMATION_FRAME = null;
+  }
+  WHEEL_MCQ_LAST_FRAME_TIME = 0;
+}
+
+function getWheelMcqAnswerMode(question){
+  const raw = String(
+    question?.wheelAnswerMode ||
+    question?.answerMode ||
+    "multiplechoice"
+  ).trim().toLowerCase();
+
+  return ["correctwrong","correct-wrong","correct_wrong","cw","truefalse"].includes(raw)
+    ? "correctwrong"
+    : "multiplechoice";
+}
+
+function buildWheelMcqQuestionContent(selectedQuestion,number){
+  const mode = getWheelMcqAnswerMode(selectedQuestion);
+
+  if(mode === "correctwrong"){
+    return `
+      <div class="wheel-mcq-question-number">Question ${number}</div>
+      <div class="wheel-mcq-question-text">${esc(selectedQuestion.text || selectedQuestion.question || "")}</div>
+      ${buildWheelMcqMedia(selectedQuestion)}
+      <div class="wheel-mcq-cw-actions">
+        <button class="btn btn-success" type="button" onclick="gradeWheelMcqCorrectWrong(true,this)">
+          <i class="fa-solid fa-check"></i> Correct
+        </button>
+        <button class="btn btn-danger" type="button" onclick="gradeWheelMcqCorrectWrong(false,this)">
+          <i class="fa-solid fa-xmark"></i> Wrong
+        </button>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="wheel-mcq-question-number">Question ${number}</div>
+    <div class="wheel-mcq-question-text">${esc(selectedQuestion.text || selectedQuestion.question || "")}</div>
+    ${buildWheelMcqMedia(selectedQuestion)}
+    <div class="wheel-mcq-options">
+      ${(selectedQuestion.answers || []).map((answer,index)=>`
+        <button class="wheel-mcq-option" type="button" onclick="chooseWheelMcqAnswer(${index},this)" data-answer-text="${esc(answer.text || "")}">
+          ${getItemImage(answer) ? `<img src="${esc(getItemImage(answer))}" alt="">` : ""}
+          ${answer.text ? `<div>${esc(answer.text)}</div>` : ""}
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function revealWheelMcqQuestion(selectedIndex){
+  moveSelectedQuestionToCurrent(selectedIndex);
+
+  const selectedQuestion = CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX];
+  const number = getWheelMcqQuestionNumber(selectedQuestion,CURRENT_QUESTION_INDEX);
+  WHEEL_MCQ_SELECTED_QUESTION_INDEX = CURRENT_QUESTION_INDEX;
+
+  const stage = document.getElementById("wheelMcqWheelStage");
+  if(stage) stage.classList.add("hidden-after-selection");
+
+  const card = document.getElementById("wheelMcqQuestionCard");
+  if(card){
+    card.innerHTML = buildWheelMcqQuestionContent(selectedQuestion,number);
+    card.classList.remove("hidden");
+  }
+
+  document.getElementById("gameQuestion").textContent = `🎯 Question ${number}`;
+}
+
+function renderWheelMcqQuestion(question,answersBox){
+  const remainingIndexes = getRemainingWheelMcqIndexes();
+  WHEEL_MCQ_SELECTED_QUESTION_INDEX = -1;
+  WHEEL_MCQ_SELECTED_ANSWER_INDEX = -1;
+  WHEEL_MCQ_POINTS_AWARDED = false;
+  WHEEL_MCQ_IS_SPINNING = false;
+  WHEEL_MCQ_IS_DECELERATING = false;
+  stopWheelMcqAnimation();
+  answersBox.className = "wheel-mcq-game";
+
+  if(!remainingIndexes.length){
+    answersBox.innerHTML = '<div class="feedback bad">No Wheel + Multiple Choice questions remain.</div>';
+    return;
+  }
+
+  const team = getCurrentTeam();
+
+  /* If only one question remains, there is no reason to spin. */
+  if(remainingIndexes.length === 1){
+    const onlyIndex = remainingIndexes[0];
+    const onlyQuestion = CURRENT_ACTIVITY.questions[onlyIndex];
+    const onlyNumber = getWheelMcqQuestionNumber(onlyQuestion,onlyIndex);
+
+    answersBox.innerHTML = `
+      <div class="wheel-mcq-last-question-note">
+        🎯 Only Question ${onlyNumber} remains — it opens directly without spinning the wheel.
+      </div>
+      <div id="wheelMcqQuestionCard" class="wheel-mcq-question-card"></div>
+      <div id="wheelMcqScorePanel" class="wheel-mcq-score-panel hidden">
+        <div class="wheel-mcq-points-row">
+          <div>
+            <label>Team</label>
+            <div id="wheelMcqCurrentTeam" class="wheel-mcq-current-team">${esc(team?.name || "Current Team")}</div>
+          </div>
+          <div>
+            <label>Points</label>
+            <input id="wheelMcqPointsInput" type="number" min="0" step="1" value="1" inputmode="numeric">
+          </div>
+          <button id="wheelMcqAwardBtn" class="btn btn-primary" type="button" onclick="awardWheelMcqPoints()">
+            <i class="fa-solid fa-plus"></i> Add Points
+          </button>
+        </div>
+        <div id="wheelMcqPointsSaved" class="wheel-mcq-points-saved hidden"></div>
+      </div>
+    `;
+
+    revealWheelMcqQuestion(onlyIndex);
+    return;
+  }
+
+  const colors = getWheelColors(remainingIndexes.length);
+  const step = 360 / remainingIndexes.length;
+  const gradient = remainingIndexes.map((_,i)=>
+    `${colors[i]} ${i*step}deg ${(i+1)*step}deg`
+  ).join(",");
+
+  const labels = remainingIndexes.map((questionIndex,i)=>{
+    const centerDeg = i * step + step / 2;
+    const rad = centerDeg * Math.PI / 180;
+    const radiusPercent = 31.5;
+    const left = 50 + radiusPercent * Math.sin(rad);
+    const top = 50 - radiusPercent * Math.cos(rad);
+    const number = getWheelMcqQuestionNumber(CURRENT_ACTIVITY.questions[questionIndex],questionIndex);
+    return `<div class="wheel-mcq-segment-label" style="left:${left.toFixed(2)}%;top:${top.toFixed(2)}%">${number}</div>`;
+  }).join("");
+
+  answersBox.innerHTML = `
+    <div class="wheel-mcq-instruction">
+      Press <b>Spin Wheel</b> to start a fast continuous spin, then press <b>Stop Wheel</b> when you want it to choose a question.
+    </div>
+
+    <div class="wheel-mcq-remaining">
+      ${remainingIndexes.map(index=>`
+        <span class="wheel-mcq-number-chip">${getWheelMcqQuestionNumber(CURRENT_ACTIVITY.questions[index],index)}</span>
+      `).join("")}
+    </div>
+
+    <div id="wheelMcqWheelStage" class="wheel-mcq-wheel-stage">
+      <div class="wheel-wrap">
+        <div class="wheel-pointer">▼</div>
+        <div id="wheelMcqDisc" class="wheel-disc wheel-mcq-disc" style="background:conic-gradient(${gradient})">
+          ${labels}
+          <div class="wheel-center">🎡</div>
+        </div>
+      </div>
+
+      <div class="wheel-controls">
+        <button id="wheelMcqSpinBtn" class="btn btn-gold" type="button" onclick="spinWheelMcq()">
+          <i class="fa-solid fa-rotate"></i> Spin Wheel
+        </button>
+      </div>
+    </div>
+
+    <div id="wheelMcqQuestionCard" class="wheel-mcq-question-card hidden"></div>
+
+    <div id="wheelMcqScorePanel" class="wheel-mcq-score-panel hidden">
+      <div class="wheel-mcq-points-row">
+        <div>
+          <label>Team</label>
+          <div id="wheelMcqCurrentTeam" class="wheel-mcq-current-team">${esc(team?.name || "Current Team")}</div>
+        </div>
+        <div>
+          <label>Points</label>
+          <input id="wheelMcqPointsInput" type="number" min="0" step="1" value="1" inputmode="numeric">
+        </div>
+        <button id="wheelMcqAwardBtn" class="btn btn-primary" type="button" onclick="awardWheelMcqPoints()">
+          <i class="fa-solid fa-plus"></i> Add Points
+        </button>
+      </div>
+      <div id="wheelMcqPointsSaved" class="wheel-mcq-points-saved hidden"></div>
+    </div>
+  `;
+}
+
+function spinWheelMcq(){
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED || WHEEL_MCQ_IS_DECELERATING) return;
+
+  const remainingIndexes = getRemainingWheelMcqIndexes();
+  if(!remainingIndexes.length) return;
+
+  /* Last question is shown directly and never spins. */
+  if(remainingIndexes.length === 1){
+    revealWheelMcqQuestion(remainingIndexes[0]);
+    return;
+  }
+
+  const button = document.getElementById("wheelMcqSpinBtn");
+  const disc = document.getElementById("wheelMcqDisc");
+  if(!button || !disc) return;
+
+  /* First press: start a fast continuous, realistic spin. */
+  if(!WHEEL_MCQ_IS_SPINNING){
+    WHEEL_MCQ_IS_SPINNING = true;
+    WHEEL_MCQ_LAST_FRAME_TIME = 0;
+    disc.style.transition = "none";
+    button.innerHTML = '<i class="fa-solid fa-stop"></i> Stop Wheel';
+    button.classList.remove("btn-gold");
+    button.classList.add("btn-danger");
+    playWheelSpinSound();
+
+    const rotateContinuously = timestamp=>{
+      if(!WHEEL_MCQ_IS_SPINNING || WHEEL_MCQ_IS_DECELERATING) return;
+      if(!WHEEL_MCQ_LAST_FRAME_TIME) WHEEL_MCQ_LAST_FRAME_TIME = timestamp;
+      const elapsed = Math.min(40,timestamp - WHEEL_MCQ_LAST_FRAME_TIME);
+      WHEEL_MCQ_LAST_FRAME_TIME = timestamp;
+      WHEEL_MCQ_ROTATION += (WHEEL_MCQ_SPEED_DEG_PER_SECOND * elapsed) / 1000;
+      disc.style.transform = `rotate(${WHEEL_MCQ_ROTATION}deg)`;
+      WHEEL_MCQ_ANIMATION_FRAME = requestAnimationFrame(rotateContinuously);
+    };
+
+    WHEEL_MCQ_ANIMATION_FRAME = requestAnimationFrame(rotateContinuously);
+    return;
+  }
+
+  /* Second press: choose a slot now, decelerate naturally, then reveal it. */
+  WHEEL_MCQ_IS_SPINNING = false;
+  WHEEL_MCQ_IS_DECELERATING = true;
+  stopWheelMcqAnimation();
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Stopping...';
+
+  const selectedSlot = Math.floor(Math.random() * remainingIndexes.length);
+  const selectedIndex = remainingIndexes[selectedSlot];
+  const step = 360 / remainingIndexes.length;
+  const centerAngle = selectedSlot * step + step / 2;
+
+  const currentNormalized = ((WHEEL_MCQ_ROTATION % 360) + 360) % 360;
+  const desiredNormalized = ((360 - centerAngle) % 360 + 360) % 360;
+  const correction = (desiredNormalized - currentNormalized + 360) % 360;
+  const extraTurns = 3 * 360;
+  WHEEL_MCQ_ROTATION += extraTurns + correction;
+
+  disc.style.transition = "transform 1.85s cubic-bezier(.12,.72,.12,1)";
+  requestAnimationFrame(()=>{
+    disc.style.transform = `rotate(${WHEEL_MCQ_ROTATION}deg)`;
+  });
+
+  setTimeout(()=>{
+    WHEEL_MCQ_IS_DECELERATING = false;
+    revealWheelMcqQuestion(selectedIndex);
+  },1900);
+}
+
+function gradeWheelMcqCorrectWrong(isCorrect,clickedButton){
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    WHEEL_MCQ_IS_SPINNING ||
+    WHEEL_MCQ_IS_DECELERATING ||
+    WHEEL_MCQ_SELECTED_QUESTION_INDEX < 0
+  ) return;
+
+  ANSWER_LOCKED = true;
+  WHEEL_MCQ_SELECTED_ANSWER_INDEX = isCorrect ? 0 : 1;
+
+  document.querySelectorAll(".wheel-mcq-cw-actions button").forEach(button=>{
+    button.disabled = true;
+  });
+
+  if(clickedButton){
+    clickedButton.style.boxShadow = "0 0 0 4px rgba(22,68,120,.12)";
+  }
+
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+
+  if(isCorrect){
+    CURRENT_SCORE++;
+    feedback.textContent = "🎉 Correct! Enter the team's points.";
+    feedback.classList.add("good");
+    launchSmallConfetti();
+    playCorrectSound();
+  }else{
+    feedback.textContent = "❌ Wrong — Enter the team's points.";
+    feedback.classList.add("bad");
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(Boolean(isCorrect));
+  document.getElementById("scorePill").textContent = `⭐ ${CURRENT_SCORE}`;
+
+  const scorePanel = document.getElementById("wheelMcqScorePanel");
+  if(scorePanel) scorePanel.classList.remove("hidden");
+}
+
+function chooseWheelMcqAnswer(answerIndex,clickedButton){
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    WHEEL_MCQ_IS_SPINNING ||
+    WHEEL_MCQ_SELECTED_QUESTION_INDEX < 0
+  ) return;
+
+  const question = CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX];
+  const answers = Array.isArray(question?.answers) ? question.answers : [];
+  const selected = answers[answerIndex];
+  if(!selected) return;
+
+  ANSWER_LOCKED = true;
+  WHEEL_MCQ_SELECTED_ANSWER_INDEX = answerIndex;
+
+  const buttons = [...document.querySelectorAll(".wheel-mcq-option")];
+  buttons.forEach((button,index)=>{
+    button.disabled = true;
+    if(answers[index]?.correct === true){
+      button.classList.add("correct");
+    }
+  });
+
+  const isCorrect = selected.correct === true;
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+
+  if(isCorrect){
+    CURRENT_SCORE++;
+    clickedButton.classList.add("correct");
+    feedback.textContent = "🎉 Correct Answer! Enter the team's points.";
+    feedback.classList.add("good");
+    launchSmallConfetti();
+    playCorrectSound();
+  }else{
+    clickedButton.classList.add("wrong");
+    feedback.textContent = "❌ Incorrect Answer — Enter the team's points.";
+    feedback.classList.add("bad");
+    playWrongSound();
+  }
+
+  recordCurrentTeamAnswer(isCorrect);
+  document.getElementById("scorePill").textContent = `⭐ ${CURRENT_SCORE}`;
+
+  const scorePanel = document.getElementById("wheelMcqScorePanel");
+  if(scorePanel) scorePanel.classList.remove("hidden");
+}
+
+function awardWheelMcqPoints(){
+  if(
+    ACTIVITY_FINISHED ||
+    WHEEL_MCQ_SELECTED_ANSWER_INDEX < 0 ||
+    WHEEL_MCQ_POINTS_AWARDED
+  ) return;
+
+  const team = getCurrentTeam();
+  if(!team) return;
+
+  const input = document.getElementById("wheelMcqPointsInput");
+  const points = Math.max(0, Number(input?.value || 0));
+  if(!Number.isFinite(points)){
+    alert("Enter a valid number of points.");
+    return;
+  }
+
+  team.points = Number(team.points || 0) + points;
+  WHEEL_MCQ_POINTS_AWARDED = true;
+
+  const button = document.getElementById("wheelMcqAwardBtn");
+  if(button){
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-check"></i> Points Added';
+  }
+  if(input) input.disabled = true;
+
+  const saved = document.getElementById("wheelMcqPointsSaved");
+  if(saved){
+    saved.textContent = `✅ ${team.name}: +${points} points — Total ${Number(team.points || 0)} points`;
+    saved.classList.remove("hidden");
+  }
+
+  renderLiveTeamBoard();
+  showNextQuestionButton();
+}
+
+function renderWheelQuestion(
+  question,
+  answersBox
+){
+
+  clearWheelState();
+
+  const items =
+    Array.isArray(question.answers)
+      ? question.answers.filter(item=>
+          String(item?.text || "").trim()
+        )
+      : [];
+
+  answersBox.className =
+    "wheel-game";
+
+  WHEEL_SELECTED_INDEX = -1;
+  WHEEL_IS_SPINNING = false;
+  WHEEL_POINTS_MULTIPLIER = 1;
+
+  if(items.length < 2){
+
+    answersBox.innerHTML = `
+      <div class="feedback bad">
+        This wheel requires at least two sections.
+      </div>
+    `;
+
+    return;
+  }
+
+  const colors =
+    getWheelColors(items.length);
+
+  const step =
+    360 / items.length;
+
+  const gradient =
+    items.map(
+      (_,index)=>
+        `${colors[index]} ${index * step}deg ${(index + 1) * step}deg`
+    ).join(",");
+
+  answersBox.innerHTML = `
+    <div class="wheel-wrap">
+
+      <div class="wheel-pointer">
+        ▼
+      </div>
+
+      <div
+        id="wheelDisc"
+        class="wheel-disc"
+        style="background:conic-gradient(${gradient})">
+
+        ${
+          items.map((item,index)=>`
+            <div
+              class="wheel-label"
+              style="
+              transform:
+  rotate(${index * step + step / 2 - 90}deg)
+  translateY(-50%);
+              ">
+              ${esc(item.text)}
+            </div>
+          `).join("")
+        }
+
+        <div class="wheel-center">
+          🎡
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="wheel-controls">
+
+      <button
+        id="wheelSpinBtn"
+        class="btn btn-gold"
+        type="button"
+        onclick="spinWheel()">
+
+        <i class="fa-solid fa-rotate"></i>
+        Spin Wheel
+
+      </button>
+
+      <button
+        id="wheelCorrectBtn"
+        class="btn wheel-correct hidden"
+        type="button"
+        onclick="gradeWheelAnswer(true)">
+
+        <i class="fa-solid fa-check"></i>
+        Correct
+
+      </button>
+
+      <button
+        id="wheelWrongBtn"
+        class="btn wheel-wrong hidden"
+        type="button"
+        onclick="gradeWheelAnswer(false)">
+
+        <i class="fa-solid fa-xmark"></i>
+        Wrong
+
+      </button>
+
+    </div>
+
+    <div
+      id="wheelResult"
+      class="wheel-result-card hidden">
+    </div>
+
+    <div
+      class="play-summary-info"
+      style="margin-top:13px">
+
+      Spin the wheel, let the student complete the selected challenge,
+      then choose Correct or Wrong.
+
+    </div>
+  `;
+}
+
+function spinWheel(){
+
+  if(ANSWER_LOCKED || ACTIVITY_FINISHED || WHEEL_IS_DECELERATING){
+    return;
+  }
+
+  const items = getWheelItems();
+  if(items.length < 2){
+    alert("This wheel requires at least two sections.");
+    return;
+  }
+
+  const button = document.getElementById("wheelSpinBtn");
+  const disc = document.getElementById("wheelDisc");
+  const correctButton = document.getElementById("wheelCorrectBtn");
+  const wrongButton = document.getElementById("wheelWrongBtn");
+  const result = document.getElementById("wheelResult");
+  const answersBox = document.getElementById("studentAnswers");
+  if(!button || !disc) return;
+
+  if(!WHEEL_IS_SPINNING){
+    if(!WHEEL_TIMER_STARTED){ WHEEL_TIMER_STARTED=true; startActivityTimer(); }
+    WHEEL_IS_SPINNING=true;
+    WHEEL_LAST_FRAME_TIME=0;
+    correctButton?.classList.add("hidden");
+    wrongButton?.classList.add("hidden");
+    result?.classList.add("hidden");
+    answersBox?.classList.remove("wheel-question-view");
+    button.innerHTML='<i class="fa-solid fa-stop"></i> Stop Wheel';
+    disc.style.transition="none";
+    playWheelSpinSound();
+
+    function rotateContinuously(timestamp){
+      if(!WHEEL_IS_SPINNING || WHEEL_IS_DECELERATING) return;
+      if(!WHEEL_LAST_FRAME_TIME) WHEEL_LAST_FRAME_TIME=timestamp;
+      const elapsed=Math.min(40,timestamp-WHEEL_LAST_FRAME_TIME);
+      WHEEL_LAST_FRAME_TIME=timestamp;
+      WHEEL_ROTATION+=(WHEEL_SPEED_DEG_PER_SECOND*elapsed)/1000;
+      disc.style.transform=`rotate(${WHEEL_ROTATION}deg)`;
+      WHEEL_ANIMATION_FRAME=requestAnimationFrame(rotateContinuously);
+    }
+    WHEEL_ANIMATION_FRAME=requestAnimationFrame(rotateContinuously);
+    return;
+  }
+
+  /* الضغط الثاني يبدأ تباطؤًا واقعيًا، ولا يظهر السؤال إلا بعد توقف العجلة تمامًا. */
+  WHEEL_IS_SPINNING=false;
+  WHEEL_IS_DECELERATING=true;
+  if(WHEEL_ANIMATION_FRAME) cancelAnimationFrame(WHEEL_ANIMATION_FRAME);
+  WHEEL_ANIMATION_FRAME=null;
+  button.disabled=true;
+  button.innerHTML='<i class="fa-solid fa-hourglass-half"></i> Slowing Down...';
+
+  const startRotation=WHEEL_ROTATION;
+  const extraTurns=3+Math.random()*2;
+  const extraDegrees=extraTurns*360+Math.random()*360;
+  const finalRotation=startRotation+extraDegrees;
+  const duration=3200+Math.random()*900;
+  const startTime=performance.now();
+
+  function easeOutQuint(t){ return 1-Math.pow(1-t,5); }
+  function decelerate(now){
+    const progress=Math.min(1,(now-startTime)/duration);
+    WHEEL_ROTATION=startRotation+(finalRotation-startRotation)*easeOutQuint(progress);
+    disc.style.transform=`rotate(${WHEEL_ROTATION}deg)`;
+    if(progress<1){ WHEEL_ANIMATION_FRAME=requestAnimationFrame(decelerate); return; }
+
+    WHEEL_ANIMATION_FRAME=null;
+    WHEEL_IS_DECELERATING=false;
+    const step=360/items.length;
+    const normalized=((WHEEL_ROTATION%360)+360)%360;
+    const pointerAngle=(360-normalized)%360;
+    WHEEL_SELECTED_INDEX=Math.floor(pointerAngle/step)%items.length;
+    const selected=items[WHEEL_SELECTED_INDEX];
+    const doublePoints=clean(selected?.text||"").includes("double points");
+    WHEEL_POINTS_MULTIPLIER=doublePoints?2:1;
+    playWheelStopSound();
+
+    if(result){
+      result.innerHTML=`<div class="wheel-result-category">${doublePoints?"✨":"🎯"} ${esc(selected?.text||"Selected Challenge")} ${doublePoints?" — 2 Points":""}</div><div class="wheel-result-question">${esc(selected?.right||selected?.challenge||selected?.question||"Complete the selected challenge.")}</div>${selected?.image?`<img src="${esc(selected.image)}" alt="Wheel challenge">`:""}`;
+      result.classList.remove("hidden");
+    }
+    answersBox?.classList.add("wheel-question-view");
+    correctButton?.classList.remove("hidden");
+    wrongButton?.classList.remove("hidden");
+    button.classList.add("hidden");
+    result?.scrollIntoView({behavior:"smooth",block:"center"});
+  }
+  WHEEL_ANIMATION_FRAME=requestAnimationFrame(decelerate);
+}
+
+function gradeWheelAnswer(isCorrect){
+
+  if(
+    ANSWER_LOCKED ||
+    ACTIVITY_FINISHED ||
+    WHEEL_IS_SPINNING ||
+    WHEEL_SELECTED_INDEX < 0
+  ){
+    return;
+  }
+
+  ANSWER_LOCKED = true;
+
+  const feedback =
+    document.getElementById(
+      "feedback"
+    );
+
+  feedback.className =
+    "feedback";
+
+  if(isCorrect){
+
+    CURRENT_SCORE +=
+      WHEEL_POINTS_MULTIPLIER;
+
+    feedback.textContent =
+      WHEEL_POINTS_MULTIPLIER === 2
+        ? "🎉 Correct! Double points awarded."
+        : "🎉 Correct wheel challenge!";
+
+    feedback.classList.add(
+      "good"
+    );
+
+    launchSmallConfetti();
+    playCorrectSound();
+
+  }else{
+
+    feedback.textContent =
+      "❌ The wheel challenge was marked incorrect.";
+
+    feedback.classList.add(
+      "bad"
+    );
+
+    playWrongSound();
+
+  }
+
+  recordCurrentTeamAnswer(
+    Boolean(isCorrect),
+    isCorrect
+      ? WHEEL_POINTS_MULTIPLIER
+      : 1
+  );
+
+  WHEEL_POINTS_MULTIPLIER = 1;
+
+  [
+    "wheelSpinBtn",
+    "wheelCorrectBtn",
+    "wheelWrongBtn"
+  ].forEach(id=>{
+
+    const button =
+      document.getElementById(id);
+
+    if(button){
+      button.disabled = true;
+    }
+
+  });
+
+  document
+    .getElementById("scorePill")
+    .textContent =
+      `⭐ ${CURRENT_SCORE}`;
+
+  stopActivityTimer();
+
+  showNextQuestionButton();
+}
+
+function playWheelSpinSound(){
+
+  try{
+
+    const audioContext =
+      getSharedAudioContext();
+
+    if(!audioContext){
+      return;
+    }
+
+    const startTime =
+      audioContext.currentTime;
+
+    for(let index = 0; index < 24; index++){
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type =
+        "square";
+
+      oscillator.frequency.value =
+        290 +
+        index * 14;
+
+      const tickStart =
+        startTime +
+        index * 0.075;
+
+      const tickEnd =
+        tickStart + 0.045;
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        tickStart
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.035,
+        tickStart + 0.008
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        tickEnd
+      );
+
+      oscillator.connect(gain);
+
+      gain.connect(
+        audioContext.destination
+      );
+
+      oscillator.start(
+        tickStart
+      );
+
+      oscillator.stop(
+        tickEnd
+      );
+
+      oscillator.onended = ()=>{
+
+        oscillator.disconnect();
+        gain.disconnect();
+
+      };
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Wheel spin sound could not play:",
+      error
+    );
+
+  }
+
+}
+
+function playWheelStopSound(){
+
+  playToneSequence([
+    {
+      frequency:523.25,
+      duration:0.12,
+      delay:0
+    },
+    {
+      frequency:659.25,
+      duration:0.12,
+      delay:0.12
+    },
+    {
+      frequency:880,
+      duration:0.25,
+      delay:0.24
+    }
+  ]);
+
+}
 
 /* =====================================
    BALLOON POP QUESTION PLAYER
