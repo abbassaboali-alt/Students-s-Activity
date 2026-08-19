@@ -7592,10 +7592,142 @@ function normalizeActivityQuestionsForPracticePlayer(activity){
   */
   activity.questions =
     activity.questions.map(
-      question=>normalizeQuestionForPracticePlayer(question)
+      (question,index)=>{
+        const normalized =
+          normalizeQuestionForPracticePlayer(question);
+
+        normalized._savedQuestionNumber =
+          Number(
+            question?._savedQuestionNumber ||
+            index + 1
+          );
+
+        return normalized;
+      }
     );
 
   return activity;
+}
+
+
+
+/* =========================================================
+   QUESTION ORDER COMPATIBILITY — STUDENT MODE
+   ---------------------------------------------------------
+   Always play from a fresh copy of the saved activity.
+   This preserves the exact admin/editor question order even
+   when Wheel + MCQ / Balloon / Mystery temporarily move
+   questions during the live activity.
+========================================================= */
+
+console.info("Prudle student question-order compatibility: enabled");
+
+function cloneActivityForStudentPlay(activity){
+
+  if(!activity){
+    return null;
+  }
+
+  let cloned = null;
+
+  try{
+    if(typeof structuredClone === "function"){
+      cloned = structuredClone(activity);
+    }
+  }catch(error){
+    cloned = null;
+  }
+
+  if(!cloned){
+    try{
+      cloned = JSON.parse(
+        JSON.stringify(activity)
+      );
+    }catch(error){
+      cloned = {
+        ...activity,
+        questions:Array.isArray(activity.questions)
+          ? activity.questions.map(question=>({
+              ...question,
+              answers:Array.isArray(question?.answers)
+                ? question.answers.map(answer=>({...answer}))
+                : []
+            }))
+          : []
+      };
+    }
+  }
+
+  if(!Array.isArray(cloned.questions)){
+    cloned.questions = [];
+  }
+
+  cloned.questions =
+    cloned.questions.map((question,index)=>{
+
+      const q = {
+        ...(question || {})
+      };
+
+      delete q._groupChoiceSlot;
+      delete q._groupChoiceCompleted;
+      delete q._runtimeSelected;
+      delete q._runtimeIndex;
+
+      /*
+        Keep the original visual number from the saved order.
+        Runtime movement does not change this number.
+      */
+      q._savedQuestionNumber = index + 1;
+
+      q.answers =
+        Array.isArray(q.answers)
+          ? q.answers.map(answer=>({
+              ...(answer || {})
+            }))
+          : [];
+
+      return q;
+    });
+
+  return cloned;
+}
+
+
+/*
+  This function was called by Wheel + MCQ but was not defined
+  in this file. It is now defined and uses the original saved
+  question number first.
+*/
+function getWheelMcqQuestionNumber(question,index){
+
+  const savedNumber =
+    Number(
+      question?._savedQuestionNumber ||
+      0
+    );
+
+  if(savedNumber > 0){
+    return savedNumber;
+  }
+
+  const stableId =
+    typeof getStableQuestionId === "function"
+      ? getStableQuestionId(
+          question,
+          index
+        )
+      : "";
+
+  if(
+    stableId &&
+    WHEEL_MCQ_NUMBER_MAP instanceof Map &&
+    WHEEL_MCQ_NUMBER_MAP.has(stableId)
+  ){
+    return WHEEL_MCQ_NUMBER_MAP.get(stableId);
+  }
+
+  return Number(index || 0) + 1;
 }
 
 
@@ -7604,17 +7736,26 @@ function startActivity(activityId,courseId){
 
   stopActivityTimer();
 
-  CURRENT_ACTIVITY =
+  /*
+    Read the saved source activity, then create a fresh play copy.
+    This prevents grouped game logic from changing ACTIVITIES_CACHE.
+  */
+  const SOURCE_ACTIVITY =
     ACTIVITIES_CACHE.find(
       item=>item.id === activityId
     ) || null;
+
+  CURRENT_ACTIVITY =
+    cloneActivityForStudentPlay(
+      SOURCE_ACTIVITY
+    );
 
   CURRENT_COURSE =
     OPEN_COURSES_CACHE.find(
       item=>item.id === courseId
     ) ||
     getSelectedTargetCourse(
-      CURRENT_ACTIVITY
+      SOURCE_ACTIVITY || CURRENT_ACTIVITY
     ) ||
     null;
 
