@@ -5892,10 +5892,17 @@ async function loadActivitiesData(){
     .collection(ACTIVITIES_COLLECTION)
     .get();
 
-  ACTIVITIES_CACHE = snap.docs.map(doc=>({
-    id:doc.id,
-    ...doc.data()
-  }));
+  /*
+    Keep the student player on the exact same saved-question schema used by
+    the trainer page.  This is especially important for imported questions,
+    mediaUrl, answer/image aliases and Wheel answer modes.
+  */
+  ACTIVITIES_CACHE = snap.docs.map(doc=>
+    normalizeActivityQuestionsForPracticePlayer({
+      id:doc.id,
+      ...doc.data()
+    })
+  );
 }
 
 function findCourseForActivity(activity){
@@ -7586,7 +7593,7 @@ function normalizeQuestionForPracticePlayer(question){
   q.wheelAnswerMode = String(
     q.wheelAnswerMode ||
     q.answerMode ||
-    "mcq"
+    "multiplechoice"
   ).trim().toLowerCase();
 
   q.mediaType = String(
@@ -7626,6 +7633,7 @@ function normalizeQuestionForPracticePlayer(question){
 
         a.text = String(
           a.text ??
+          a.answer ??
           a.label ??
           a.option ??
           ""
