@@ -8218,7 +8218,8 @@ function renderStudentQuestion(){
   const revealMediaAfterSelection =
     [
       "balloon",
-      "mystery"
+      "mystery",
+      "wheelmcq"
     ].includes(
       String(type)
         .trim()
@@ -8342,6 +8343,11 @@ function renderStudentQuestion(){
   }
 
   if(type === "wheelmcq"){
+    document
+      .getElementById("gameQuestion")
+      .textContent =
+        "🎡 Spin the wheel to select a question number";
+
     renderWheelMcqQuestion(
       question,
       answersBox
@@ -9357,6 +9363,62 @@ function stopWheelMcqAnimation(){
     WHEEL_MCQ_ANIMATION_FRAME = null;
   }
   WHEEL_MCQ_LAST_FRAME_TIME = 0;
+}
+
+/*
+  WHEEL + MULTIPLE CHOICE — TRAINER/STUDENT COMPATIBILITY
+  These two helpers are used by the trainer player and are required before
+  rendering or spinning a Wheel + MCQ question.  Their absence previously
+  caused a ReferenceError on the student page and stopped later questions.
+*/
+function resetWheelMcqState(){
+  stopWheelMcqAnimation();
+  WHEEL_MCQ_IS_SPINNING = false;
+  WHEEL_MCQ_IS_DECELERATING = false;
+  WHEEL_MCQ_SELECTED_QUESTION_INDEX = -1;
+  WHEEL_MCQ_SELECTED_ANSWER_INDEX = -1;
+  WHEEL_MCQ_ROTATION = 0;
+  WHEEL_MCQ_POINTS_AWARDED = false;
+  WHEEL_MCQ_NUMBER_MAP = new Map();
+
+  if(Array.isArray(CURRENT_ACTIVITY?.questions)){
+    CURRENT_ACTIVITY.questions.forEach((question,index)=>{
+      if(
+        String(question?.type || "")
+          .trim()
+          .toLowerCase() === "wheelmcq"
+      ){
+        WHEEL_MCQ_NUMBER_MAP.set(
+          getStableQuestionId(question,index),
+          index + 1
+        );
+      }
+    });
+  }
+}
+
+function getRemainingWheelMcqIndexes(){
+  if(!Array.isArray(CURRENT_ACTIVITY?.questions)){
+    return [];
+  }
+
+  const indexes = [];
+
+  for(
+    let index = CURRENT_QUESTION_INDEX;
+    index < CURRENT_ACTIVITY.questions.length;
+    index++
+  ){
+    if(
+      String(CURRENT_ACTIVITY.questions[index]?.type || "")
+        .trim()
+        .toLowerCase() === "wheelmcq"
+    ){
+      indexes.push(index);
+    }
+  }
+
+  return indexes;
 }
 
 function getWheelMcqAnswerMode(question){
