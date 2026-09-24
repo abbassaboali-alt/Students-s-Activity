@@ -997,6 +997,236 @@ button,
 }
 
 
+
+/* =========================================================
+   STUDENT ACTIVITY TYPE CARDS — SAME RICH DESIGN AS TRAINER
+========================================================= */
+.student-type-picker{
+  margin:0 0 18px;
+}
+.student-type-picker-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.student-type-picker-title{
+  font-size:18px;
+  font-weight:900;
+  color:var(--blue);
+}
+.student-type-picker-subtitle{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+.student-type-cards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.student-type-card{
+  position:relative;
+  min-width:0;
+  min-height:285px;
+  padding:20px;
+  border:1.5px solid var(--border);
+  border-radius:24px;
+  background:#fff;
+  color:var(--text);
+  text-align:left;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  transition:transform .2s,border-color .2s,box-shadow .2s,background .2s;
+  box-shadow:0 8px 22px rgba(22,68,120,.06);
+}
+.student-type-card::after{
+  content:"";
+  position:absolute;
+  width:86px;
+  height:86px;
+  right:-28px;
+  top:-28px;
+  border-radius:50%;
+  background:var(--type-soft,#eef6fd);
+  pointer-events:none;
+}
+.student-type-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--type-color,var(--blue2));
+  box-shadow:0 14px 28px rgba(22,68,120,.12);
+}
+.student-type-card.active{
+  border:2px solid var(--type-color,var(--blue2));
+  background:linear-gradient(145deg,#fff,var(--type-soft,#f4f9fd));
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--type-color,var(--blue2)) 12%,transparent),
+             0 14px 28px rgba(22,68,120,.12);
+}
+.student-type-card-top{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  padding-right:26px;
+}
+.student-type-card-icon{
+  width:58px;
+  height:58px;
+  flex:0 0 58px;
+  display:grid;
+  place-items:center;
+  border-radius:18px;
+  background:var(--type-soft,#eef6fd);
+  color:var(--type-color,var(--blue));
+  font-size:27px;
+}
+.student-type-card-name{
+  min-width:0;
+  margin-top:3px;
+  font-size:18px;
+  line-height:1.3;
+  font-weight:900;
+  color:#102f4d;
+}
+.student-type-card-tag{
+  position:relative;
+  z-index:1;
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  margin:7px 0 0 69px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:var(--type-soft,#eef6fd);
+  color:var(--type-color,var(--blue));
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.2px;
+}
+.student-type-card-desc{
+  position:relative;
+  z-index:1;
+  margin:18px 0 14px;
+  color:#60758a;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.7;
+  min-height:42px;
+}
+.student-type-card-preview{
+  position:relative;
+  z-index:1;
+  min-height:82px;
+  border:1.5px dashed color-mix(in srgb,var(--type-color,var(--blue2)) 45%,#fff);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--type-soft,#eef6fd) 52%,#fff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:13px;
+  overflow:hidden;
+}
+.student-type-card-preview .demo-pill{
+  padding:7px 11px;
+  border:1px solid #d8e4ed;
+  border-radius:11px;
+  background:#fff;
+  color:#12324f;
+  font-size:11px;
+  font-weight:900;
+  box-shadow:0 4px 10px rgba(22,68,120,.06);
+}
+.student-type-card-preview .demo-circle{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:var(--type-color,var(--blue));
+  color:#fff;
+  font-weight:900;
+}
+.student-type-card-preview .demo-letter{
+  width:34px;
+  height:38px;
+  border:2px solid var(--type-color,var(--green));
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  color:var(--type-color,var(--green));
+  font-weight:900;
+}
+.student-type-card-preview .demo-go{
+  font-size:20px;
+  font-weight:900;
+  color:var(--type-color,var(--red));
+}
+.student-type-card-bottom{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:auto;
+  padding-top:15px;
+}
+.student-type-card-count{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+}
+.student-type-card-number{
+  min-width:38px;
+  height:38px;
+  padding:0 10px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--type-color,var(--blue));
+  color:#fff;
+  font-weight:900;
+  font-size:14px;
+}
+.student-type-card.all-type{
+  --type-color:#164478;
+  --type-soft:#edf4fa;
+  min-height:180px;
+  justify-content:center;
+}
+.student-type-card.all-type .student-type-card-bottom{
+  margin-top:22px;
+}
+.student-type-empty{
+  grid-column:1/-1;
+  padding:18px;
+  border:1px dashed var(--border);
+  border-radius:18px;
+  color:var(--muted);
+  text-align:center;
+  font-weight:800;
+  background:#fbfdff;
+}
+@media(max-width:850px){
+  .student-type-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+  .student-type-cards{grid-template-columns:1fr}
+  .student-type-card{min-height:250px;padding:14px}
+  .student-type-card.all-type{min-height:155px}
+  .student-type-card-tag{margin-left:0}
+}
+
 .activity-search-wrap{
   display:flex;
   align-items:center;
@@ -3307,6 +3537,21 @@ button,
 
     <div class="panel">
 
+      <div id="studentActivityTypePicker" class="student-type-picker">
+        <div class="student-type-picker-head">
+          <div>
+            <div class="student-type-picker-title">
+              <i class="fa-solid fa-gamepad"></i>
+              Choose Activity Type
+            </div>
+            <div class="student-type-picker-subtitle">
+              Tap a card to show activities of that type.
+            </div>
+          </div>
+        </div>
+        <div id="studentActivityTypeCards" class="student-type-cards"></div>
+      </div>
+
       <div class="activity-filter-bar">
 
         <div class="activity-filter-group">
@@ -3328,7 +3573,7 @@ button,
           </div>
         </div>
 
-        <div class="activity-filter-group">
+        <div class="activity-filter-group hidden">
           <label for="activityTypeFilter">
             <i class="fa-solid fa-gamepad"></i>
             Activity Type
@@ -6314,6 +6559,149 @@ function renderActivityGameBadges(activity){
     .join("");
 }
 
+
+function getStudentTypeCardTheme(type){
+  const themes = {
+    wheel:["#b07a00","#fff4c7"],
+    wheelmcq:["#b07a00","#fff4c7"],
+    random:["#6c3483","#f4e8fb"],
+    balloon:["#a61f55","#ffe8f1"],
+    mystery:["#6b4b00","#fff3c9"],
+    bomb:["#8b1e1e","#ffe8e6"],
+    match:["#155a8a","#e7f4fd"],
+    order:["#9a4d00","#fff0df"],
+    mcq:["#08744f","#e5f8f0"],
+    text:["#7a3e00","#fff4e7"],
+    voice:["#9b2445","#fde9ef"],
+    audio:["#34495e","#edf2f6"],
+    video:["#34495e","#edf2f6"],
+    listenchoose:["#2474b5","#eaf4ff"],
+    listenrepeat:["#df2f68","#fff0f5"],
+    buildword:["#0b9b6a","#eafaf4"],
+    buildsentence:["#9b3fc0","#f7ecfc"],
+    catchanswer:["#e86f08","#fff3e7"],
+    movechoose:["#ef4a3b","#fff0ee"]
+  };
+  return themes[type] || ["#164478","#edf4fa"];
+}
+
+function getStudentTypeCardContent(type){
+  const content = {
+    listenchoose:{tag:"LISTENING",desc:"Listen to a word or sentence, then choose the correct picture or answer.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🍎 Apple</span><span class="demo-pill">🍌 Banana</span>`},
+    listenrepeat:{tag:"PRONUNCIATION",desc:"Play the model audio, then record and repeat the word or sentence.",preview:`<span class="demo-circle">🔊</span><span class="demo-pill">Hello, teacher!</span><span class="demo-circle">🎙</span>`},
+    buildword:{tag:"SPELLING",desc:"Look at the picture and arrange shuffled letters to build the correct word.",preview:`<span style="font-size:30px">🍎</span><span class="demo-letter">P</span><span class="demo-letter">A</span><span class="demo-letter">L</span><span class="demo-letter">E</span>`},
+    buildsentence:{tag:"SENTENCE",desc:"Arrange shuffled words in the correct order to make a complete sentence.",preview:`<span class="demo-pill">This</span><span class="demo-pill">is</span><span class="demo-pill">my</span><span class="demo-pill">mother.</span>`},
+    catchanswer:{tag:"SPEED GAME",desc:"Catch the correct answer before time runs out.",preview:`<span class="demo-pill">CAT</span><span style="font-size:26px">🎯</span><span class="demo-pill">DOG</span>`},
+    movechoose:{tag:"PHYSICAL ACTIVITY",desc:"Move, find, touch, point or act before the countdown ends.",preview:`<span class="demo-circle">3</span><span class="demo-circle">2</span><span class="demo-circle">1</span><span class="demo-go">GO! 🏃</span>`},
+    mcq:{tag:"QUIZ",desc:"Choose the correct answer from multiple options.",preview:`<span class="demo-pill">A</span><span class="demo-pill">B</span><span class="demo-pill">C</span>`},
+    match:{tag:"MATCHING",desc:"Match each item with its correct word, picture or answer.",preview:`<span class="demo-pill">Apple</span><span style="font-size:22px">🔗</span><span class="demo-pill">🍎</span>`},
+    order:{tag:"SEQUENCE",desc:"Put the items in the correct order or sequence.",preview:`<span class="demo-pill">1</span><span class="demo-pill">2</span><span class="demo-pill">3</span>`},
+    random:{tag:"RANDOM IMAGE",desc:"Reveal a random image and answer the activity question.",preview:`<span style="font-size:34px">🖼️</span><span class="demo-pill">Random</span>`},
+    wheel:{tag:"WHEEL GAME",desc:"Spin the wheel and play an interactive question.",preview:`<span style="font-size:35px">🎡</span><span class="demo-pill">Spin</span>`},
+    wheelmcq:{tag:"WHEEL GAME",desc:"Spin the wheel, reveal a question and choose the correct answer.",preview:`<span style="font-size:35px">🎡</span><span class="demo-pill">A</span><span class="demo-pill">B</span>`},
+    balloon:{tag:"GAME",desc:"Pop the balloon to reveal the question and answer it.",preview:`<span style="font-size:38px">🎈</span><span class="demo-pill">POP!</span>`},
+    mystery:{tag:"GAME",desc:"Open a mystery box to reveal a surprise question.",preview:`<span style="font-size:38px">🎁</span><span class="demo-pill">Open</span>`},
+    bomb:{tag:"CHALLENGE",desc:"Answer correctly before the bomb challenge ends.",preview:`<span style="font-size:38px">💣</span><span class="demo-pill">Defuse</span>`},
+    text:{tag:"WRITING",desc:"Write the answer directly in the activity.",preview:`<span class="demo-pill">Type your answer…</span>`},
+    voice:{tag:"SPEAKING",desc:"Practice speaking and voice interaction.",preview:`<span class="demo-circle">🎤</span><span class="demo-pill">Speak</span>`},
+    audio:{tag:"AUDIO",desc:"Listen to audio content as part of the activity.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🔊 Audio</span>`},
+    video:{tag:"VIDEO",desc:"Watch video content as part of the activity.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🎥 Video</span>`}
+  };
+  return content[type] || {tag:"ACTIVITY",desc:"Interactive English activity.",preview:`<span class="demo-pill">Interactive</span>`};
+}
+
+function renderStudentActivityTypeCards(activities){
+  const host = document.getElementById("studentActivityTypeCards");
+  if(!host) return;
+
+  const list = Array.isArray(activities) ? activities : [];
+  const counts = {};
+
+  list.forEach(activity=>{
+    getActivityGameTypes(activity).forEach(type=>{
+      counts[type] = Number(counts[type] || 0) + 1;
+    });
+  });
+
+  const typeOrder = [
+    "listenchoose","listenrepeat","buildword","buildsentence",
+    "catchanswer","movechoose","mcq","match","order","random",
+    "wheel","wheelmcq","balloon","mystery","bomb","text","voice","audio","video"
+  ];
+
+  const types = typeOrder.filter(type=>Number(counts[type] || 0) > 0);
+  Object.keys(counts).forEach(type=>{
+    if(!types.includes(type) && Number(counts[type] || 0) > 0){
+      types.push(type);
+    }
+  });
+
+  const selectedType = clean(
+    document.getElementById("activityTypeFilter")?.value || ""
+  );
+
+  const allCard = `
+    <button type="button"
+      class="student-type-card all-type ${!selectedType ? "active" : ""}"
+      onclick="selectStudentActivityType('')"
+      aria-pressed="${!selectedType ? "true" : "false"}">
+      <div class="student-type-card-top">
+        <span class="student-type-card-icon"><i class="fa-solid fa-layer-group"></i></span>
+        <span class="student-type-card-name">All Activity Types</span>
+      </div>
+      <div class="student-type-card-bottom">
+        <span class="student-type-card-count">${list.length} ${list.length === 1 ? "Activity" : "Activities"}</span>
+        <span class="student-type-card-number">${list.length}</span>
+      </div>
+    </button>`;
+
+  const cards = types.map(type=>{
+    const info = getGameTypeInfo(type);
+    const count = Number(counts[type] || 0);
+    const [color,soft] = getStudentTypeCardTheme(type);
+    const content = getStudentTypeCardContent(type);
+
+    return `
+      <button type="button"
+        class="student-type-card ${selectedType === type ? "active" : ""}"
+        style="--type-color:${color};--type-soft:${soft};"
+        onclick="selectStudentActivityType('${esc(type)}')"
+        aria-pressed="${selectedType === type ? "true" : "false"}">
+        <div class="student-type-card-top">
+          <span class="student-type-card-icon"><i class="${info.icon}"></i></span>
+          <span class="student-type-card-name">${esc(info.label)}</span>
+        </div>
+        <span class="student-type-card-tag">${esc(content.tag)}</span>
+        <div class="student-type-card-desc">${esc(content.desc)}</div>
+        <div class="student-type-card-preview">${content.preview}</div>
+        <div class="student-type-card-bottom">
+          <span class="student-type-card-count">${count} ${count === 1 ? "Activity" : "Activities"}</span>
+          <span class="student-type-card-number">${count}</span>
+        </div>
+      </button>`;
+  }).join("");
+
+  host.innerHTML = allCard + (cards || `
+    <div class="student-type-empty">No activity types are currently available.</div>
+  `);
+}
+
+function selectStudentActivityType(type){
+  const select = document.getElementById("activityTypeFilter");
+  if(select){
+    select.value = String(type || "").trim();
+  }
+  filterActivityCards();
+
+  const cards = document.querySelectorAll("#studentActivityTypeCards .student-type-card");
+  cards.forEach(card=>card.classList.remove("active"));
+
+  renderStudentActivityTypeCards(
+    window.STUDENT_AVAILABLE_ACTIVITIES || []
+  );
+}
+
+
 function normalizeSearchText(value){
   return String(value || "")
     .toLowerCase()
@@ -6474,6 +6862,9 @@ async function loadStudentActivities(){
           isCourseAssignedToLoggedStudent(activityCourse)
         );
       });
+
+    window.STUDENT_AVAILABLE_ACTIVITIES = available;
+    renderStudentActivityTypeCards(available);
 
     if(!available.length){
       box.className = "empty";
