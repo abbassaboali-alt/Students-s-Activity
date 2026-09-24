@@ -3126,6 +3126,90 @@ button,
 
 }
 
+
+/* =========================================================
+   PRUDLE KIDS — NEW ACTIVITY PLAYER DESIGNS (STUDENT)
+========================================================= */
+.game-listenchoose{color:#155a8a;background:#eaf4ff;border-color:#a9d7f4}
+.game-listenrepeat{color:#a61f55;background:#fff0f5;border-color:#f2a5c2}
+.game-buildword{color:#08744f;background:#eafaf4;border-color:#9edcc4}
+.game-buildsentence{color:#6c3483;background:#f5edfb;border-color:#d5a8eb}
+.game-catchanswer{color:#9a4d00;background:#fff4e7;border-color:#eac293}
+.game-movechoose{color:#a52b22;background:#fff0ee;border-color:#efb0aa}
+
+.kids-player{
+  width:100%;padding:20px;border-radius:24px;
+  background:linear-gradient(145deg,#f8fcff,#fffaf0);
+  border:2px solid #dce6ef;text-align:center;overflow:hidden;
+}
+.kids-player-head{font-size:15px;font-weight:900;color:var(--blue);margin-bottom:13px}
+.kids-big-icon{font-size:54px;margin-bottom:8px}
+.kids-instruction{font-size:18px;font-weight:900;line-height:1.6;margin:8px auto 18px;max-width:720px}
+.kids-audio-btn{
+  width:82px;height:82px;border:0;border-radius:50%;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;
+  font-size:31px;box-shadow:0 12px 26px rgba(22,68,120,.22);margin:6px;
+}
+.kids-audio-btn:hover{transform:scale(1.05)}
+.kids-record-btn{
+  min-width:170px;border:0;border-radius:16px;padding:14px 18px;
+  background:linear-gradient(135deg,#d6336c,#f06292);color:#fff;
+  font-size:16px;font-weight:900;box-shadow:0 10px 22px rgba(214,51,108,.22)
+}
+.kids-letter-bank,.kids-word-bank,.kids-build-zone{
+  display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:14px auto;
+}
+.kids-build-zone{
+  min-height:72px;padding:12px;border:2px dashed #9fb7cc;border-radius:18px;
+  background:#fff;max-width:760px;align-items:center
+}
+.kids-letter-btn,.kids-word-btn{
+  border:2px solid var(--blue2);background:#fff;color:var(--blue);
+  border-radius:14px;padding:11px 14px;font-size:19px;font-weight:900;
+  box-shadow:0 5px 12px rgba(22,68,120,.08)
+}
+.kids-letter-btn{min-width:48px}
+.kids-letter-btn:hover,.kids-word-btn:hover{transform:translateY(-2px);background:#eef6fd}
+.kids-catch-stage{
+  position:relative;min-height:360px;border-radius:24px;overflow:hidden;
+  border:2px dashed #f0bd7d;
+  background:radial-gradient(circle at 15% 15%,#fff 0 4%,transparent 5%),
+             linear-gradient(180deg,#e9f8ff,#fff8e8);
+}
+.kids-catch-answer{
+  position:absolute;border:0;border-radius:999px;padding:12px 18px;
+  background:#fff;color:#9a4d00;font-weight:900;font-size:15px;
+  border:3px solid #f4b942;box-shadow:0 8px 18px rgba(154,77,0,.15);
+  animation:kidsFloatAnswer 3.2s ease-in-out infinite alternate;
+}
+.kids-catch-answer:nth-child(2n){animation-duration:4.1s}
+.kids-catch-answer:nth-child(3n){animation-duration:2.7s}
+@keyframes kidsFloatAnswer{
+  from{transform:translate(-5px,-8px) rotate(-2deg)}
+  to{transform:translate(12px,14px) rotate(3deg)}
+}
+.kids-move-stage{
+  min-height:330px;border-radius:25px;padding:24px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,#fff0ee,#fffaf0);border:2px dashed #efb0aa;
+}
+.kids-countdown{display:flex;gap:10px;justify-content:center;margin:12px 0}
+.kids-countdown span{
+  width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  background:#e74c3c;color:#fff;font-size:22px;font-weight:900;
+  box-shadow:0 7px 16px rgba(231,76,60,.2)
+}
+.kids-go{font-size:38px;font-weight:900;color:#e74c3c;margin:8px 0}
+.kids-action-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.kids-done{background:var(--green);color:#fff}
+.kids-try{background:var(--red);color:#fff}
+@media(max-width:650px){
+  .kids-player{padding:14px}
+  .kids-instruction{font-size:16px}
+  .kids-catch-stage{min-height:310px}
+  .kids-audio-btn{width:70px;height:70px;font-size:27px}
+}
+
 </style>
 </head>
 
@@ -3268,6 +3352,12 @@ button,
             <option value="voice">🎤 Speaking</option>
             <option value="audio">🔊 Audio</option>
             <option value="video">🎥 Video</option>
+            <option value="listenchoose">👂 Listen &amp; Choose</option>
+            <option value="listenrepeat">🔊 Listen &amp; Repeat</option>
+            <option value="buildword">🔤 Build the Word</option>
+            <option value="buildsentence">🧩 Build the Sentence</option>
+            <option value="catchanswer">🎯 Catch the Correct Answer</option>
+            <option value="movechoose">🏃 Move &amp; Choose</option>
 
           </select>
         </div>
@@ -6153,7 +6243,14 @@ function getGameTypeInfo(type){
       label:"Video",
       icon:"fa-solid fa-film",
       className:"game-media"
-    }
+    },
+
+    listenchoose:{label:"Listen & Choose",icon:"fa-solid fa-ear-listen",className:"game-listenchoose"},
+    listenrepeat:{label:"Listen & Repeat",icon:"fa-solid fa-microphone-lines",className:"game-listenrepeat"},
+    buildword:{label:"Build the Word",icon:"fa-solid fa-font",className:"game-buildword"},
+    buildsentence:{label:"Build the Sentence",icon:"fa-solid fa-puzzle-piece",className:"game-buildsentence"},
+    catchanswer:{label:"Catch the Correct Answer",icon:"fa-solid fa-bullseye",className:"game-catchanswer"},
+    movechoose:{label:"Move & Choose",icon:"fa-solid fa-person-running",className:"game-movechoose"}
   };
 
   return types[normalized] || {
@@ -8526,6 +8623,13 @@ function renderStudentQuestion(){
     return;
   }
 
+  if(type === "listenchoose"){ renderKidsListenChoose(question,answersBox); return; }
+  if(type === "listenrepeat"){ renderKidsListenRepeat(question,answersBox); return; }
+  if(type === "buildword"){ renderKidsBuildWord(question,answersBox); return; }
+  if(type === "buildsentence"){ renderKidsBuildSentence(question,answersBox); return; }
+  if(type === "catchanswer"){ renderKidsCatchAnswer(question,answersBox); return; }
+  if(type === "movechoose"){ renderKidsMoveChoose(question,answersBox); return; }
+
   answersBox.className =
     "student-answers";
 
@@ -8563,6 +8667,186 @@ function renderStudentQuestion(){
 
       answersBox.appendChild(button);
     });
+}
+
+
+
+/* =====================================
+   KIDS ACTIVITY PLAYER — STUDENT
+===================================== */
+function kidsQuestionAudioUrl(question){
+  return String(
+    question?.audio ||
+    (question?.mediaType === "audio" ? question?.mediaUrl : "") ||
+    ""
+  ).trim();
+}
+
+function kidsPlayQuestionAudio(question){
+  const url=kidsQuestionAudioUrl(question);
+  if(!url){showToast("Audio is not available for this question.");return;}
+  const audio=new Audio(url);
+  audio.play().catch(()=>showToast("Audio could not be played."));
+}
+
+function renderKidsListenChoose(question,answersBox){
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">👂 LISTEN &amp; CHOOSE</div>
+    <div class="kids-big-icon">🎧</div>
+    <div class="kids-instruction">Listen carefully, then choose the correct picture or answer.</div>
+    <button class="kids-audio-btn" type="button" onclick="kidsPlayQuestionAudio(CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX])">
+      <i class="fa-solid fa-play"></i>
+    </button>
+    <div class="student-answers" id="kidsListenOptions" style="margin-top:20px"></div>`;
+  const box=document.getElementById("kidsListenOptions");
+  (question.answers||[]).forEach((answer,index)=>{
+    const btn=document.createElement("button");
+    btn.className="student-answer";btn.type="button";
+    btn.innerHTML=`${getItemImage(answer)?`<img src="${esc(getItemImage(answer))}" alt="">`:""}${answer.text?`<div>${esc(answer.text)}</div>`:""}`;
+    btn.onclick=()=>chooseAnswer(index,btn);
+    box.appendChild(btn);
+  });
+}
+
+function renderKidsListenRepeat(question,answersBox){
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🔊 LISTEN &amp; REPEAT</div>
+    <div class="kids-big-icon">🗣️</div>
+    <div class="kids-instruction">${esc(question.text||"Listen to the model and repeat it clearly.")}</div>
+    <button class="kids-audio-btn" type="button" onclick="kidsPlayQuestionAudio(CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX])">
+      <i class="fa-solid fa-volume-high"></i>
+    </button>
+    <div style="margin:16px 0;color:var(--muted);font-weight:800">Listen first, then repeat clearly.</div>
+    <button class="kids-record-btn" type="button" onclick="showToast('Speaking recording will be connected when this question type is enabled in the activity creator.')">
+      <i class="fa-solid fa-microphone"></i> Start Speaking
+    </button>
+    <div class="kids-action-row">
+      <button class="btn kids-done" type="button" onclick="gradeKidsStudentActivity(true)"><i class="fa-solid fa-check"></i> Done</button>
+    </div>`;
+}
+
+function getKidsCorrectText(question){
+  const correct=(question.answers||[]).find(a=>a?.correct===true);
+  return String(correct?.text||question.correctAnswer||question.answer||"").trim();
+}
+
+function renderKidsBuildWord(question,answersBox){
+  const target=getKidsCorrectText(question);
+  const letters=(question.letters||target.split("")).filter(x=>String(x).trim());
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🔤 BUILD THE WORD</div>
+    <div class="kids-big-icon">🧠</div>
+    <div class="kids-instruction">${esc(question.text||"Tap the letters to build the word.")}</div>
+    <div id="kidsBuildWordZone" class="kids-build-zone"><span style="color:var(--muted);font-weight:800">Build your word here</span></div>
+    <div id="kidsLetterBank" class="kids-letter-bank"></div>
+    <div class="kids-action-row">
+      <button class="btn btn-light" type="button" onclick="kidsResetBuild('word')"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      <button class="btn btn-primary" type="button" onclick="kidsCheckBuild('word')"><i class="fa-solid fa-check"></i> Check</button>
+    </div>`;
+  const bank=document.getElementById("kidsLetterBank");
+  [...letters].sort(()=>Math.random()-.5).forEach(letter=>{
+    const b=document.createElement("button");b.type="button";b.className="kids-letter-btn";b.textContent=letter;
+    b.onclick=()=>kidsPickBuildItem(b,"word");bank.appendChild(b);
+  });
+}
+
+function renderKidsBuildSentence(question,answersBox){
+  const target=getKidsCorrectText(question)||String(question.text||"");
+  const words=(question.words||target.split(/\s+/)).filter(Boolean);
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🧩 BUILD THE SENTENCE</div>
+    <div class="kids-big-icon">🧩</div>
+    <div class="kids-instruction">Put the words in the correct order.</div>
+    <div id="kidsBuildSentenceZone" class="kids-build-zone"><span style="color:var(--muted);font-weight:800">Build your sentence here</span></div>
+    <div id="kidsWordBank" class="kids-word-bank"></div>
+    <div class="kids-action-row">
+      <button class="btn btn-light" type="button" onclick="kidsResetBuild('sentence')"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+      <button class="btn btn-primary" type="button" onclick="kidsCheckBuild('sentence')"><i class="fa-solid fa-check"></i> Check</button>
+    </div>`;
+  const bank=document.getElementById("kidsWordBank");
+  [...words].sort(()=>Math.random()-.5).forEach(word=>{
+    const b=document.createElement("button");b.type="button";b.className="kids-word-btn";b.textContent=word;
+    b.onclick=()=>kidsPickBuildItem(b,"sentence");bank.appendChild(b);
+  });
+}
+
+function kidsPickBuildItem(button,mode){
+  const zone=document.getElementById(mode==="word"?"kidsBuildWordZone":"kidsBuildSentenceZone");
+  if(!zone)return;
+  const placeholder=zone.querySelector("span");if(placeholder)placeholder.remove();
+  const chip=document.createElement("button");chip.type="button";
+  chip.className=mode==="word"?"kids-letter-btn":"kids-word-btn";chip.textContent=button.textContent;
+  chip.onclick=()=>{button.disabled=false;button.style.opacity="1";chip.remove();};
+  zone.appendChild(chip);button.disabled=true;button.style.opacity=".35";
+}
+
+function kidsResetBuild(mode){
+  const box=document.getElementById("studentAnswers");
+  if(mode==="word")renderKidsBuildWord(CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX],box);
+  else renderKidsBuildSentence(CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX],box);
+}
+
+function kidsCheckBuild(mode){
+  if(ANSWER_LOCKED)return;
+  const question=CURRENT_ACTIVITY.questions[CURRENT_QUESTION_INDEX];
+  const zone=document.getElementById(mode==="word"?"kidsBuildWordZone":"kidsBuildSentenceZone");
+  const parts=[...zone.querySelectorAll("button")].map(x=>x.textContent.trim());
+  const given=mode==="word"?parts.join(""):parts.join(" ");
+  const target=getKidsCorrectText(question);
+  const ok=given.trim().toLowerCase()===target.trim().toLowerCase();
+  gradeKidsStudentActivity(ok);
+}
+
+function renderKidsCatchAnswer(question,answersBox){
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🎯 CATCH THE CORRECT ANSWER</div>
+    <div class="kids-instruction">${esc(question.text||"Catch the correct answer before time runs out!")}</div>
+    <div id="kidsCatchStage" class="kids-catch-stage"></div>`;
+  const stage=document.getElementById("kidsCatchStage");
+  (question.answers||[]).forEach((answer,index)=>{
+    const b=document.createElement("button");b.type="button";b.className="kids-catch-answer";
+    b.textContent=answer.text||`Answer ${index+1}`;
+    b.style.left=(8+((index*27)%72))+"%";b.style.top=(12+((index*31)%68))+"%";
+    b.onclick=()=>chooseAnswer(index,b);stage.appendChild(b);
+  });
+}
+
+function renderKidsMoveChoose(question,answersBox){
+  answersBox.className="kids-player";
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🏃 MOVE &amp; CHOOSE</div>
+    <div class="kids-move-stage">
+      <div class="kids-countdown"><span>3</span><span>2</span><span>1</span></div>
+      <div class="kids-go">GO! 🏃</div>
+      <div class="kids-instruction">${esc(question.text||"Touch something BLUE!")}</div>
+      <div style="color:var(--muted);font-weight:800">Move • Find • Touch • Point • Act</div>
+      <div class="kids-action-row">
+        <button class="btn kids-done" type="button" onclick="gradeKidsStudentActivity(true)"><i class="fa-solid fa-check"></i> Done</button>
+      </div>
+    </div>`;
+}
+
+function gradeKidsStudentActivity(correct){
+  if(ANSWER_LOCKED)return;
+  ANSWER_LOCKED=true;
+  if(typeof recordCurrentTeamAnswer==="function")recordCurrentTeamAnswer(Boolean(correct));
+  if(correct){
+    CURRENT_SCORE++;
+    if(typeof playCorrectSound==="function")playCorrectSound();
+  }else if(typeof playWrongSound==="function")playWrongSound();
+  const feedback=document.getElementById("feedback");
+  if(feedback){
+    feedback.textContent=correct?"⭐ Great job!":"💪 Good try!";
+    feedback.className="feedback "+(correct?"good":"bad");
+  }
+  const score=document.getElementById("scorePill");
+  if(score)score.textContent=`⭐ ${CURRENT_SCORE}`;
+  showNextQuestionButton();
 }
 
 
