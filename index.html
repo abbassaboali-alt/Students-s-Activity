@@ -687,6 +687,141 @@ button{font-family:inherit;cursor:pointer}
   }
 }
 
+
+/* =========================================================
+   PRUDLE — iPhone / Safari / Mobile Answer Controls Fix
+   Keeps Check / Submit / Next buttons visible above Safari UI.
+========================================================= */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+button,
+.btn,
+.student-answer,
+.match-image-option,
+.order-item{
+  -webkit-appearance:none;
+  appearance:none;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+@supports (-webkit-touch-callout:none){
+  html,
+  body{
+    min-height:-webkit-fill-available;
+  }
+
+  body{
+    min-height:-webkit-fill-available;
+  }
+}
+
+@media(max-width:768px){
+  /*
+    Extra bottom room is important on iPhone Safari because the browser's
+    bottom toolbar can cover the last control in a long question.
+  */
+  body{
+    padding-bottom:calc(110px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .container,
+  .play-shell,
+  #playArea,
+  .game-card,
+  #studentAnswers{
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+  .game-card{
+    overflow:visible !important;
+    padding-bottom:24px !important;
+  }
+
+  .student-answers,
+  .match-game,
+  .order-game{
+    overflow:visible !important;
+  }
+
+  /*
+    Do not rely on position:sticky on iOS Safari.
+    Normal document flow is more reliable and the extra safe-area spacing
+    prevents the browser toolbar from hiding the action.
+  */
+  .type-result-actions,
+  #nextQuestionArea{
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    top:auto !important;
+    z-index:30 !important;
+    display:flex;
+    width:100% !important;
+    max-width:100% !important;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:center;
+    gap:10px;
+    clear:both;
+    overflow:visible !important;
+    margin:18px 0 0 !important;
+    padding:12px 0 calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    background:#fff;
+  }
+
+  #nextQuestionArea.hidden{
+    display:none !important;
+  }
+
+  .type-result-actions .btn,
+  #nextQuestionArea .btn{
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:relative !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    min-height:52px !important;
+    height:auto !important;
+    margin:0 !important;
+    padding:13px 14px !important;
+    flex:0 0 auto !important;
+    white-space:normal !important;
+    line-height:1.35 !important;
+    font-size:16px !important;
+    transform:none !important;
+  }
+
+  .feedback{
+    position:relative;
+    z-index:2;
+  }
+}
+
+@media(max-width:430px){
+  body{
+    padding-bottom:calc(125px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .game-card{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  .type-result-actions .btn,
+  #nextQuestionArea .btn{
+    min-height:54px !important;
+    font-size:16px !important;
+  }
+}
+
 .start-intro{text-align:center;margin-bottom:22px}
 
 .hero-icon{
@@ -12062,6 +12197,22 @@ function showNextQuestionButton(){
         `;
 
   area.classList.remove("hidden");
+
+  /*
+    iPhone / Safari repaint safeguard:
+    force the action area back into layout after removing .hidden.
+  */
+  area.style.display = "flex";
+
+  if(button){
+    button.style.display = "inline-flex";
+    button.style.visibility = "visible";
+    button.style.opacity = "1";
+  }
+
+  requestAnimationFrame(()=>{
+    area.getBoundingClientRect();
+  });
 }
 
 
@@ -12156,6 +12307,15 @@ function nextQuestionManually(){
     .add(
       "hidden"
     );
+
+  const nextArea =
+    document.getElementById(
+      "nextQuestionArea"
+    );
+
+  if(nextArea){
+    nextArea.style.display = "";
+  }
 
   /*
     Remember the type that was just answered.
