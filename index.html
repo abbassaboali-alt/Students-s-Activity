@@ -9209,12 +9209,17 @@ function renderKidsCatchAnswer(question,answersBox){
 
 function renderKidsMoveChoose(question,answersBox){
   answersBox.className="kids-player";
+
+  /*
+    The question/instruction is already displayed in #gameQuestion above.
+    Do not repeat the same text inside the Move & Choose stage.
+  */
   answersBox.innerHTML=`
     <div class="kids-player-head">🏃 MOVE &amp; CHOOSE</div>
     <div class="kids-move-stage">
       <div class="kids-countdown"><span>3</span><span>2</span><span>1</span></div>
       <div class="kids-go">GO! 🏃</div>
-      <div class="kids-instruction">${esc(question.text||"Touch something BLUE!")}</div>
+      <div class="kids-instruction">Complete the movement challenge shown above.</div>
       <div style="color:var(--muted);font-weight:800">Move • Find • Touch • Point • Act</div>
       <div class="kids-action-row">
         <button class="btn kids-done" type="button" onclick="gradeKidsStudentActivity(true)"><i class="fa-solid fa-check"></i> Done</button>
