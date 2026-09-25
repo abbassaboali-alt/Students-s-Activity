@@ -3597,6 +3597,7 @@ button,
             <option value="voice">🎤 Speaking</option>
             <option value="audio">🔊 Audio</option>
             <option value="video">🎥 Video</option>
+            <option value="learnpractice">🎓 Learn and Practice</option>
             <option value="listenchoose">👂 Listen &amp; Choose</option>
             <option value="listenrepeat">🔊 Listen &amp; Repeat</option>
             <option value="buildword">🔤 Build the Word</option>
@@ -6490,6 +6491,12 @@ function getGameTypeInfo(type){
       className:"game-media"
     },
 
+    learnpractice:{
+      label:"Learn and Practice",
+      icon:"fa-solid fa-graduation-cap",
+      className:"game-media"
+    },
+
     listenchoose:{label:"Listen & Choose",icon:"fa-solid fa-ear-listen",className:"game-listenchoose"},
     listenrepeat:{label:"Listen & Repeat",icon:"fa-solid fa-microphone-lines",className:"game-listenrepeat"},
     buildword:{label:"Build the Word",icon:"fa-solid fa-font",className:"game-buildword"},
@@ -6575,6 +6582,7 @@ function getStudentTypeCardTheme(type){
     voice:["#9b2445","#fde9ef"],
     audio:["#34495e","#edf2f6"],
     video:["#34495e","#edf2f6"],
+    learnpractice:["#164478","#edf4fa"],
     listenchoose:["#2474b5","#eaf4ff"],
     listenrepeat:["#df2f68","#fff0f5"],
     buildword:["#0b9b6a","#eafaf4"],
@@ -6605,7 +6613,8 @@ function getStudentTypeCardContent(type){
     text:{tag:"WRITING",desc:"Write the answer directly in the activity.",preview:`<span class="demo-pill">Type your answer…</span>`},
     voice:{tag:"SPEAKING",desc:"Practice speaking and voice interaction.",preview:`<span class="demo-circle">🎤</span><span class="demo-pill">Speak</span>`},
     audio:{tag:"AUDIO",desc:"Listen to audio content as part of the activity.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🔊 Audio</span>`},
-    video:{tag:"VIDEO",desc:"Watch video content as part of the activity.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🎥 Video</span>`}
+    video:{tag:"VIDEO",desc:"Watch video content as part of the activity.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🎥 Video</span>`},
+    learnpractice:{tag:"LEARN & PRACTICE",desc:"Watch the educational video, then continue to the next question. Return to the video anytime for review.",preview:`<span class="demo-circle">▶</span><span class="demo-pill">🎓 Learn</span><span class="demo-pill">Practice →</span>`}
   };
   return content[type] || {tag:"ACTIVITY",desc:"Interactive English activity.",preview:`<span class="demo-pill">Interactive</span>`};
 }
@@ -6624,7 +6633,7 @@ function renderStudentActivityTypeCards(activities){
   });
 
   const typeOrder = [
-    "listenchoose","listenrepeat","buildword","buildsentence",
+    "learnpractice","listenchoose","listenrepeat","buildword","buildsentence",
     "catchanswer","movechoose","mcq","match","order","random",
     "wheel","wheelmcq","balloon","mystery","bomb","text","voice","audio","video"
   ];
@@ -9020,6 +9029,7 @@ function renderStudentQuestion(){
   if(type === "buildsentence"){ renderKidsBuildSentence(question,answersBox); return; }
   if(type === "catchanswer"){ renderKidsCatchAnswer(question,answersBox); return; }
   if(type === "movechoose"){ renderKidsMoveChoose(question,answersBox); return; }
+  if(type === "learnpractice"){ renderStudentLearnPractice(question,answersBox); return; }
 
   answersBox.className =
     "student-answers";
@@ -9206,6 +9216,180 @@ function renderKidsCatchAnswer(question,answersBox){
     b.onclick=()=>chooseAnswer(index,b);stage.appendChild(b);
   });
 }
+
+
+/* =====================================
+   STUDENT — LEARN & PRACTICE
+===================================== */
+function renderStudentLearnPractice(question,answersBox){
+  answersBox.className="kids-player student-learn-practice-player";
+
+  /*
+    Learn & Practice owns its video player.
+    Hide the generic question media so the video is shown only once.
+  */
+  ["gameQuestionVideo","gameQuestionYouTube","gameQuestionAudio","gameQuestionImage"].forEach(id=>{
+    const element=document.getElementById(id);
+    if(!element)return;
+    if(element.tagName === "VIDEO" || element.tagName === "AUDIO"){
+      try{ element.pause(); }catch(error){}
+    }
+    element.classList.add("hidden");
+    element.removeAttribute("src");
+  });
+
+  const videoUrl=String(
+    question?.mediaUrl ||
+    question?.video ||
+    ""
+  ).trim();
+
+  const youtubeUrl=
+    videoUrl
+      ? toYouTubeEmbedUrl(videoUrl)
+      : "";
+
+  let videoHtml="";
+
+  if(youtubeUrl){
+    videoHtml=`
+      <iframe
+        class="student-learn-practice-video"
+        src="${esc(youtubeUrl)}"
+        title="Learn and Practice video"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>`;
+  }else if(videoUrl){
+    videoHtml=`
+      <video
+        class="student-learn-practice-video"
+        src="${esc(videoUrl)}"
+        controls
+        playsinline
+        preload="metadata">
+      </video>`;
+  }else{
+    videoHtml=`
+      <div class="student-learn-practice-empty">
+        <i class="fa-solid fa-video-slash"></i>
+        <b>No educational video is available for this lesson.</b>
+      </div>`;
+  }
+
+  answersBox.innerHTML=`
+    <div class="kids-player-head">🎓 LEARN &amp; PRACTICE</div>
+    <div class="student-learn-practice-note">
+      Watch the educational video, then continue to the next question.
+      You can return to the previous lesson video for review.
+    </div>
+    <div class="student-learn-practice-video-wrap">
+      ${videoHtml}
+    </div>
+    <div class="student-learn-practice-actions">
+      ${
+        getPreviousStudentLearnPracticeIndex() >= 0
+          ? `<button class="btn btn-light" type="button" onclick="previousStudentLearnPracticeVideo()">
+               <i class="fa-solid fa-arrow-left"></i> Previous Video
+             </button>`
+          : ""
+      }
+      <button class="btn btn-primary" type="button" onclick="nextStudentLearnPracticeQuestion()">
+        Next Question <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>`;
+
+  /*
+    Educational video only:
+    no score, no correct/wrong result, no team answer.
+  */
+  ANSWER_LOCKED=false;
+}
+
+function getPreviousStudentLearnPracticeIndex(){
+  if(
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions) ||
+    CURRENT_QUESTION_INDEX <= 0
+  ){
+    return -1;
+  }
+
+  for(let index=CURRENT_QUESTION_INDEX-1; index>=0; index--){
+    const type=String(
+      CURRENT_ACTIVITY.questions[index]?.type || ""
+    )
+    .trim()
+    .toLowerCase()
+    .replaceAll("_","")
+    .replaceAll("-","")
+    .replaceAll(" ","");
+
+    if(type === "learnpractice"){
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+function previousStudentLearnPracticeVideo(){
+  if(
+    ACTIVITY_FINISHED ||
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions)
+  ){
+    return;
+  }
+
+  const previousIndex=getPreviousStudentLearnPracticeIndex();
+  if(previousIndex < 0)return;
+
+  stopBombTimer();
+  stopActivityTimer();
+  clearRandomQuestionTimers();
+  clearWheelState();
+
+  CURRENT_QUESTION_INDEX=previousIndex;
+  ANSWER_LOCKED=false;
+
+  renderStudentQuestion();
+  prepareTimerForCurrentQuestion();
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function nextStudentLearnPracticeQuestion(){
+  if(
+    ACTIVITY_FINISHED ||
+    !CURRENT_ACTIVITY ||
+    !Array.isArray(CURRENT_ACTIVITY.questions)
+  ){
+    return;
+  }
+
+  stopBombTimer();
+  stopActivityTimer();
+  clearRandomQuestionTimers();
+  clearWheelState();
+
+  /*
+    Do not count the lesson video as an answered/scored question.
+    Continue directly to the next activity question.
+  */
+  CURRENT_QUESTION_INDEX++;
+
+  if(CURRENT_QUESTION_INDEX < CURRENT_ACTIVITY.questions.length){
+    ANSWER_LOCKED=false;
+    renderStudentQuestion();
+    prepareTimerForCurrentQuestion();
+  }else{
+    finishActivity(false);
+  }
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
 
 function renderKidsMoveChoose(question,answersBox){
   answersBox.className="kids-player";
@@ -14696,6 +14880,67 @@ window.addEventListener("storage", event=>{
   .wheel-fullscreen-actions .btn{
     width:100%;
     min-width:0;
+  }
+}
+
+
+/* Student Learn & Practice */
+.student-learn-practice-player{
+  display:grid;
+  gap:16px;
+  text-align:center;
+}
+.student-learn-practice-note{
+  max-width:760px;
+  margin:0 auto;
+  padding:12px 15px;
+  border:1px solid #cfe0ef;
+  border-radius:15px;
+  background:#eef6fd;
+  color:#164478;
+  font-weight:800;
+  line-height:1.7;
+}
+.student-learn-practice-video-wrap{
+  width:min(820px,100%);
+  margin:0 auto;
+}
+.student-learn-practice-video{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  border-radius:20px;
+  background:#000;
+  box-shadow:0 12px 28px rgba(22,68,120,.16);
+}
+.student-learn-practice-empty{
+  min-height:220px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  border:2px dashed #c8d8e6;
+  border-radius:20px;
+  background:#f8fbfd;
+  color:#6b7b8d;
+}
+.student-learn-practice-empty i{font-size:42px}
+.student-learn-practice-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+@media(max-width:650px){
+  .student-learn-practice-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+  .student-learn-practice-actions .btn{
+    width:100%;
+    min-height:52px;
   }
 }
 
